@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+
+{% block title %}Project{% endblock %}
+
+{% block header %}
+<script>
+
+Ext.onReady(function(){
+    Ext.define('Project', {
+        extend: 'Ext.data.Model',
+        fields: [
+            {name: 'id'},
+            {name: 'name', type: 'string'},
+            {name: 'grade', type: 'integer'},
+            {name: 'year', type: 'integer'},
+            {name: 'quarter', type: 'integer'}
+        ]
+    });
+    
+    var store = Ext.create('Ext.data.Store', {
+        autoDestroy: true,
+        model: 'Project',
+        proxy: {
+            type: 'rest',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken') // django only
+            },
+            url: '/api/projects/',
+            reader: 'json'
+        },
+        autoLoad: true
+    });
+
+    var grid = Ext.create('Ext.grid.Panel', {
+        title: 'Project',
+        frame: true,
+        store: store,
+        region: 'center',
+        tbar: [
+            {
+                text: 'Add',
+                handler: function() {
+                    editPanel.newProject();
+                }
+            },
+            {
+                text: 'Edit',
+                handler: function() {
+                    var selects = grid.getSelectionModel().getSelection();
+                    if (selects.length == 0) {
+                        Ext.Msg.alert('กรุณาเลือกรายการที่ต้องการแก้ไข');
+                        return;
+                    }
+
+                    editPanel.editProject(selects[0]);
+                }
+            }
+        ],
+        columns: [
+            {
+                header: 'Name',
+                dataIndex: 'name',
+                width: 200
+            },
+            {
+                header: 'ระดับชั้น',
+                dataIndex: 'grade'
+            },
+            {
+                header: 'ปี',
+                dataIndex: 'year'
+            },
+            {
+                header: 'เทอม',
+                dataIndex: 'quarter'
+            }
+        ]
+    });
+
+    var editPanel = Ext.create('Ext.window.Window', {
+        title: 'Add Project',
+        height: 400,
+        width: 500,
+        closeAction: 'hide',
+        layout: 'fit',
+        items: {
+            xtype: 'form',
+            bodyPadding: 5,
+            defaultType: 'numberfield',
+            items: [
+                {
+                    xtype: 'htmleditor',
+                    fieldLabel: 'Name',
+                    name: 'name',
+                    allowBlank: false,
+                    width: 400,
+                    height: 200
+                },
+                {
+                    fieldLabel: 'Grade',
+                    name: 'grade'
+                },
+                {
+                    fieldLabel: 'Year',
+                    name: 'year'
+                },
+                {
+                    fieldLabel: 'เทอม',
+                    name: 'quarter'
+                }
+            ]
+        },
+        buttons: [
+            {
+                text: 'OK',
+                handler: function() {
+                    editPanel.hide();
+                    var formPanel = editPanel.down('form');
+                    var form = formPanel.getForm();
+                    if (editPanel.currentRecord) {
+                        form.updateRecord(editPanel.currentRecord);
+                    } else {
+                        record = Ext.ModelManager.create(form.getValues(), 'Project');
+                        store.insert(0, [record]);
+                    }
+                    store.sync();
+                }
+            }
+        ], 
+        newProject: function() {
+            this.mode = 'NEW';
+            this.setTitle('New Project');
+            this.show();
+            this.currentRecord = null;
+            this.down('form').getForm().reset();
+        },
+        editProject: function(record) {
+            this.mode = 'EDIT';
+            this.setTitle('Edit Project')
+            this.show();
+            this.currentRecord = record;
+            this.down('form').getForm().loadRecord(record);
+        }
+
+    })
+
+
+    var viewport = Ext.create('Ext.container.Viewport', {
+        layout: 'border',
+        items: [
+            grid
+        ]
+    })
+
+});
+</script>
+{% endblock %}

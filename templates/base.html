@@ -1,0 +1,35 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>{% block title %}{% endblock %}</title>
+
+    <link rel="stylesheet" type="text/css"
+        href="{{ STATIC_URL }}extjs/resources/css/ext-all.css"/>
+
+    <script type="text/javascript"
+        src="{{ STATIC_URL }}extjs/ext-all-debug.js"></script>
+
+<script>
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie != '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
+    {% block header %}{% endblock %}
+</head>
+<body>
+{% block content %}{% endblock %}
+</body>
+</html>

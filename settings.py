@@ -153,3 +153,5 @@ LOGGING = {
         },
     }
 }
+
+# Test for nice

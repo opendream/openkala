@@ -60,12 +60,17 @@ class ApiHandler(BaseHandler):
             except MultipleObjectsReturned: # should never happen, since we're using a PK
                 return rc.BAD_REQUEST
         else:
-            limit = int(request.GET.get('limit'))
+            limit = request.GET.get('limit') or 0
+            limit = int(limit)
             items = self.model.objects.filter(*args, **kwargs)
+            if not limit:
+                return items
+
             paginator = Paginator(items, limit)
             try:
-                page = int(request.GET.get('page'))
-
+                page = request.GET.get('page') or 1
+                page = int(page)
+                tmp = paginator.page(page)
             except PageNotAnInteger:
                 # If page is not an integer, deliver first page.
                 tmp = paginator.page(1)

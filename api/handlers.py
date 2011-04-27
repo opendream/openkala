@@ -10,13 +10,12 @@ from quarter.models import *
 
 class ApiHandler(BaseHandler):
     allowed_methods = ('GET', 'PUT', 'DELETE', 'POST')
-    model = None
     
     def create(self, request, *args, **kwargs):
         if not self.has_model():
             return rc.NOT_IMPLEMENTED
-
-        attrs = self.flatten_dict(request.POST)
+        attrs = json.loads(request.raw_post_data)
+        attrs.pop('id')
         
         try:
             inst = self.model.objects.get(**attrs)
@@ -39,7 +38,8 @@ class ApiHandler(BaseHandler):
         except self.model.DoesNotExist:
             return rc.NOT_FOUND
         
-        attrs = self.flatten_dict(request.POST)
+        attrs = json.loads(request.raw_post_data)
+        attrs.pop('id')
         for k,v in attrs.iteritems():
             setattr( inst, k, v )
 

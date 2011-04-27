@@ -5,9 +5,9 @@
 {% block header %}
 <script>
 
-Ext.onReady(function(){
-    Ext.define('Project', {
-        extend: 'Ext.data.Model',
+Ext4.onReady(function(){
+    Ext4.define('Project', {
+        extend: 'Ext4.data.Model',
         fields: [
             {name: 'id'},
             {name: 'name', type: 'string'},
@@ -17,7 +17,7 @@ Ext.onReady(function(){
         ]
     });
     
-    var store = Ext.create('Ext.data.Store', {
+    var store = Ext4.create('Ext4.data.Store', {
         autoDestroy: true,
         model: 'Project',
         proxy: {
@@ -31,7 +31,7 @@ Ext.onReady(function(){
         autoLoad: true
     });
 
-    var grid = Ext.create('Ext.grid.Panel', {
+    var grid = Ext4.create('Ext4.grid.Panel', {
         title: 'Project',
         frame: true,
         store: store,
@@ -48,7 +48,7 @@ Ext.onReady(function(){
                 handler: function() {
                     var selects = grid.getSelectionModel().getSelection();
                     if (selects.length == 0) {
-                        Ext.Msg.alert('กรุณาเลือกรายการที่ต้องการแก้ไข');
+                        Ext4.Msg.alert('กรุณาเลือกรายการที่ต้องการแก้ไข');
                         return;
                     }
 
@@ -77,7 +77,7 @@ Ext.onReady(function(){
         ]
     });
 
-    var editPanel = Ext.create('Ext.window.Window', {
+    var editPanel = Ext4.create('Ext4.window.Window', {
         title: 'Add Project',
         height: 400,
         width: 500,
@@ -120,7 +120,7 @@ Ext.onReady(function(){
                     if (editPanel.currentRecord) {
                         form.updateRecord(editPanel.currentRecord);
                     } else {
-                        record = Ext.ModelManager.create(form.getValues(), 'Project');
+                        record = Ext4.ModelManager.create(form.getValues(), 'Project');
                         store.insert(0, [record]);
                     }
                     store.sync();
@@ -145,7 +145,7 @@ Ext.onReady(function(){
     })
 
 
-    var viewport = Ext.create('Ext.container.Viewport', {
+    var viewport = Ext4.create('Ext4.container.Viewport', {
         layout: 'border',
         items: [
             grid

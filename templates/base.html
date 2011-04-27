@@ -4,11 +4,22 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>{% block title %}{% endblock %}</title>
 
+
+    <script type="text/javascript" src="{{ STATIC_URL }}aloha/aloha/aloha.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}aloha/aloha/plugins/com.gentics.aloha.plugins.Format/plugin.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}aloha/aloha/plugins/com.gentics.aloha.plugins.Table/plugin.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}aloha/aloha/plugins/com.gentics.aloha.plugins.List/plugin.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}aloha/aloha/plugins/com.gentics.aloha.plugins.HighlightEditables/plugin.js"></script> 
+    
     <link rel="stylesheet" type="text/css"
         href="{{ STATIC_URL }}extjs/resources/css/ext-sandbox.css"/>
+    <link rel="stylesheet" type="text/css"
+        href="{{ STATIC_URL }}css/960.css"/>
+    
 
     <script type="text/javascript"
         src="{{ STATIC_URL }}extjs/builds/ext-all-sandbox-debug.js"></script>
+
 
 <script>
 function getCookie(name) {

@@ -8,6 +8,7 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
+    url(r'^test/', 'quarter.views.test'),
     # Examples:
     # url(r'^$', 'openkala.views.home', name='home'),
     # url(r'^openkala/', include('openkala.foo.urls')),

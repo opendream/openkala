@@ -4,6 +4,12 @@ from django.template import RequestContext
 from django.http import HttpResponse
 import simplejson as json
 
+
+def test(request):
+    c = RequestContext(request, {
+    })
+    return render_to_response('test.html', c)
+
 def project_page(request):
     c = RequestContext(request, {
     })

@@ -5,7 +5,15 @@
 {% block header %}{% endblock %}
 
 {% block content %}
-{% if topics %}
+
+<div id="project-overview" class="grid_12">
+    <div class="editable grid_3">Topics</div>
+    <div class="editable grid_3">A</div>
+    <div class="editable grid_3">B</div>
+    <div class="editable grid_3">C</div>
+    <div class="clear" />
+</div>
+
 <table border="1">
   <thead>
     <tr>
@@ -28,7 +36,4 @@
     {% endfor %}
   </tbody>
 </table>
-{% else %}
-<div class="empty">No topics</div>
-{% endif %}
 {% endblock %}

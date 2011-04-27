@@ -50,4 +50,4 @@ def project_overview(request, project_id):
         'range': range(n_blank_topics)
     }
 
-    return render_to_response('project_overview.html', variables)
+    return render_to_response('project_overview.html', variables, context_instance=RequestContext(request))

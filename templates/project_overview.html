@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Project: {{ project.name }}{% endblock %}
+
+{% block header %}{% endblock %}
+
+{% block content %}
+{% if topics %}
+<table border="1">
+  <thead>
+    <tr>
+      <th><div>Title</div></th>
+      <th><div>Body</div></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for topic in topics %}
+    <tr id="topic-id-{{ topic.id }}" class="exist">
+      <td><div class="topic-title">{{ topic.title }}</div></td>
+      <td><div class="topic-body">{{ topic.body }}</div></td>
+    </tr>
+    {% endfor %}
+    {% for i in range %}
+    <tr class="blank">
+      <td><div class="topic-title"></div></td>
+      <td><div class="topic-body"></div></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<div class="empty">No topics</div>
+{% endif %}
+{% endblock %}

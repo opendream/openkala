@@ -1,15 +1,12 @@
 # Create your views here.
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 import simplejson as json
 
-def project_page(request):
-    c = RequestContext(request, {
-    })
-    return render_to_response('project.html', c)
+from openkala.quarter.models import *
 
-def projects(request):
+def project_list(request):
     if request.method == 'GET':
         results = [
             {
@@ -27,3 +24,20 @@ def projects(request):
         results = project
 
     return HttpResponse(json.dumps(results), content_type="application/json")
+
+def project_overview(request, project_id):
+    try:
+        project = Project.objects.get(id=project_id)
+    except project.DoesNotExist:
+        raise Http404
+
+    topics = Topic.objects.filter(project=project).order_by('title')
+    n_blank_topics = 10 - topics.count()
+
+    variables = {
+        'project': project, 
+        'topics': topics, 
+        'range': range(n_blank_topics)
+    }
+
+    return render_to_response('project_overview.html', variables)

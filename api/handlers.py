@@ -34,7 +34,7 @@ class ApiHandler(BaseHandler):
         pkfield = self.model._meta.pk.name
 
         try:
-            inst = self.queryset(request).get(pk=kwargs.get(pkfield))
+            inst = self.model.objects.get(pk=kwargs.get(pkfield))
         except self.model.DoesNotExist:
             return rc.NOT_FOUND
         

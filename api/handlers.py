@@ -64,6 +64,7 @@ class ApiHandler(BaseHandler):
             return rc.NOT_FOUND
         
         attrs = self.flatten_dict(request.POST)
+
         for k,v in attrs.iteritems():
             setattr( inst, k, v )
 
@@ -103,19 +104,54 @@ class ApiHandler(BaseHandler):
                 tmp = paginator.page(paginator.num_pages)
             return tmp.object_list
 
-class ProjectHandler(ApiHandler):
-    model = Project
-    fields = [(field.name) for field in model._meta.fields]
+class RequestBlank(object):
+    def __init__(self):
+        self.POST = {}
 
-class TopicHandler(ApiHandler):
-    model = Topic
+class TaskHandler(ApiHandler):
+    model = Task
     fields = [(field.name) for field in model._meta.fields]
 
 class PlanHandler(ApiHandler):
     model = Plan
     fields = [(field.name) for field in model._meta.fields]
 
-class TaskHandler(ApiHandler):
-    model = Task
+class TopicHandler(ApiHandler):
+    model = Topic
     fields = [(field.name) for field in model._meta.fields]
+
+class ProjectHandler(ApiHandler):
+    model = Project
+    fields = [(field.name) for field in model._meta.fields]
+
+    def create(self, request, *args, **kwargs):
+        if not self.has_model():
+            return rc.NOT_IMPLEMENTED
+
+        attrs = self.flatten_dict(request.POST)
+        
+        try:
+            inst = self.model.objects.get(**attrs)
+            self.update(request, args, kwargs)
+            return inst
+        except self.model.DoesNotExist:
+            inst = self.model(**attrs)
+            inst.save()
+
+            # Create default plans
+            for i in range(10):
+                request = RequestBlank()
+                request.POST = {'project': inst.id, 'week': str(i+1)}
+                PlanHandler.create(PlanHandler(), request)
+
+            # Create default topics
+            for i in range(10):
+                request = RequestBlank()
+                request.POST = {'project': inst.id, 'title': str(i+1) + '. topic'}
+                TopicHandler.create(TopicHandler(), request)
+
+            return inst
+        except self.model.MultipleObjectsReturned:
+            return rc.DUPLICATE_ENTRY
+
 

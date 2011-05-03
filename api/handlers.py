@@ -14,6 +14,7 @@ class ApiHandler(BaseHandler):
     def create(self, request, *args, **kwargs):
         if not self.has_model():
             return rc.NOT_IMPLEMENTED
+
         attrs = json.loads(request.raw_post_data)
         attrs.pop('id')
         

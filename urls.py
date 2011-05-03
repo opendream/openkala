@@ -9,6 +9,7 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     url(r'^test/', 'quarter.views.test'),
+    url(r'^post', 'quarter.views.postMSG'),
     # Examples:
     # url(r'^$', 'openkala.views.home', name='home'),
     # url(r'^openkala/', include('openkala.foo.urls')),
@@ -19,6 +20,11 @@ urlpatterns = patterns('',
     url(r'^projects$', 'quarter.views.project_list'),
     url(r'^projects/(?P<project_id>[^/]+)$', 'quarter.views.project_overview'),
     url(r'^projects/(?P<project_id>[^/]+)/topics$', 'quarter.views.project_overview'),
+    url(r'^projects/(?P<project_id>[^/]+)/topics/(?P<topic_id>[^/]+)$', 'quarter.views.topic_overview'),
+    url(r'^projects/(?P<project_id>[^/]+)/topics/(?P<topic_id>[^/]+)/plans/(?P<plan_id>[^/]+)$', 'quarter.views.plan_overview'),
+    #url(r'^topics/(?P<topic_id>[^/]+)/plans/(?P<plan_id>[^/]+)$', 'quarter.views.plan_list'),
+
+    url(r'^projectsExt$', 'quarter.views.project_page'),
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
 )

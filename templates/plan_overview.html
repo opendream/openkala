@@ -28,23 +28,22 @@
 </script>
 {% endblock %}
 
-{% block title %}Project: {{ project.name }}{% endblock %}
+{% block title %}Plan for week : {{ plan.week }}{% endblock %}
 
 {% block header %}
-<h1>Project : <span>{{ project.name }}<span></h1>
+<h1>Plan for week : <span>{{ plan.week }}<span></h1>
 {% endblock %}
 
 {% block content %}
 <div id="content">
     <div class="thead">
-        <div class="grid_4">Topics</div>
-        <div class="grid_2">ตัวชี้วัด 1</div>
-        <div class="grid_2">ตัวชี้วัด 2</div>
-        <div class="grid_2">ตัวชี้วัด 3</div>
-        <div class="grid_2">ตัวชี้วัด 4</div>
-        <div class="grid_2">ตัวชี้วัด 5</div>
-        <div class="grid_2">Plan</div>
+        <div class="grid_2">Day</div>
+        <div class="grid_5">Activity</div>
+        <div class="grid_3">Source</div>
+        <div class="grid_3">Work</div>
+        <div class="grid_3">Assessmentj</div>
     </div>
-    {% include "render_partial_topic.html" %}
+    {% include "plan_items.html" %}
+    <div class="clear" />
 </div>
 {% endblock %}

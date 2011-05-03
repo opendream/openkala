@@ -1,0 +1,11 @@
+{% for topic in topics %}
+    <div id="topic-{{ topic.id }}" class="editable topic-body grid_4">{{ topic.body }}</div>
+    <div id="topic-{{ topic.id }}-standard-{{ 1 }}" class="editable topic-body grid_2">{{ topic.body }}</div>
+    <div id="topic-{{ topic.id }}-standard-{{ 2 }}" class="editable topic-body grid_2">{{ topic.body }}</div>
+    <div id="topic-{{ topic.id }}-standard-{{ 3 }}" class="editable topic-body grid_2">{{ topic.body }}</div>
+    <div id="topic-{{ topic.id }}-standard-{{ 4 }}" class="editable topic-body grid_2">{{ topic.body }}</div>
+    <div id="topic-{{ topic.id }}-standard-{{ 5 }}" class="editable topic-body grid_2">{{ topic.body }}</div>
+    <div class="grid_2"><a href="/projects/{{ project.id }}/topics/{{ topic.id }}">Plan</a></div>
+
+{% endfor %}
+

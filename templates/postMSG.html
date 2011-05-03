@@ -1,11 +1,9 @@
 {% extends "base.html" %}
 
-{% block title %}Project{% endblock %}
-
-{% block header %}
-<script>
-
+{% block script %}
+<script type="text/javascript" charset="utf-8">
 Ext4.onReady(function(){
+    
     Ext4.define('Project', {
         extend: 'Ext4.data.Model',
         fields: [
@@ -29,54 +27,8 @@ Ext4.onReady(function(){
             reader: 'json'
         },
         autoLoad: true
-    });
-
-    var grid = Ext4.create('Ext4.grid.Panel', {
-        title: 'Project',
-        frame: true,
-        store: store,
-        region: 'center',
-        tbar: [
-            {
-                text: 'Add',
-                handler: function() {
-                    editPanel.newProject();
-                }
-            },
-            {
-                text: 'Edit',
-                handler: function() {
-                    var selects = grid.getSelectionModel().getSelection();
-                    if (selects.length == 0) {
-                        Ext4.Msg.alert('กรุณาเลือกรายการที่ต้องการแก้ไข');
-                        return;
-                    }
-
-                    editPanel.editProject(selects[0]);
-                }
-            }
-        ],
-        columns: [
-            {
-                header: 'Name',
-                dataIndex: 'name',
-                width: 200
-            },
-            {
-                header: 'ระดับชั้น',
-                dataIndex: 'grade'
-            },
-            {
-                header: 'ปี',
-                dataIndex: 'year'
-            },
-            {
-                header: 'เทอม',
-                dataIndex: 'quarter'
-            }
-        ]
-    });
-
+    }); 
+    
     var editPanel = Ext4.create('Ext4.window.Window', {
         title: 'Add Project',
         height: 400,
@@ -141,17 +93,30 @@ Ext4.onReady(function(){
             this.currentRecord = record;
             this.down('form').getForm().loadRecord(record);
         }
-
     })
-
-
-    var viewport = Ext4.create('Ext4.container.Viewport', {
-        layout: 'border',
-        items: [
-            grid
-        ]
-    })
-
+    
 });
 </script>
+{% endblock %}
+
+{% block content %}
+<h1>PostMSG</h1>
+<script>
+function post(){
+    $.post('/api/projects/', JSON.stringify({
+      name: $('input[name="name"]')[0].value
+      grade: $('input[name="grade"]')[0].value
+      year: $('input[name="year"]')[0].value
+      quarter: $('input[name="quarter"]')[0].value
+      csrf: $('input[name="csrfmiddlewaretoken"]')[0].value}))
+}
+</script>
+<form onsubmit="post()" id="testAPI">
+    {% csrf_token %}
+    <input type="text" name="name"/>
+    <input type="text" name="grade" value="2" />
+    <input type="text" name="year" value="2554"/>
+    <input type="text" name="quarter" value="1"/>
+    <input type="submit" name="post" />
+</form>
 {% endblock %}

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Project{% endblock %}
+
+{% block header %}
+<script>
+
+Ext4.onReady(function(){
+    Ext4.define('Project', {
+        extend: 'Ext4.data.Model',
+        fields: [
+            {name: 'id'},
+            {name: 'name', type: 'string'},
+            {name: 'grade', type: 'integer'},
+            {name: 'year', type: 'integer'},
+            {name: 'quarter', type: 'integer'}
+        ]
+    });
+});
+</script>
+{% endblock %}
+
+{% block content %}
+<ul>
+    {% for project in projects %}
+    <li>
+        <a href="/projects/{{ project.id }}">{{ project.name }}</a>
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}

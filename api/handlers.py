@@ -62,8 +62,8 @@ class ApiHandler(BaseHandler):
         except self.model.DoesNotExist:
             return rc.NOT_FOUND
         
-        attrs = json.loads(request.raw_post_data)
-        attrs.pop('id')
+        attrs = self.flatten_dict(request.POST)
+        attrs.pop(pkfield)
         for k,v in attrs.iteritems():
             setattr( inst, k, v )
 

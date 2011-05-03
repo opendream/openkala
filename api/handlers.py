@@ -15,8 +15,10 @@ class ApiHandler(BaseHandler):
         if not self.has_model():
             return rc.NOT_IMPLEMENTED
 
-        attrs = json.loads(request.raw_post_data)
-        attrs.pop('id')
+        #print request.raw_post_data
+        attrs = self.flatten_dict(request.POST)
+        #attrs = json.loads(request.raw_post_data)
+        #attrs.pop('id')
         
         try:
             inst = self.model.objects.get(**attrs)

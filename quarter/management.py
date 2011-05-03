@@ -176,3 +176,6 @@ def after_syncdb(sender, **kwargs):
         assessment= '',
         plan=plan2
     )
+
+from django.db.models.signals import post_syncdb
+post_syncdb.connect(after_syncdb, dispatch_uid="openkala.quarter.management")

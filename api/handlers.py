@@ -3,6 +3,7 @@ from piston.utils import rc
 
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
+from django.db import models
 
 import simplejson as json
 
@@ -10,15 +11,35 @@ from quarter.models import *
 
 class ApiHandler(BaseHandler):
     allowed_methods = ('GET', 'PUT', 'DELETE', 'POST')
+
+    def flatten_dict(self, dct):
+        fd = {}
+        for k in dct.keys():
+            k = k.encode('utf8')
+            try:
+                if dct.get(k):
+                    typ = type(self.model._meta.get_field(k))
+
+                    if typ == models.CharField or typ == models.TextField:
+                        fd[k] = dct.get(k)
+                    elif typ == models.IntegerField:
+                        fd[k] = int(dct.get(k))
+                    elif typ == models.ForeignKey:
+                        parent_model = self.model._meta.get_field(k).related.parent_model
+                        fd[k] = parent_model.objects.get(pk=int(dct.get(k)))
+
+            except models.FieldDoesNotExist:
+                # TODO: Do something
+                # Validate html form send argument
+                pass
+
+        return fd
     
     def create(self, request, *args, **kwargs):
         if not self.has_model():
             return rc.NOT_IMPLEMENTED
 
-        #print request.raw_post_data
         attrs = self.flatten_dict(request.POST)
-        #attrs = json.loads(request.raw_post_data)
-        #attrs.pop('id')
         
         try:
             inst = self.model.objects.get(**attrs)

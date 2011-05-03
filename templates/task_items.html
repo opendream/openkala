@@ -1,8 +1,8 @@
 {% for task in tasks %}
-    <div class="grid_2">{{ task.day }}</div>
-    <div id="task-{{ task.id }}" class="editable task-body grid_5">{{ task.activity }}</div>
-    <div id="task-{{ task.id }}-standard-{{ 1 }}" class="editable task-body grid_3">{{ task.source }}</div>
-    <div id="task-{{ task.id }}-standard-{{ 2 }}" class="editable task-body grid_3">{{ task.work }}</div>
-    <div id="task-{{ task.id }}-standard-{{ 3 }}" class="editable task-body grid_3">{{ task.assessment }}</div>
+    <div class="grid_2 {% cycle 'odd' 'even' as rowtype %}">{{ task.get_day_string }}</div>
+    <div id="task-{{ task.id }}" class="editable task-body grid_5 {{ rowtype }}">{{ task.activity }}</div>
+    <div id="task-{{ task.id }}-standard-{{ 1 }}" class="editable task-body grid_3 {{ rowtype }}">{{ task.source }}</div>
+    <div id="task-{{ task.id }}-standard-{{ 2 }}" class="editable task-body grid_3 {{ rowtype }}">{{ task.work }}</div>
+    <div id="task-{{ task.id }}-standard-{{ 3 }}" class="editable task-body grid_3 {{ rowtype }}">{{ task.assessment }}</div>
 {% endfor %}
 

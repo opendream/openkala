@@ -1,10 +1,10 @@
 {% for plan in plans %}
-    <div class="grid_1">{{ plan.week }}</div>
-    <div id="plan-{{ plan.id }}" class="editable plan-body grid_3">{{ plan.goal }}</div>
-    <div id="plan-{{ plan.id }}-standard-{{ 1 }}" class="editable plan-body grid_3">{{ plan.activity }}</div>
-    <div id="plan-{{ plan.id }}-standard-{{ 2 }}" class="editable plan-body grid_3">{{ plan.sub_topic }}</div>
-    <div id="plan-{{ plan.id }}-standard-{{ 3 }}" class="editable plan-body grid_2">{{ plan.key_thinking }}</div>
-    <div id="plan-{{ plan.id }}-standard-{{ 4 }}" class="editable plan-body grid_2">{{ plan.performance }}</div>
-    <div id="plan-{{ plan.id }}-standard-{{ 5 }}" class="grid_2"><a href="/projects/{{ project.id }}/topics/{{ topic.id }}/plans/{{ plan.id }}">Plan for week {{ plan.week }}</a></div>
+    <div class="grid_1 {% cycle 'odd' 'even' as rowtype %}">{{ plan.week }}</div>
+    <div id="plan-{{ plan.id }}" class="editable plan-body grid_3 {{ rowtype }}">{{ plan.goal }}</div>
+    <div id="plan-{{ plan.id }}-standard-{{ 1 }}" class="editable plan-body grid_3 {{ rowtype }}">{{ plan.activity }}</div>
+    <div id="plan-{{ plan.id }}-standard-{{ 2 }}" class="editable plan-body grid_3 {{ rowtype }}">{{ plan.sub_topic }}</div>
+    <div id="plan-{{ plan.id }}-standard-{{ 3 }}" class="editable plan-body grid_2 {{ rowtype }}">{{ plan.key_thinking }}</div>
+    <div id="plan-{{ plan.id }}-standard-{{ 4 }}" class="editable plan-body grid_2 {{ rowtype }}">{{ plan.performance }}</div>
+    <div id="plan-{{ plan.id }}-standard-{{ 5 }}" class="grid_2 {{ rowtype }}"><a href="/projects/{{ project.id }}/topics/{{ topic.id }}/plans/{{ plan.id }}">plan for week {{ plan.week }}</a></div>
 {% endfor %}
 

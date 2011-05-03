@@ -23,9 +23,7 @@ Ext4.onReady(function(){
 {% block content %}
 <ul>
     {% for project in projects %}
-    <li>
-        <a href="/projects/{{ project.id }}">{{ project.name }}</a>
-    </li>
+    <li><h1><a href="/projects/{{ project.id }}">{{ project.name }}</a></h1></li>
     {% endfor %}
 </ul>
 {% endblock %}

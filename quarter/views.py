@@ -93,13 +93,12 @@ def plan_overview(request, project_id, topic_id, plan_id):
         raise Http404
 
     tasks = Task.objects.filter(plan=plan).order_by('day')
-    n_blank_plans = 10 - plans.count()
 
     variables = {
         'project.id': project_id,
         'topic.id': topic_id,
-        'plans': plans,
-        'range': range(n_blank_plans)
+        'plan': plan,
+        'tasks' : tasks,
     }
 
-    return render_to_response('topic_overview.html', variables, context_instance=RequestContext(request))
+    return render_to_response('plan_overview.html', variables, context_instance=RequestContext(request))

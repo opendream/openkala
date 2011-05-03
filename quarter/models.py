@@ -72,3 +72,7 @@ class Task(models.Model):
 
     def __unicode__(self):
         return 'Task of ' + self.plan.__unicode__() + ' day ' + str(self.day)
+      
+    def get_day_string(self):
+        return self.DAY_CHOICES[self.day][1]
+        

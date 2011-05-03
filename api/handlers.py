@@ -17,6 +17,7 @@ class ApiHandler(BaseHandler):
 
         #print request.raw_post_data
         attrs = self.flatten_dict(request.POST)
+        print attrs
         #attrs = json.loads(request.raw_post_data)
         #attrs.pop('id')
         

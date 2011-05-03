@@ -31,20 +31,21 @@
 {% block title %}Project: {{ project.name }}{% endblock %}
 
 {% block header %}
-<h1>Project : <span>{{ project.name }}<span></h1>
-{% endblock %}
+<h1>Project: <span>{{ project.name }}<span></h1>{% endblock %}
 
 {% block content %}
 <div id="content">
     <div class="thead">
         <div class="grid_4">Topics</div>
-        <div class="grid_2">ตัวชี้วัด 1</div>
-        <div class="grid_2">ตัวชี้วัด 2</div>
-        <div class="grid_2">ตัวชี้วัด 3</div>
-        <div class="grid_2">ตัวชี้วัด 4</div>
-        <div class="grid_2">ตัวชี้วัด 5</div>
+        <div class="grid_2">{{ project.standard_header1 }}</div>
+        <div class="grid_2">{{ project.standard_header2 }}</div>
+        <div class="grid_2">{{ project.standard_header3 }}</div>
+        <div class="grid_2">{{ project.standard_header4 }}</div>
+        <div class="grid_2">{{ project.standard_header5 }}</div>
         <div class="grid_2">Plan</div>
     </div>
-    {% include "render_partial_topic.html" %}
+    <div class="tbody">
+        {% include "topic_items.html" %}
+    </div>
 </div>
 {% endblock %}

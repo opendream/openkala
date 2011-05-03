@@ -32,7 +32,7 @@ def after_syncdb(sender, **kwargs):
     )
 
     project2, created = Project.objects.get_or_create(
-        name='ผ้ ไผ่ไหวเอน', 
+        name='ผ. ไผ่ไหวเอน', 
         grade=0, 
         year=2003, 
         quarter=4, 
@@ -42,28 +42,28 @@ def after_syncdb(sender, **kwargs):
     )
 
     # Topic
-    topic1, created = Topic.objects.get_or_created(
+    topic1, created = Topic.objects.get_or_create(
         title='1. ผ้าคืออะไร', 
         body='1.1 ความหมายและความสำคัญ <br /> 1.2 วิวัฒนาการ', 
         project=project1,
-        standars1='ว 2.1: เข้าใจว่าเสื้อผ้าเครื่องนุ่งห่ม เป็นปัจจัยสำคัญ <br /> ว 2.2: เข้าใจสิ่งแวดล้อมท้องถิ่น',
-        standars2='ส 2.1: อธิบายเกี่ยวกับวิวัฒนาการของผ้า <br /> ส 3.1: อธิบายได้ว่าทรัพยากรธรรมชาติที่มีอยู่อย่างจำกัด',
-        standars3='ง 1.1: เข้าใจการทำงาน มีความคิดสร้างสรรค์ <br /> ง 3.1: เข้าใจธรรมชาติในท้องถิ่น',
-        standars4='พ 1.1: เข้าใจธรรมชาติของการเจริญเติบโตและพัฒนาการของมนุษย์'
+        standard1='ว 2.1: เข้าใจว่าเสื้อผ้าเครื่องนุ่งห่ม เป็นปัจจัยสำคัญ <br /> ว 2.2: เข้าใจสิ่งแวดล้อมท้องถิ่น',
+        standard2='ส 2.1: อธิบายเกี่ยวกับวิวัฒนาการของผ้า <br /> ส 3.1: อธิบายได้ว่าทรัพยากรธรรมชาติที่มีอยู่อย่างจำกัด',
+        standard3='ง 1.1: เข้าใจการทำงาน มีความคิดสร้างสรรค์ <br /> ง 3.1: เข้าใจธรรมชาติในท้องถิ่น',
+        standard4='พ 1.1: เข้าใจธรรมชาติของการเจริญเติบโตและพัฒนาการของมนุษย์'
     )
-    topic2, created = Topic.objects.get_or_created(
+    topic2, created = Topic.objects.get_or_create(
         title='2. ทำอย่างไรให้เสื้อผ้าสะอาดและสวยงาม', 
         body='2.1 การเลือกใช้เสื้อผ้า <br /> 2.2 การตัดเย็บผ้า', 
         project=project1,
-        standars1='ว 1.2: อธิบายความแตกต่างของบุคคล แต่ละรูปร่าง เชื้อชาติ ประเทศ <br /> ว 2.1: อธิบายความสัมพันธ์ของแต่ละท้องถิ่น',
-        standars2='ส 2.1: เข้าใจในประเพณีวัฒนธรรมของท้องถิ่น <br /> ส 4.2: อธิบายได้ว่าทรัพยากรธรรมชาติที่มีอยู่อย่างจำกัด',
-        standars3='ง 1.5: ศึกษาสัญชาตญาณดิบในที่มืด เข้าใจการทำงาน มีความคิดสร้างสรรค์ <br /> ง 6.1: เข้าใจหนอนดักแด และเข้าใจธรรมชาติในท้องถิ่น',
-        standars4='พ 3.1: กฎการ เกิด แก่ เจ็บ ตาย และเข้าใจธรรมชาติของการเจริญเติบโตและพัฒนาการของมนุษย์'
+        standard1='ว 1.2: อธิบายความแตกต่างของบุคคล แต่ละรูปร่าง เชื้อชาติ ประเทศ <br /> ว 2.1: อธิบายความสัมพันธ์ของแต่ละท้องถิ่น',
+        standard2='ส 2.1: เข้าใจในประเพณีวัฒนธรรมของท้องถิ่น <br /> ส 4.2: อธิบายได้ว่าทรัพยากรธรรมชาติที่มีอยู่อย่างจำกัด',
+        standard3='ง 1.5: ศึกษาสัญชาตญาณดิบในที่มืด เข้าใจการทำงาน มีความคิดสร้างสรรค์ <br /> ง 6.1: เข้าใจหนอนดักแด และเข้าใจธรรมชาติในท้องถิ่น',
+        standard4='พ 3.1: กฎการ เกิด แก่ เจ็บ ตาย และเข้าใจธรรมชาติของการเจริญเติบโตและพัฒนาการของมนุษย์'
     )
 
     # Plan
     # TODO: Add detail
-    plan1, created = Plan.objects.get_or_created(
+    plan1, created = Plan.objects.get_or_create(
         week=1,
         goal='',
         activity='',
@@ -73,7 +73,7 @@ def after_syncdb(sender, **kwargs):
         topic=topic1
     )
 
-    plan2, created = Plan.objects.get_or_created(
+    plan2, created = Plan.objects.get_or_create(
         week=2,
         goal='',
         activity='',
@@ -85,7 +85,7 @@ def after_syncdb(sender, **kwargs):
 
     # Task
     # TODO: Add detail
-    task1, created = Task.objects.get_or_created(
+    task1, created = Task.objects.get_or_create(
         day=1,
         hour=2,
         activity='',
@@ -94,7 +94,7 @@ def after_syncdb(sender, **kwargs):
         assessment= '',
         plan=plan1
     )
-    task2, created = Task.objects.get_or_created(
+    task2, created = Task.objects.get_or_create(
         day=2,
         hour=1,
         activity='',
@@ -103,7 +103,7 @@ def after_syncdb(sender, **kwargs):
         assessment= '',
         plan=plan1
     )
-    task3, created = Task.objects.get_or_created(
+    task3, created = Task.objects.get_or_create(
         day=3,
         hour=1,
         activity='',
@@ -112,7 +112,7 @@ def after_syncdb(sender, **kwargs):
         assessment= '',
         plan=plan1
     )
-    task4, created = Task.objects.get_or_created(
+    task4, created = Task.objects.get_or_create(
         day=4,
         hour=1,
         activity='',
@@ -121,7 +121,7 @@ def after_syncdb(sender, **kwargs):
         assessment= '',
         plan=plan1
     )
-    task5, created = Task.objects.get_or_created(
+    task5, created = Task.objects.get_or_create(
         day=5,
         hour=2,
         activity='',
@@ -131,7 +131,7 @@ def after_syncdb(sender, **kwargs):
         plan=plan1
     )
 
-    task6, created = Task.objects.get_or_created(
+    task6, created = Task.objects.get_or_create(
         day=1,
         hour=2,
         activity='',
@@ -140,7 +140,7 @@ def after_syncdb(sender, **kwargs):
         assessment= '',
         plan=plan2
     )
-    task7, created = Task.objects.get_or_created(
+    task7, created = Task.objects.get_or_create(
         day=2,
         hour=1,
         activity='',
@@ -149,7 +149,7 @@ def after_syncdb(sender, **kwargs):
         assessment= '',
         plan=plan2
     )
-    task8, created = Task.objects.get_or_created(
+    task8, created = Task.objects.get_or_create(
         day=3,
         hour=1,
         activity='',
@@ -158,7 +158,7 @@ def after_syncdb(sender, **kwargs):
         assessment= '',
         plan=plan2
     )
-    task9, created = Task.objects.get_or_created(
+    task9, created = Task.objects.get_or_create(
         day=4,
         hour=1,
         activity='',
@@ -167,7 +167,7 @@ def after_syncdb(sender, **kwargs):
         assessment= '',
         plan=plan2
     )
-    task10, created = Task.objects.get_or_created(
+    task10, created = Task.objects.get_or_create(
         day=5,
         hour=2,
         activity='',

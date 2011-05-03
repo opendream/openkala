@@ -31,16 +31,6 @@ def after_syncdb(sender, **kwargs):
         standard_header4=standard_header4
     )
 
-    project2, created = Project.objects.get_or_create(
-        name='ผ. ไผ่ไหวเอน', 
-        grade=0, 
-        year=2003, 
-        quarter=4, 
-        standard_header1=standard_header5, 
-        standard_header2=standard_header6, 
-        standard_header3=standard_header7
-    )
-
     # Topic
     topic1, created = Topic.objects.get_or_create(
         title='1. ผ้าคืออะไร', 
@@ -60,28 +50,27 @@ def after_syncdb(sender, **kwargs):
         standard3='ง 1.5: ศึกษาสัญชาตญาณดิบในที่มืด เข้าใจการทำงาน มีความคิดสร้างสรรค์ <br /> ง 6.1: เข้าใจหนอนดักแด และเข้าใจธรรมชาติในท้องถิ่น',
         standard4='พ 3.1: กฎการ เกิด แก่ เจ็บ ตาย และเข้าใจธรรมชาติของการเจริญเติบโตและพัฒนาการของมนุษย์'
     )
+    topic3, created = Topic.objects.get_or_create(project=project1, title='3. หัวข้อ', body='', standard1='', standard2='', standard3='', standard4='')
+    topic4, created = Topic.objects.get_or_create(project=project1, title='4. หัวข้อ', body='', standard1='', standard2='', standard3='', standard4='')
+    topic5, created = Topic.objects.get_or_create(project=project1, title='5. หัวข้อ', body='', standard1='', standard2='', standard3='', standard4='')
+    topic6, created = Topic.objects.get_or_create(project=project1, title='6. หัวข้อ', body='', standard1='', standard2='', standard3='', standard4='')
+    topic7, created = Topic.objects.get_or_create(project=project1, title='7. หัวข้อ', body='', standard1='', standard2='', standard3='', standard4='')
+    topic8, created = Topic.objects.get_or_create(project=project1, title='8. หัวข้อ', body='', standard1='', standard2='', standard3='', standard4='')
+    topic9, created = Topic.objects.get_or_create(project=project1, title='9. หัวข้อ', body='', standard1='', standard2='', standard3='', standard4='')
+    topic10, created = Topic.objects.get_or_create(project=project1, title='10. หัวข้อ', body='', standard1='', standard2='', standard3='', standard4='')
 
     # Plan
     # TODO: Add detail
-    plan1, created = Plan.objects.get_or_create(
-        week=1,
-        goal='',
-        activity='',
-        sub_topic='',
-        key_thinking='',
-        performance='',
-        topic=topic1
-    )
-
-    plan2, created = Plan.objects.get_or_create(
-        week=2,
-        goal='',
-        activity='',
-        sub_topic='',
-        key_thinking='',
-        performance='',
-        topic=topic2
-    )
+    plan1, created = Plan.objects.get_or_create(project=project1, week=1, goal='', activity='', sub_topic='', key_thinking='', performance='')
+    plan2, created = Plan.objects.get_or_create(project=project1, week=2, goal='', activity='', sub_topic='', key_thinking='', performance='')
+    plan3, created = Plan.objects.get_or_create(project=project1, week=3, goal='', activity='', sub_topic='', key_thinking='', performance='')
+    plan4, created = Plan.objects.get_or_create(project=project1, week=4, goal='', activity='', sub_topic='', key_thinking='', performance='')
+    plan5, created = Plan.objects.get_or_create(project=project1, week=5, goal='', activity='', sub_topic='', key_thinking='', performance='')
+    plan6, created = Plan.objects.get_or_create(project=project1, week=6, goal='', activity='', sub_topic='', key_thinking='', performance='')
+    plan7, created = Plan.objects.get_or_create(project=project1, week=7, goal='', activity='', sub_topic='', key_thinking='', performance='')
+    plan8, created = Plan.objects.get_or_create(project=project1, week=8, goal='', activity='', sub_topic='', key_thinking='', performance='')
+    plan9, created = Plan.objects.get_or_create(project=project1, week=9, goal='', activity='', sub_topic='', key_thinking='', performance='')
+    plan10, created = Plan.objects.get_or_create(project=project1,week=10, goal='', activity='', sub_topic='', key_thinking='', performance='')
 
     # Task
     # TODO: Add detail
@@ -177,5 +166,5 @@ def after_syncdb(sender, **kwargs):
         plan=plan2
     )
 
-#from django.db.models.signals import post_syncdb
-#post_syncdb.connect(after_syncdb, dispatch_uid="openkala.quarter.management")
+from django.db.models.signals import post_syncdb
+post_syncdb.connect(after_syncdb, dispatch_uid="openkala.quarter.management")

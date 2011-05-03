@@ -20,13 +20,13 @@ class ApiHandler(BaseHandler):
                 if dct.get(k):
                     typ = type(self.model._meta.get_field(k))
 
-                    if typ == models.CharField or typ == models.TextField:
-                        fd[k] = dct.get(k)
-                    elif typ == models.IntegerField:
+                    if typ == models.IntegerField:
                         fd[k] = int(dct.get(k))
                     elif typ == models.ForeignKey:
                         parent_model = self.model._meta.get_field(k).related.parent_model
                         fd[k] = parent_model.objects.get(pk=int(dct.get(k)))
+                    else:
+                      fd[k] = dct.get(k)
 
             except models.FieldDoesNotExist:
                 # TODO: Do something
@@ -43,7 +43,8 @@ class ApiHandler(BaseHandler):
         
         try:
             inst = self.model.objects.get(**attrs)
-            return rc.DUPLICATE_ENTRY
+            self.update(request, args, kwargs)
+            return inst
         except self.model.DoesNotExist:
             inst = self.model(**attrs)
             inst.save()
@@ -63,7 +64,6 @@ class ApiHandler(BaseHandler):
             return rc.NOT_FOUND
         
         attrs = self.flatten_dict(request.POST)
-        attrs.pop(pkfield)
         for k,v in attrs.iteritems():
             setattr( inst, k, v )
 

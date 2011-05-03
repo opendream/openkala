@@ -111,8 +111,14 @@ function post(){
       csrf: $('input[name="csrfmiddlewaretoken"]')[0].value}))
 }
 </script>
-<form action="/api/projects/" method="post"  id="testAPI">
+
+<form>
+    <input type="button" value="testUpdate" onmouseclick="post()" />
+</form>
+
+<form action="/api/projects/" method="POST" id="testAPI">
     {% csrf_token %}
+    <input type="text" name="id"/>
     <input type="text" name="name"/>
     <input type="text" name="grade" value="2" />
     <input type="text" name="year" value="2554"/>

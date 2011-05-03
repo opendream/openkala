@@ -3,11 +3,10 @@
 {% block script %}
 <script type="text/javascript" charset="utf-8">
     Ext.onReady(function() {
-
       function saveEditable() {
-        //console.log(arguments);
+          console.log();
       }
-
+      
       GENTICS.Aloha.settings = {
           "i18n": {"current": "en"},
           "ribbon": false,
@@ -43,7 +42,7 @@
         <div class="grid_2">{{ project.standard_header4 }}</div>
         <div class="grid_2">{{ project.standard_header5 }}</div>
         <div class="grid_2">Plan</div>
-        <div class="clear"></div>
+        <div class="clearfix"></div>
     </div>
     <div class="tbody">
         {% include "topic_items.html" %}

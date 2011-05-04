@@ -9,3 +9,18 @@
 .tbody .even {
   background-color: #B5DDF7;
 }
+
+.tbody div.topic-title {
+  font-size: 120%;
+  min-height: 2em;
+  padding-bottom: 5px;
+}
+
+.tbody div.topic-body {
+  margin-left: 10px;
+}
+
+.tbody div.topic-standard {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}

@@ -24,3 +24,11 @@
   padding-top: 10px;
   padding-bottom: 10px;
 }
+
+.GENTICS_editable_highlight {
+	outline: #FFE767 solid 2px !important;
+}
+
+.GENTICS_block.core-standard.core-standard-selected {
+  background: yellow !important;
+}

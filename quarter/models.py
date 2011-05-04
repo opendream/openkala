@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.db import models
 
 class StandardHeader(models.Model):
-    title  = models.CharField(max_length=255)
+    title  = models.CharField(max_length=255, null=True, blank=True)
 
     def __unicode__(self):
         return self.title
@@ -24,7 +24,7 @@ class Project(models.Model):
         return self.name
 
 class Topic(models.Model):
-    title   = models.CharField(max_length=255)
+    title   = models.CharField(max_length=255, null=True, blank=True)
     body    = models.TextField(null=True, blank=True)
     project = models.ForeignKey(Project)
 
@@ -46,10 +46,11 @@ class Plan(models.Model):
     sub_topic    = models.TextField(null=True, blank=True)
     key_thinking = models.TextField(null=True, blank=True)
     performance  = models.TextField(null=True, blank=True)
-    topic        = models.ForeignKey(Topic)
+    project      = models.ForeignKey(Project)
+    topic        = models.ForeignKey(Topic, null=True, blank=True)
 
     def __unicode__(self):
-        return 'Plan of ' + self.topic.title + ' week ' + str(self.week)
+        return 'Plan of ' + self.project.name + ' week ' + str(self.week)
 
 class Task(models.Model):
     DAY_CHOICES = (
@@ -62,8 +63,8 @@ class Task(models.Model):
         (6, 'Sat'),
     )
 
-    day        = models.IntegerField(choices=DAY_CHOICES)
-    hour       = models.IntegerField()
+    day        = models.IntegerField(choices=DAY_CHOICES, null=True, blank=True)
+    hour       = models.IntegerField(null=True, blank=True)
     activity   = models.TextField(null=True, blank=True)
     source     = models.TextField(null=True, blank=True)
     work       = models.TextField(null=True, blank=True)

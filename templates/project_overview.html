@@ -5,8 +5,15 @@
     Ext.onReady(function() {
       function saveEditable() {
           if (GENTICS.Aloha.isModified()) {
-              thisObj = GENTICS.Aloha.getActiveEditable().getId();
-              console.log(document.getElementById(thisObj));
+              objID = GENTICS.Aloha.getActiveEditable().getId().split('-')[1];
+              attrs = [];
+              $(".topic-"+objID).each(function (i, item) {
+                if ($(this).id.match
+                st = {};
+                st['standard' + (i+1)] = $(this).html();
+                attrs.push(st);
+              });
+              console.log(attrs);
           };
       }
       

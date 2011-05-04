@@ -61,7 +61,8 @@ def project_overview(request, project_id):
 
     variables = {
         'project': project, 
-        'topics': topics, 
+        'topics': topics,
+        'coreStandards': CoreStandard.objects.all().order_by('code'),
         'range': range(n_blank_topics)
     }
 

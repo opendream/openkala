@@ -48,6 +48,16 @@ CoreStandard.init = function() {
         this.coreStandardField,
         'มาตรฐาน'
     )
+    this.coreStandardField.getExtConfigProperties = function() {
+        return {
+            alohaButton: this,
+            xtype : 'alohaattributefield',
+            rowspan: this.rowspan||undefined,
+            width: this.width||undefined,
+            id : this.id,
+            minChars: 1
+        };
+    }
 
     GENTICS.Aloha.EventRegistry.subscribe(GENTICS.Aloha, 'selectionChanged', function(event, rangeObject) {
         var foundMarkup = that.findTag( rangeObject );

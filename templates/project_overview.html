@@ -4,7 +4,17 @@
 <script type="text/javascript" charset="utf-8">
     Ext.onReady(function() {
       function saveEditable() {
-          console.log('hi');
+          if (GENTICS.Aloha.isModified()) {
+              objID = GENTICS.Aloha.getActiveEditable().getId().split('-')[1];
+              attrs = [];
+              $(".topic-"+objID).each(function (i, item) {
+                if ($(this).id.match
+                st = {};
+                st['standard' + (i+1)] = $(this).html();
+                attrs.push(st);
+              });
+              console.log(attrs);
+          };
       }
 
       repositories = {
@@ -134,7 +144,12 @@
 {% block title %}Project: {{ project.name }}{% endblock %}
 
 {% block header %}
-<h1>Project: <span>{{ project.name }}<span></h1>{% endblock %}
+<div class="grid_16"><h1>Project: <span class="editable">{{ project.name }}</span></h1></div>
+<div class="grid_3"><p>Grade : <span class="editable">{{ project.grade }}</span></p></div>
+<div class="grid_3"><p>Year : <span class="editable">{{ project.year }}</span></p></div>
+<div class="grid_3"><p>Quarter : <span class="editable">{{ project.quarter }}</span></p></div>
+<div class="clearfix" />
+{% endblock %}
 
 {% block content %}
 <div id="content">

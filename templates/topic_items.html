@@ -1,14 +1,14 @@
 {% for topic in topics %}
 	<div class="{% cycle 'odd' 'even' as rowtype %}">
 	<div class="grid_4 ">
-		<div id="topic-{{ topic.id }}-title" class="editable topic-title">{{ topic.title }}</div>
-		<div id="topic-{{ topic.id }}" class="editable topic-body topic-body">{{ topic.body }}</div>
+		<div id="topic-{{ topic.id }}-title" class="editable topic-{{ topic.id }}">{{ topic.title }}</div>
+		<div id="topic-{{ topic.id }}-body" class="editable topic-{{ topic.id }}">{{ topic.body }}</div>
 	</div>
-    <div id="topic-{{ topic.id }}-standard-{{ 1 }}" class="editable topic-standard grid_2 {{ rowtype }}">{{ topic.standard1 }}</div>
-    <div id="topic-{{ topic.id }}-standard-{{ 2 }}" class="editable topic-standard grid_2 {{ rowtype }}">{{ topic.standard2 }}</div>
-    <div id="topic-{{ topic.id }}-standard-{{ 3 }}" class="editable topic-standard grid_2 {{ rowtype }}">{{ topic.standard3 }}</div>
-    <div id="topic-{{ topic.id }}-standard-{{ 4 }}" class="editable topic-standard grid_2 {{ rowtype }}">{{ topic.standard4 }}</div>
-    <div id="topic-{{ topic.id }}-standard-{{ 5 }}" class="editable topic-standard grid_2 {{ rowtype }}">{{ topic.standard5 }}</div>
+    <div id="topic-{{ topic.id }}-standard-{{ 1 }}" class="editable topic-{{ topic.id }} topic-standard grid_2 {{ rowtype }}">{{ topic.standard1 }}</div>
+    <div id="topic-{{ topic.id }}-standard-{{ 2 }}" class="editable topic-{{ topic.id }} topic-standard grid_2 {{ rowtype }}">{{ topic.standard2 }}</div>
+    <div id="topic-{{ topic.id }}-standard-{{ 3 }}" class="editable topic-{{ topic.id }} topic-standard grid_2 {{ rowtype }}">{{ topic.standard3 }}</div>
+    <div id="topic-{{ topic.id }}-standard-{{ 4 }}" class="editable topic-{{ topic.id }} topic-standard grid_2 {{ rowtype }}">{{ topic.standard4 }}</div>
+    <div id="topic-{{ topic.id }}-standard-{{ 5 }}" class="editable topic-{{ topic.id }} topic-standard grid_2 {{ rowtype }}">{{ topic.standard5 }}</div>
     <div class="grid_2 {{ rowtype }}"><a href="/projects/{{ project.id }}/topics/{{ topic.id }}">Plan</a></div>
     <div class="clearfix"></div>
     </div>

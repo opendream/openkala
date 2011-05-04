@@ -1,4 +1,4 @@
-.tbody div {
+.tbody div.item {
   min-height:7em;
 }
 
@@ -23,4 +23,37 @@
 .tbody div.topic-standard {
   padding-top: 10px;
   padding-bottom: 10px;
+}
+
+.header_1 {
+  height: 50px;
+  line-height: 50px;
+  text-align: center;
+}
+
+.header_2 {
+  height: 25px;
+  line-height: 25px;
+  text-align: center;
+}
+
+.left {
+  float: left;
+}
+
+
+/* custom */
+.week {
+  width: 49%;
+  float: left;
+}
+.week label {
+  display: block;
+}
+.week input {
+  display: table-cell;
+}
+
+.tbody .item .plan {
+  text-align: center;
 }

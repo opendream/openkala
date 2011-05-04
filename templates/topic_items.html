@@ -1,15 +1,24 @@
+{% load utility %}
+
 {% for topic in topics %}
-	<div class="{% cycle 'odd' 'even' as rowtype %}">
-	<div class="grid_4 ">
-		<div id="topic-{{ topic.id }}-title" class="editable topic-title">{{ topic.title }}</div>
-		<div id="topic-{{ topic.id }}" class="editable topic-body topic-body">{{ topic.body }}</div>
-	</div>
-    <div id="topic-{{ topic.id }}-standard-{{ 1 }}" class="editable topic-standard grid_2 {{ rowtype }}">{{ topic.standard1 }}</div>
-    <div id="topic-{{ topic.id }}-standard-{{ 2 }}" class="editable topic-standard grid_2 {{ rowtype }}">{{ topic.standard2 }}</div>
-    <div id="topic-{{ topic.id }}-standard-{{ 3 }}" class="editable topic-standard grid_2 {{ rowtype }}">{{ topic.standard3 }}</div>
-    <div id="topic-{{ topic.id }}-standard-{{ 4 }}" class="editable topic-standard grid_2 {{ rowtype }}">{{ topic.standard4 }}</div>
-    <div id="topic-{{ topic.id }}-standard-{{ 5 }}" class="editable topic-standard grid_2 {{ rowtype }}">{{ topic.standard5 }}</div>
-    <div class="grid_2 {{ rowtype }}"><a href="/projects/{{ project.id }}/topics/{{ topic.id }}">Plan</a></div>
-    <div class="clearfix"></div>
+<div class="{% cycle 'odd' 'even' as rowtype %} item">
+    <div class="grid_{{ grid_topic }}">
+        <div id="topic-{{ topic.id }}-title" class="editable topic-title">{{ topic.title }}</div>
+        <div id="topic-{{ topic.id }}" class="editable topic-body topic-body">{{ topic.body }}</div>
     </div>
+    {% for i, name in standard_index %}
+    <div id="topic-{{ topic.id }}-standard-{{ i }}" class="editable topic-standard grid_{{ grid }} {{ rowtype }}">{{ topic|get_attr:name }}</div>
+    {% endfor %}
+    <div class="grid_{{ grid_plan }} {{ rowtype }} plan">
+        <form class="plans-map">
+            {% for plan in plans %}
+            <div class="week">
+                <label for="topic-{{ topic.id }}-plan-{{ plan.id }}">{{ plan.week }}</label>
+                <input type="checkbox" id="topic-{{ topic.id }}-plan-{{ plan.id }}" name="topic-{{ topic.id }}-plan-{{ plan.id }}" />
+            </div>
+            {% endfor %}
+        </form>
+    </div>
+    <div class="clearfix"></div>
+</div>
 {% endfor %}

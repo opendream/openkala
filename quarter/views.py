@@ -22,22 +22,6 @@ def project_page(request):
     return render_to_response('project.html', c)
 
 def project_list(request):
-#    if request.method == 'GET':
-#        results = [
-#            {
-#                'id': 1,
-#                'name': 'project-1<b>xxx</b><br/>hi<br/>xxxxxxxxxxxxxxxxxxxx<br/>yyyyyyyyyyy',
-#                'grade': 6,
-#                'quarter': 1,
-#                'year': 2554
-#            }
-#        ]
-#    elif request.method == 'POST':
-#        print "post"
-#        print request.raw_post_data
-#        project = json.loads(request.raw_post_data)
-#        results = project
-#    return HttpResponse(json.dumps(results), content_type="application/json")
     try:
         projects = Project.objects.all()
     except project.DoesNotExist:
@@ -56,16 +40,28 @@ def project_overview(request, project_id):
     except project.DoesNotExist:
         raise Http404
 
-    topics = Topic.objects.filter(project=project).order_by('title')
-    n_blank_topics = 10 - topics.count()
+    topics = Topic.objects.filter(project=project).order_by('id')
+    plans = Plan.objects.filter(project=project).order_by('week')
 
-    variables = {
-        'project': project, 
-        'topics': topics, 
-        'range': range(n_blank_topics)
-    }
+    print plans
 
-    return render_to_response('project_overview.html', variables, context_instance=RequestContext(request))
+    standard_header = []
+    standard_index = []
+    for i in range(5):
+        sh = getattr(project, 'standard_header' + str(i + 1))
+        if sh: 
+            standard_header.append(sh)
+            standard_index.append((i + 1, 'standard' + str(i + 1)))
+
+    standard_header_length = len(standard_header)
+    
+    # calculate grid class
+    grid = 12/standard_header_length
+    grid_sum = grid * standard_header_length
+    grid_topic = (12 % standard_header_length) + 3
+    grid_plan = 1
+
+    return render_to_response('project_overview.html', locals(), context_instance=RequestContext(request))
 
 def topic_overview(request, project_id, topic_id):
     try:
@@ -86,7 +82,7 @@ def topic_overview(request, project_id, topic_id):
 
     return render_to_response('topic_overview.html', variables, context_instance=RequestContext(request))
 
-def plan_overview(request, project_id, topic_id, plan_id):
+def plan_overview(request, project_id, week):
     try:
         plan = Plan.objects.get(id=plan_id)
     except topic.DoesNotExist:

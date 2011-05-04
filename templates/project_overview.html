@@ -30,18 +30,19 @@
 {% block title %}Project: {{ project.name }}{% endblock %}
 
 {% block header %}
-<h1>Project: <span>{{ project.name }}<span></h1>{% endblock %}
+<h1>โครงงาน <span>{{ project.name }}<span></h1>{% endblock %}
 
 {% block content %}
 <div id="content">
     <div class="thead">
-        <div class="grid_4">Topics</div>
-        <div class="grid_2">{{ project.standard_header1 }}</div>
-        <div class="grid_2">{{ project.standard_header2 }}</div>
-        <div class="grid_2">{{ project.standard_header3 }}</div>
-        <div class="grid_2">{{ project.standard_header4 }}</div>
-        <div class="grid_2">{{ project.standard_header5 }}</div>
-        <div class="grid_2">Plan</div>
+        <div class="grid_{{ grid_topic }} header_1" style="height: 50px">สาระการเรียนรู้</div>
+        <div class="left">
+            <div class="header_2">มาตรฐานการเรียนรู้และตัวชี้วัด</div>
+            {% for header in standard_header %}
+            <div class="grid_{{ grid }} header_2">{{ header.title }}</div>
+            {% endfor %}
+        </div>
+        <div class="grid_{{ grid_plan }} header_1">แผน</div>
         <div class="clearfix"></div>
     </div>
     <div class="tbody">

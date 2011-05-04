@@ -142,13 +142,15 @@ class ProjectHandler(ApiHandler):
             for i in range(10):
                 request = RequestBlank()
                 request.POST = {'project': inst.id, 'week': str(i+1)}
-                PlanHandler.create(PlanHandler(), request)
+                plan_handler = PlanHandler()
+                plan_handler.create(request)
 
             # Create default topics
             for i in range(10):
                 request = RequestBlank()
                 request.POST = {'project': inst.id, 'title': str(i+1) + '. topic'}
-                TopicHandler.create(TopicHandler(), request)
+                topic_handler = TopicHandler()
+                topic_handler.create(request)
 
             return inst
         except self.model.MultipleObjectsReturned:

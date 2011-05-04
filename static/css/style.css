@@ -57,3 +57,11 @@
 .tbody .item .plan {
   text-align: center;
 }
+
+.GENTICS_editable_highlight {
+	outline: #FFE767 solid 2px !important;
+}
+
+.GENTICS_block.core-standard.core-standard-selected {
+  background: yellow !important;
+}

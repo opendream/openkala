@@ -3,11 +3,11 @@
 {% for topic in topics %}
 <div class="{% cycle 'odd' 'even' as rowtype %} item">
     <div class="grid_{{ grid_topic }}">
-        <div id="topic-{{ topic.id }}-title" class="editable topic-title">{{ topic.title }}</div>
-        <div id="topic-{{ topic.id }}" class="editable topic-body topic-body">{{ topic.body }}</div>
+        <div id="topic-{{ topic.id }}-title" class="editable topic-{{ topic.id }}">{{ topic.title }}</div>
+        <div id="topic-{{ topic.id }}-body" class="editable topic-{{ topic.id }}">{{ topic.body }}</div>
     </div>
     {% for i, name in standard_index %}
-    <div id="topic-{{ topic.id }}-standard-{{ i }}" class="editable topic-standard grid_{{ grid }} {{ rowtype }}">{{ topic|get_attr:name }}</div>
+    <div id="topic-{{ topic.id }}-standard-{{ i }}" class="editable topic-standard grid_{{ grid }} {{ rowtype }}">{{ topic|get_attr:name|safe }}</div>
     {% endfor %}
     <div class="grid_{{ grid_plan }} {{ rowtype }} plan">
         <form class="plans-map">

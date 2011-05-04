@@ -1,6 +1,14 @@
 from django.contrib import admin
 from django.db import models
 
+class CoreStandard(models.Model):
+    code = models.CharField(max_length=6)
+    group_code = models.CharField(max_length=1)
+    description = models.TextField()
+
+    def __unicode__(self):
+        return self.code
+
 class StandardHeader(models.Model):
     title  = models.CharField(max_length=255, null=True, blank=True)
 

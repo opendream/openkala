@@ -8,7 +8,10 @@
     <script type="text/javascript" src="{{ STATIC_URL }}aloha/plugins/com.gentics.aloha.plugins.Table/plugin.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}aloha/plugins/com.gentics.aloha.plugins.List/plugin.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}aloha/plugins/com.gentics.aloha.plugins.HighlightEditables/plugin.js"></script> 
+    <script type="text/javascript" src="{{ STATIC_URL }}aloha/plugins/com.gentics.aloha.plugins.Link/plugin.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}openkala/CoreStandard.js"></script>
     
+        
     <link rel="stylesheet" type="text/css"
         href="{{ STATIC_URL }}extjs/resources/css/ext-sandbox.css"/>
     <link rel="stylesheet" type="text/css"
@@ -51,9 +54,7 @@ function getCookie(name) {
     </div>
     
     <div id="header-wrapper">
-        <div class="grid_16">
-            {% block header %}{% endblock %}
-        </div>
+        {% block header %}{% endblock %}
     </div>
     
     <div id="content-wrapper" style="min-height:30em">

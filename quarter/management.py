@@ -8,6 +8,24 @@ def after_syncdb(sender, **kwargs):
     """
     THIS IS DUMMY CONTENT CODE
     """
+    # Core Standard
+    corev1, created = CoreStandard.objects.get_or_create(
+        code='ว 1.1',
+        group_code = 'ว',
+        description="เข้าใจหน่วยพื้นฐานของสิ่งมีชีวิต ความสัมพันธ์ของโครงสร้าง และหน้าที่ของระบบต่างๆ ของสิ่งมีชีวิตที่ทำงานสัมพันธ์กัน มีกระบวนการสืบเสาะหาความรู้")
+    corev2, created = CoreStandard.objects.get_or_create(
+        code='ว 1.2',
+        group_code = 'ว',
+        description="เข้าใจกระบวนการและความสำคัญของการถ่ายทอดลักษณะทางพันธุกรรม วิวัฒนาการของสิ่งมีชีวิต ความหลากหลายทางชีวภาพ")
+    cores1, created = CoreStandard.objects.get_or_create(
+        code='ส 1.1',
+        group_code = 'ส',
+        description="รู้และเข้าใจประวัติ ความสำคัญ ศาสดา หลักธรรมของพระพุทธศาสนาหรือศาสนาที่ตนนับถือและศาสนาอื่น")
+    cores2, created = CoreStandard.objects.get_or_create(
+        code='ส 1.2',
+        group_code = 'ส',
+        description="เข้าใจ ตระหนัก และปฏิบัติตนเป็นศาสนิกชนที่ดี และธำรงรักษาพระพุทธศาสนาหรือศาสนาที่ตนนับถือ")
+    
 
     # StandardHeader
     standard_header1, created = StandardHeader.objects.get_or_create(title='วิทยาศาสตร์')

@@ -43,8 +43,6 @@ def project_overview(request, project_id):
     topics = Topic.objects.filter(project=project).order_by('id')
     plans = Plan.objects.filter(project=project).order_by('week')
 
-    print plans
-
     standard_header = []
     standard_index = []
     for i in range(5):
@@ -55,6 +53,7 @@ def project_overview(request, project_id):
 
     standard_header_length = len(standard_header)
     
+    coreStandards = CoreStandard.objects.all().order_by('code')
     # calculate grid class
     grid = 12/standard_header_length
     grid_sum = grid * standard_header_length

@@ -18,6 +18,21 @@ def urlencoded(raw):
 
 Mimer.register(urlencoded, ('application/x-www-form-urlencoded; charset=UTF-8',))
 
+class ProjectPlanHandler(BaseHandler):
+    allowed_methods = ('GET')
+    model = Plan
+    fields = ['id', 'week', 'goal', 'activity', 'key_thinking', 'sub_topic', 'performance']
+    def read(self, request, project_id, week_id):
+        obj = Plan.objects.get(project__id=project_id, week=week_id)
+        return obj
+
+class ProjectTaskHandler(BaseHandler):
+    allowed_methods = ('GET')
+    model = Task
+    fields = ['id', 'day', 'activity', 'source', 'work', 'assessment']
+    def read(self, request, project_id, week_id):
+        return Task.objects.filter(plan__week=week_id, plan__project__id=project_id)
+
 class ApiHandler(BaseHandler):
     allowed_methods = ('GET', 'PUT', 'DELETE', 'POST')
 
@@ -117,8 +132,8 @@ class TaskHandler(ApiHandler):
 
 class PlanHandler(ApiHandler):
     model = Plan
-    fields = [(field.name) for field in model._meta.fields]
-
+    fields = ['week', 'topic', 'goal', 'activity', 'key_thingking', 'sub_topic', 'performance']
+    
 class TopicHandler(ApiHandler):
     model = Topic
     fields = [(field.name) for field in model._meta.fields]

@@ -7,10 +7,15 @@ project_handler = Resource(ProjectHandler)
 topic_handler   = Resource(TopicHandler)
 plan_handler    = Resource(PlanHandler)
 task_handler    = Resource(TaskHandler)
+project_plan_handler = Resource(ProjectPlanHandler)
+project_task_handler = Resource(ProjectTaskHandler)
 
 urlpatterns = patterns('',
    url(r'^projects/(?P<id>[^/]+)$', project_handler, { 'emitter_format': 'json' }),
    url(r'^projects$', project_handler, { 'emitter_format': 'json' }),
+   url(r'^projects/$', project_handler, { 'emitter_format': 'json' }),
+   url(r'^projects/(?P<project_id>[^/]+)/plans/(?P<week_id>[^/]+)$', project_plan_handler, { 'emitter_format': 'json' }),
+   url(r'^projects/(?P<project_id>[^/]+)/tasks/(?P<week_id>[^/]+)$', project_task_handler, { 'emitter_format': 'json' }),
 
    url(r'^topics/(?P<id>[^/]+)$', topic_handler, { 'emitter_format': 'json' }),
    url(r'^topics$', topic_handler, { 'emitter_format': 'json' }),

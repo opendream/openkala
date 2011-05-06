@@ -1,13 +1,22 @@
 from piston.handler import BaseHandler
-from piston.utils import rc
+from piston.utils import rc, Mimer
 
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.db import models
 
 import simplejson as json
+import urllib
 
 from quarter.models import *
+
+#Mimer.register(json.loads, ('application/json; charset=UTF-8',))
+
+def urlencoded(raw):
+    print raw 
+    return dict([urllib.unquote_plus(part).split('=') for part in raw.split('&')])
+
+Mimer.register(urlencoded, ('application/x-www-form-urlencoded; charset=UTF-8',))
 
 class ApiHandler(BaseHandler):
     allowed_methods = ('GET', 'PUT', 'DELETE', 'POST')
@@ -36,13 +45,11 @@ class ApiHandler(BaseHandler):
         return fd
     
     def create(self, request, *args, **kwargs):
-        if not self.has_model():
-            return rc.NOT_IMPLEMENTED
-
-        attrs = self.flatten_dict(request.POST)
+        attrs = self.flatten_dict(request.data)
+        pkfield = self.model._meta.pk.name
         
         try:
-            inst = self.model.objects.get(**attrs)
+            inst = self.model.objects.get(pk=attrs.get(pkfield))
             self.update(request, args, kwargs)
             return inst
         except self.model.DoesNotExist:
@@ -53,18 +60,14 @@ class ApiHandler(BaseHandler):
             return rc.DUPLICATE_ENTRY
 
     def update(self, request, *args, **kwargs):
-        if not self.has_model():
-            return rc.NOT_IMPLEMENTED
-
+        attrs = self.flatten_dict(request.data)
         pkfield = self.model._meta.pk.name
 
         try:
-            inst = self.model.objects.get(pk=kwargs.get(pkfield))
+            inst = self.model.objects.get(pk=attrs.get(pkfield))
         except self.model.DoesNotExist:
             return rc.NOT_FOUND
         
-        attrs = self.flatten_dict(request.POST)
-
         for k,v in attrs.iteritems():
             setattr( inst, k, v )
 
@@ -119,6 +122,7 @@ class PlanHandler(ApiHandler):
 class TopicHandler(ApiHandler):
     model = Topic
     fields = [(field.name) for field in model._meta.fields]
+    fields.append('csrfmiddlewaretoken')
 
 class ProjectHandler(ApiHandler):
     model = Project

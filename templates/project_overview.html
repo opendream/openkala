@@ -5,14 +5,30 @@
     Ext.onReady(function() {
       function saveEditable() {
           if (GENTICS.Aloha.isModified()) {
-              objID = GENTICS.Aloha.getActiveEditable().getId().split('-')[1];
-              attrs = [];
-              $(".topic-"+objID).each(function (i, item) {
-                st = {};
-                st['standard' + (i+1)] = $(this).html();
-                attrs.push(st);
+              var dom    = GENTICS.Aloha.getActiveEditable().obj;
+              var code   = GENTICS.Aloha.getActiveEditable().getId().split('-');
+
+              var model  = code[0], id = code[1], field  = code[2];
+              var attr   = {};
+
+              attr['id'] = id;
+              attr[field] = dom.html();
+
+              $.ajax({
+                  'url': '/api/' + model.toLowerCase() + 's',
+                  'type': 'POST',
+                  'dataType': 'json',
+                  'data': (attr),
+                  'beforeSend' : function(xhr) {
+                       xhr.setRequestHeader('X-CSRFToken', getCookie('csrftoken'));
+                       //xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+                       //xhr.setRequestHeader('Content-Type', 'text/xml');
+                  },
+                  'success': function (msg) {
+                      //pass
+                  }
               });
-              console.log(attrs);
+
           };
       }
 
@@ -46,13 +62,13 @@
 </script>
 {% endblock %}
 
-{% block title %}Project: {{ project.name }}{% endblock %}
+{% block title %}โครงงาน : {{ project.name }}{% endblock %}
 
 {% block header %}
-<div class="grid_16"><h1>Project: <span class="editable">{{ project.name }}</span></h1></div>
-<div class="grid_3"><p>Grade : <span class="editable">{{ project.grade }}</span></p></div>
-<div class="grid_3"><p>Year : <span class="editable">{{ project.year }}</span></p></div>
-<div class="grid_3"><p>Quarter : <span class="editable">{{ project.quarter }}</span></p></div>
+<div class="grid_16"><h1>โครงงาน : <span class="editable">{{ project.name }}</span></h1></div>
+<div class="grid_3"><p>ชั้นมัธยทศึกษาปีที่ : <span class="editable">{{ project.grade }}</span></p></div>
+<div class="grid_3"><p>ปีการศึกษา : <span class="editable">{{ project.year }}</span></p></div>
+<div class="grid_3"><p>ภาคเรียน : <span class="editable">{{ project.quarter }}</span></p></div>
 <div class="clearfix" />
 {% endblock %}
 
@@ -63,7 +79,7 @@
         <div class="left">
             <div class="header_2">มาตรฐานการเรียนรู้และตัวชี้วัด</div>
             {% for header in standard_header %}
-            <div class="grid_{{ grid }} header_2">{{ header.title }}</div>
+            <div class="grid_{{ grid }} header_2">{{ header.title|safe }}</div>
             {% endfor %}
         </div>
         <div class="grid_{{ grid_plan }} header_1">แผน</div>

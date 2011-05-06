@@ -10,6 +10,7 @@ admin.autodiscover()
 urlpatterns = patterns('',
     url(r'^test/', 'quarter.views.test'),
     url(r'^post', 'quarter.views.postMSG'),
+    url(r'^oldproject', 'quarter.views.project_page'),
 
     url(r'^api/', include('api.urls')),
 

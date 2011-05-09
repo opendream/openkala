@@ -13,7 +13,6 @@ from quarter.models import *
 #Mimer.register(json.loads, ('application/json; charset=UTF-8',))
 
 def urlencoded(raw):
-    print raw 
     return dict([urllib.unquote_plus(part).split('=') for part in raw.split('&')])
 
 Mimer.register(urlencoded, ('application/x-www-form-urlencoded; charset=UTF-8',))
@@ -48,7 +47,11 @@ class ApiHandler(BaseHandler):
                         fd[k] = int(dct.get(k))
                     elif typ == models.ForeignKey:
                         parent_model = self.model._meta.get_field(k).related.parent_model
-                        fd[k] = parent_model.objects.get(pk=int(dct.get(k)))
+                        pk = int(dct.get(k))
+                        if pk:
+                            fd[k] = parent_model.objects.get(pk=pk)
+                        else:
+                            fd[k] = None
                     else:
                       fd[k] = dct.get(k)
 
@@ -63,9 +66,14 @@ class ApiHandler(BaseHandler):
         attrs = self.flatten_dict(request.data)
         pkfield = self.model._meta.pk.name
         
+        print attrs
         try:
-            inst = self.model.objects.get(pk=attrs.get(pkfield))
-            self.update(request, args, kwargs)
+            if attrs.get(pkfield):
+                inst = self.model.objects.get(pk=attrs.get(pkfield))
+            else:
+                inst = self.model.objects.get(**attrs)
+
+            inst = self.update(request, args, kwargs)
             return inst
         except self.model.DoesNotExist:
             inst = self.model(**attrs)
@@ -79,7 +87,10 @@ class ApiHandler(BaseHandler):
         pkfield = self.model._meta.pk.name
 
         try:
-            inst = self.model.objects.get(pk=attrs.get(pkfield))
+            if attrs.get(pkfield):
+                inst = self.model.objects.get(pk=attrs.get(pkfield))
+            else:
+                inst = self.model.objects.get(**attrs)
         except self.model.DoesNotExist:
             return rc.NOT_FOUND
         
@@ -87,7 +98,7 @@ class ApiHandler(BaseHandler):
             setattr( inst, k, v )
 
         inst.save()
-        return rc.ALL_OK
+        return inst
     
     def read(self, request, *args, **kwargs):
         if not self.has_model():
@@ -130,14 +141,73 @@ class TaskHandler(ApiHandler):
     model = Task
     fields = [(field.name) for field in model._meta.fields]
 
+    def create(self, request, *args, **kwargs):
+        attrs = self.flatten_dict(request.data)
+        pkfield = self.model._meta.pk.name
+        
+        try:
+            inst = self.model.objects.get(plan=attrs['plan'], day=attrs['day'])
+
+            inst = self.update(request, args, kwargs)
+            return inst
+        except self.model.DoesNotExist:
+            inst = self.model(**attrs)
+            inst.save()
+            return inst
+        except self.model.MultipleObjectsReturned:
+            return rc.DUPLICATE_ENTRY
+
+    def update(self, request, *args, **kwargs):
+        attrs = self.flatten_dict(request.data)
+
+        try:
+            inst = self.model.objects.get(plan=attrs['plan'], day=attrs['day'])
+        except self.model.DoesNotExist:
+            return rc.NOT_FOUND
+        
+        for k,v in attrs.iteritems():
+            setattr( inst, k, v )
+
+        inst.save()
+        return inst
+
 class PlanHandler(ApiHandler):
     model = Plan
     fields = ['week', 'topic', 'goal', 'activity', 'key_thingking', 'sub_topic', 'performance']
+
+    def create(self, request, *args, **kwargs):
+        attrs = self.flatten_dict(request.data)
+        pkfield = self.model._meta.pk.name
+        
+        try:
+            inst = self.model.objects.get(project=attrs['project'], week=attrs['week'])
+            inst = self.update(request, args, kwargs)
+            return inst
+        except self.model.DoesNotExist:
+            inst = self.model(**attrs)
+            inst.save()
+            return inst
+        except self.model.MultipleObjectsReturned:
+            return rc.DUPLICATE_ENTRY
+
+    def update(self, request, *args, **kwargs):
+        attrs = self.flatten_dict(request.data)
+
+        try:
+            inst = self.model.objects.get(project=attrs['project'], week=attrs['week'])
+        except self.model.DoesNotExist:
+            return rc.NOT_FOUND
+        
+        for k,v in attrs.iteritems():
+            setattr( inst, k, v )
+
+        inst.save()
+        return inst
     
 class TopicHandler(ApiHandler):
     model = Topic
     fields = [(field.name) for field in model._meta.fields]
-    fields.append('csrfmiddlewaretoken')
+
 
 class ProjectHandler(ApiHandler):
     model = Project

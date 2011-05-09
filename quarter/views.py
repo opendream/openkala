@@ -62,24 +62,8 @@ def project_overview(request, project_id):
     grid_plan = 1
 
     weeks = range(1, 11)
-    days = [{
-            'display': 'จันทร์',
-            'day': 1
-        },{
-            'display': 'อังคาร',
-            'day': 2
-        },{
-            'display': 'พุธ',
-            'day': 3
-        },{
-            'display': 'พฤหัสบดี',
-            'day': 4
-        },{
-            'display': 'ศุกร์',
-            'day': 5
-        }
+    days = Task().DAY_CHOICES 
 
-    ]
     return render_to_response('project_overview.html', locals(), context_instance=RequestContext(request))
 
 def topic_overview(request, project_id, topic_id):

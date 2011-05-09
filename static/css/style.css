@@ -65,3 +65,6 @@
 .GENTICS_block.core-standard.core-standard-selected {
   background: yellow !important;
 }
+.editable {
+  min-height: 20px;
+}

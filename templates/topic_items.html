@@ -1,5 +1,20 @@
 {% load utility %}
 
+{% block script %}
+<script type="text/javascript" charset="utf-8">
+    $(document).ready(function () {
+        $('.week-map').click(function (e) {
+            if ($(this).attr('checked')) {
+                saveEditable($(this), $(this).val());
+            }
+            else {
+                saveEditable($(this), false);
+            }
+        });
+    });
+</script>
+{% endblock %}
+
 {% for topic in topics %}
 <div class="{% cycle 'odd' 'even' as rowtype %} item">
     <div class="grid_{{ grid_topic }}">
@@ -14,7 +29,7 @@
             {% for plan in plans %}
             <div class="week">
                 <label for="Topic-{{ topic.id }}-plan-{{ plan.id }}">{{ plan.week }}</label>
-                <input type="checkbox" id="Topic-{{ topic.id }}-plan-{{ plan.id }}" name="topic-{{ topic.id }}-plan-{{ plan.id }}" />
+                  <input type="checkbox" {% ifequal plan.topic.id topic.id %}checked="true" {% endifequal %}class="week-map" id="Plan-{{ plan.id }}-topic-{{ topic.id }}" name="Plan-{{ plan.id }}-topic-{{ topic.id }}" value="{{ topic.id }}" />
             </div>
             {% endfor %}
         </form>

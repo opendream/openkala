@@ -1,3 +1,4 @@
+# -*- coding: utf8 -*-
 from django.contrib import admin
 from django.db import models
 
@@ -62,13 +63,11 @@ class Plan(models.Model):
 
 class Task(models.Model):
     DAY_CHOICES = (
-        (0, 'Sun'),
-        (1, 'Mon'),
-        (2, 'Tue'),
-        (3, 'Wed'),
-        (4, 'Thu'),
-        (5, 'Fri'),
-        (6, 'Sat'),
+        (1, 'จันทร์'),
+        (2, 'อังคาร'),
+        (3, 'พุธ'),
+        (4, 'พฤหัสบดี'),
+        (5, 'ศุกร์'),
     )
 
     day        = models.IntegerField(choices=DAY_CHOICES, null=True, blank=True)

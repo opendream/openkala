@@ -4,35 +4,103 @@
 <script type="text/javascript" src="{{ STATIC_URL }}openkala/plan.js"></script>
 
 <script type="text/javascript" charset="utf-8">
+    var project_id = {{ project.id }};
+
+    function saveEditableHelper(arg1, arg2, jqobj, val) {
+        if (jqobj || GENTICS.Aloha.isModified()) {
+            if (jqobj) {
+                var dom    = jqobj;
+                var code   = jqobj.attr('id').split('-');
+            }
+            else {
+                var dom    = GENTICS.Aloha.getActiveEditable().obj;
+                var code   = GENTICS.Aloha.getActiveEditable().getId().split('-');
+            }
+
+            if (code[0] == 'Plan') {
+                var model  = code[0], field = code[1], week = $('#week_options').val();
+                var attr   = {};
+
+                attr['week'] = week;
+                attr['project'] = project_id;
+                attr[field] = dom.html();
+
+                $.ajax({
+                    'url': '/api/' + model.toLowerCase() + 's',
+                    'type': 'POST',
+                    'dataType': 'json',
+                    'data': (attr),
+                    'beforeSend' : function(xhr) {
+                        xhr.setRequestHeader('X-CSRFToken', getCookie('csrftoken'));
+                    },
+                    'success': function (data) {
+                        $.each(data, function (field_name, val) {
+                            $('#' + model + '-' + field_name).html(val);
+                        });
+                        $('input#current-plan-id').val(data['id']);
+                    }
+                });
+            }
+            else if (code[0] == 'Task') {
+                var model  = code[0], day = code[1], field  = code[2], week = $('#week_options').val();
+                var attr   = {};
+
+                attr['day'] = day;
+                attr['plan'] = $('input#current-plan-id').val();
+                attr[field] = dom.html();
+
+                console.log(attr);
+
+                $.ajax({
+                    'url': '/api/' + model.toLowerCase() + 's',
+                    'type': 'POST',
+                    'dataType': 'json',
+                    'data': (attr),
+                    'beforeSend' : function(xhr) {
+                        xhr.setRequestHeader('X-CSRFToken', getCookie('csrftoken'));
+                    },
+                    'success': function (data) {
+                        $.each(data, function (field_name, val) {
+                            $('#' + model + '-' + day + '-' + field_name).html(val);
+                        });
+                    }
+                });
+            }
+            else {
+                var model  = code[0], id = code[1], field  = code[2];
+                var attr   = {};
+
+                attr['id'] = id;
+
+                attr[field] = val? val: dom.html();
+                if (val === false) {
+                    attr[field] = 0;
+                }
+
+                $.ajax({
+                    'url': '/api/' + model.toLowerCase() + 's',
+                    'type': 'POST',
+                    'dataType': 'json',
+                    'data': (attr),
+                    'beforeSend' : function(xhr) {
+                        xhr.setRequestHeader('X-CSRFToken', getCookie('csrftoken'));
+                    },
+                    'success': function (data) {
+                        $.each(data, function (field_name, val) {
+                            $('#' + model + '-' + id + '-' + field_name).html(val);
+                        });
+                    }
+                });
+            }
+
+        };
+    }
+
+    function saveEditable(jqobj, val) {
+        saveEditableHelper(null, null, jqobj, val);
+    }
+
     Ext.onReady(function() {
-      function saveEditable() {
-          if (GENTICS.Aloha.isModified()) {
-              var dom    = GENTICS.Aloha.getActiveEditable().obj;
-              var code   = GENTICS.Aloha.getActiveEditable().getId().split('-');
-
-              var model  = code[0], id = code[1], field  = code[2];
-              var attr   = {};
-
-              attr['id'] = id;
-              attr[field] = dom.html();
-
-              $.ajax({
-                  'url': '/api/' + model.toLowerCase() + 's',
-                  'type': 'POST',
-                  'dataType': 'json',
-                  'data': (attr),
-                  'beforeSend' : function(xhr) {
-                       xhr.setRequestHeader('X-CSRFToken', getCookie('csrftoken'));
-                       //xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-                       //xhr.setRequestHeader('Content-Type', 'text/xml');
-                  },
-                  'success': function (msg) {
-                      //pass
-                  }
-              });
-
-          };
-      }
 
       repositories.CoreStandard.settings.data = [
       {% for std in coreStandards %}
@@ -59,7 +127,7 @@
         };
       $('.editable').aloha();
       
-      GENTICS.Aloha.EventRegistry.subscribe(GENTICS.Aloha, "editableDeactivated", saveEditable);
+      GENTICS.Aloha.EventRegistry.subscribe(GENTICS.Aloha, "editableDeactivated", saveEditableHelper);
 
       $('.menu').tabify();
 
@@ -75,14 +143,16 @@
 {% block title %}โครงงาน : {{ project.name }}{% endblock %}
 
 {% block header %}
-<div class="grid_16"><h1>โครงงาน : <span class="editable">{{ project.name }}</span></h1></div>
-<div class="grid_3"><p>ชั้นมัธยทศึกษาปีที่ : <span class="editable">{{ project.grade }}</span></p></div>
-<div class="grid_3"><p>ปีการศึกษา : <span class="editable">{{ project.year }}</span></p></div>
-<div class="grid_3"><p>ภาคเรียน : <span class="editable">{{ project.quarter }}</span></p></div>
+<div class="grid_16"><h1>โครงงาน : <span id="Project-{{ project.id }}-name" class="editable">{{ project.name }}</span></h1></div>
+<div class="grid_3"><p>ชั้นมัธยทศึกษาปีที่ : <span id="Project-{{ project.id }}-grade" class="editable">{{ project.grade }}</span></p></div>
+<div class="grid_3"><p>ปีการศึกษา : <span id="Project-{{ project.id }}-year" class="editable">{{ project.year }}</span></p></div>
+<div class="grid_3"><p>ภาคเรียน : <span id="Project-{{ project.id }}-quarter" class="editable">{{ project.quarter }}</span></p></div>
 <div class="clearfix" />
 {% endblock %}
 
 {% block content %}
+
+{{ oooo}}
 
 <ul id="menu" class="menu">
   <li class="active"><a href="#content">สาระ</a></li>
@@ -116,6 +186,7 @@
             </select>
         </div>
     </div>
+    <input id='current-plan-id' type="hidden" value=""/>
     <div class="thead">
         <div class="grid_3">เป้าหมายหลัก</div>
         <div class="grid_3">เนื้อหากิจกรรม/ชิ้นงาน</div>
@@ -126,32 +197,32 @@
     </div>
     <div class="tbody">
         <div class="item odd">
-          <div id="goal" class="grid_3 editable">-</div>
-          <div id="activity" class="grid_3 editable">-</div>
-          <div id="sub_topic" class="grid_3 editable">-</div>
-          <div id="key_thinking" class="grid_3 editable">-</div>
-          <div id="performance" class="grid_3 editable">-</div>
+          <div id="Plan-goal" class="grid_3 editable">-</div>
+          <div id="Plan-activity" class="grid_3 editable">-</div>
+          <div id="Plan-sub_topic" class="grid_3 editable">-</div>
+          <div id="Plan-key_thinking" class="grid_3 editable">-</div>
+          <div id="Plan-performance" class="grid_3 editable">-</div>
           <div class="clearfix"></div>
         </div>
     </div>
     <br/>
     <hr/>
     <div class="thead">
-        <div class="grid_2">Day</div>
-        <div class="grid_5">Activity</div>
-        <div class="grid_3">Source</div>
-        <div class="grid_3">Work</div>
-        <div class="grid_3">Assessment</div>
+        <div class="grid_2">วัน<br />Day</div>
+        <div class="grid_5">กิจกรรมการเรียนรู้<br />Activities</div>
+        <div class="grid_3">สื่อ/แหล่งเรียนรู้<br />Sources</div>
+        <div class="grid_3">ชิ้นงาน<br />Work</div>
+        <div class="grid_3">การประเมิณ<br />Assessment</div>
         <div class="clearfix"></div>
     </div>
     <div class="tbody">
-        {% for d in days %}
+        {% for day, display in days %}
         <div class="item {% cycle 'odd' 'even' as rowtype %}">
-            <div class="grid_2">{{ d.display }}์</div>
-            <div id="activity-{{ d.day }}" class="grid_5 editable"></div>
-            <div id="source-{{ d.day }}" class="grid_3 editable"></div>
-            <div id="work-{{ d.day }}" class="grid_3 editable"></div>
-            <div id="assessment-{{ d.day }}" class="grid_3 editable"></div>
+            <div class="grid_2">{{ display }}์</div>
+            <div id="Task-{{ day }}-activity" class="grid_5 editable"></div>
+            <div id="Task-{{ day }}-source" class="grid_3 editable"></div>
+            <div id="Task-{{ day }}-work" class="grid_3 editable"></div>
+            <div id="Task-{{ day }}-assessment" class="grid_3 editable"></div>
             <div class="clearfix"></div>
         </div>
         {% endfor %}

@@ -50,11 +50,16 @@ class Topic(models.Model):
 
 class Plan(models.Model):
     week         = models.IntegerField()
+    # optional
+    main_point   = models.TextField(null=True, blank=True)
     goal         = models.TextField(null=True, blank=True)
     activity     = models.TextField(null=True, blank=True)
+    # must be have
     sub_topic    = models.TextField(null=True, blank=True)
     key_thinking = models.TextField(null=True, blank=True)
     performance  = models.TextField(null=True, blank=True)
+    assessment = models.TextField(null=True, blank=True)
+    # relation
     project      = models.ForeignKey(Project)
     topic        = models.ForeignKey(Topic, null=True, blank=True)
 
@@ -75,7 +80,6 @@ class Task(models.Model):
     activity   = models.TextField(null=True, blank=True)
     source     = models.TextField(null=True, blank=True)
     work       = models.TextField(null=True, blank=True)
-    assessment = models.TextField(null=True, blank=True)
     plan       = models.ForeignKey(Plan)
 
     def __unicode__(self):

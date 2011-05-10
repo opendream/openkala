@@ -10,8 +10,6 @@ import urllib
 
 from quarter.models import *
 
-#Mimer.register(json.loads, ('application/json; charset=UTF-8',))
-
 def urlencoded(raw):
     return dict([urllib.unquote_plus(part).split('=') for part in raw.split('&')])
 
@@ -20,7 +18,7 @@ Mimer.register(urlencoded, ('application/x-www-form-urlencoded; charset=UTF-8',)
 class ProjectPlanHandler(BaseHandler):
     allowed_methods = ('GET')
     model = Plan
-    fields = ['id', 'week', 'goal', 'activity', 'key_thinking', 'sub_topic', 'performance']
+    fields = ['id', 'week', 'main_point', 'goal', 'activity', 'key_thinking', 'sub_topic', 'performance', 'assessment']
     def read(self, request, project_id, week_id):
         obj = Plan.objects.get(project__id=project_id, week=week_id)
         return obj
@@ -28,7 +26,7 @@ class ProjectPlanHandler(BaseHandler):
 class ProjectTaskHandler(BaseHandler):
     allowed_methods = ('GET')
     model = Task
-    fields = ['id', 'day', 'activity', 'source', 'work', 'assessment']
+    fields = ['id', 'day', 'activity', 'source', 'work']
     def read(self, request, project_id, week_id):
         return Task.objects.filter(plan__week=week_id, plan__project__id=project_id)
 
@@ -63,10 +61,12 @@ class ApiHandler(BaseHandler):
         return fd
     
     def create(self, request, *args, **kwargs):
+        if not hasattr(request, 'data'): 
+            request.data = urlencoded(request.raw_post_data)
+
         attrs = self.flatten_dict(request.data)
         pkfield = self.model._meta.pk.name
         
-        print attrs
         try:
             if attrs.get(pkfield):
                 inst = self.model.objects.get(pk=attrs.get(pkfield))
@@ -83,6 +83,9 @@ class ApiHandler(BaseHandler):
             return rc.DUPLICATE_ENTRY
 
     def update(self, request, *args, **kwargs):
+        if not hasattr(request, 'data'): 
+            request.data = urlencoded(request.raw_post_data)
+
         attrs = self.flatten_dict(request.data)
         pkfield = self.model._meta.pk.name
 
@@ -142,6 +145,9 @@ class TaskHandler(ApiHandler):
     fields = [(field.name) for field in model._meta.fields]
 
     def create(self, request, *args, **kwargs):
+        if not hasattr(request, 'data'): 
+            request.data = urlencoded(request.raw_post_data)
+
         attrs = self.flatten_dict(request.data)
         pkfield = self.model._meta.pk.name
         
@@ -158,6 +164,9 @@ class TaskHandler(ApiHandler):
             return rc.DUPLICATE_ENTRY
 
     def update(self, request, *args, **kwargs):
+        if not hasattr(request, 'data'): 
+            request.data = urlencoded(request.raw_post_data)
+
         attrs = self.flatten_dict(request.data)
 
         try:
@@ -176,6 +185,9 @@ class PlanHandler(ApiHandler):
     fields = ['week', 'topic', 'goal', 'activity', 'key_thingking', 'sub_topic', 'performance']
 
     def create(self, request, *args, **kwargs):
+        if not hasattr(request, 'data'): 
+            request.data = urlencoded(request.raw_post_data)
+
         attrs = self.flatten_dict(request.data)
         pkfield = self.model._meta.pk.name
         
@@ -191,6 +203,9 @@ class PlanHandler(ApiHandler):
             return rc.DUPLICATE_ENTRY
 
     def update(self, request, *args, **kwargs):
+        if not hasattr(request, 'data'): 
+            request.data = urlencoded(request.raw_post_data)
+
         attrs = self.flatten_dict(request.data)
 
         try:
@@ -214,8 +229,8 @@ class ProjectHandler(ApiHandler):
     fields = [(field.name) for field in model._meta.fields]
 
     def create(self, request, *args, **kwargs):
-        if not self.has_model():
-            return rc.NOT_IMPLEMENTED
+        if not hasattr(request, 'data'): 
+            request.data = urlencoded(request.raw_post_data)
 
         attrs = self.flatten_dict(request.POST)
         

@@ -79,16 +79,16 @@ def after_syncdb(sender, **kwargs):
 
     # Plan
     # TODO: Add detail
-    plan1, created = Plan.objects.get_or_create(project=project1, week=1, goal='', activity='', sub_topic='', key_thinking='', performance='')
-    plan2, created = Plan.objects.get_or_create(project=project1, week=2, goal='', activity='', sub_topic='', key_thinking='', performance='')
-    plan3, created = Plan.objects.get_or_create(project=project1, week=3, goal='', activity='', sub_topic='', key_thinking='', performance='')
-    plan4, created = Plan.objects.get_or_create(project=project1, week=4, goal='', activity='', sub_topic='', key_thinking='', performance='')
-    plan5, created = Plan.objects.get_or_create(project=project1, week=5, goal='', activity='', sub_topic='', key_thinking='', performance='')
-    plan6, created = Plan.objects.get_or_create(project=project1, week=6, goal='', activity='', sub_topic='', key_thinking='', performance='')
-    plan7, created = Plan.objects.get_or_create(project=project1, week=7, goal='', activity='', sub_topic='', key_thinking='', performance='')
-    plan8, created = Plan.objects.get_or_create(project=project1, week=8, goal='', activity='', sub_topic='', key_thinking='', performance='')
-    plan9, created = Plan.objects.get_or_create(project=project1, week=9, goal='', activity='', sub_topic='', key_thinking='', performance='')
-    plan10, created = Plan.objects.get_or_create(project=project1,week=10, goal='', activity='', sub_topic='', key_thinking='', performance='')
+    plan1, created = Plan.objects.get_or_create(project=project1, week=1, goal='', activity='', sub_topic='', key_thinking='', performance='', main_point='', assessment= '')
+    plan2, created = Plan.objects.get_or_create(project=project1, week=2, goal='', activity='', sub_topic='', key_thinking='', performance='', main_point='', assessment= '')
+    plan3, created = Plan.objects.get_or_create(project=project1, week=3, goal='', activity='', sub_topic='', key_thinking='', performance='', main_point='', assessment= '')
+    plan4, created = Plan.objects.get_or_create(project=project1, week=4, goal='', activity='', sub_topic='', key_thinking='', performance='', main_point='', assessment= '')
+    plan5, created = Plan.objects.get_or_create(project=project1, week=5, goal='', activity='', sub_topic='', key_thinking='', performance='', main_point='', assessment= '')
+    plan6, created = Plan.objects.get_or_create(project=project1, week=6, goal='', activity='', sub_topic='', key_thinking='', performance='', main_point='', assessment= '')
+    plan7, created = Plan.objects.get_or_create(project=project1, week=7, goal='', activity='', sub_topic='', key_thinking='', performance='', main_point='', assessment= '')
+    plan8, created = Plan.objects.get_or_create(project=project1, week=8, goal='', activity='', sub_topic='', key_thinking='', performance='', main_point='', assessment= '')
+    plan9, created = Plan.objects.get_or_create(project=project1, week=9, goal='', activity='', sub_topic='', key_thinking='', performance='', main_point='', assessment= '')
+    plan10, created = Plan.objects.get_or_create(project=project1,week=10, goal='', activity='', sub_topic='', key_thinking='', performance='', main_point='', assessment= '')
 
     # Task
     # TODO: Add detail
@@ -98,7 +98,6 @@ def after_syncdb(sender, **kwargs):
         activity='',
         source='',
         work='',
-        assessment= '',
         plan=plan1
     )
     task2, created = Task.objects.get_or_create(
@@ -107,7 +106,6 @@ def after_syncdb(sender, **kwargs):
         activity='',
         source='',
         work='',
-        assessment= '',
         plan=plan1
     )
     task3, created = Task.objects.get_or_create(
@@ -116,7 +114,6 @@ def after_syncdb(sender, **kwargs):
         activity='',
         source='',
         work='',
-        assessment= '',
         plan=plan1
     )
     task4, created = Task.objects.get_or_create(
@@ -125,7 +122,6 @@ def after_syncdb(sender, **kwargs):
         activity='',
         source='',
         work='',
-        assessment= '',
         plan=plan1
     )
     task5, created = Task.objects.get_or_create(
@@ -134,7 +130,6 @@ def after_syncdb(sender, **kwargs):
         activity='',
         source='',
         work='',
-        assessment= '',
         plan=plan1
     )
 
@@ -144,7 +139,6 @@ def after_syncdb(sender, **kwargs):
         activity='',
         source='',
         work='',
-        assessment= '',
         plan=plan2
     )
     task7, created = Task.objects.get_or_create(
@@ -153,7 +147,6 @@ def after_syncdb(sender, **kwargs):
         activity='',
         source='',
         work='',
-        assessment= '',
         plan=plan2
     )
     task8, created = Task.objects.get_or_create(
@@ -162,7 +155,6 @@ def after_syncdb(sender, **kwargs):
         activity='',
         source='',
         work='',
-        assessment= '',
         plan=plan2
     )
     task9, created = Task.objects.get_or_create(
@@ -171,7 +163,6 @@ def after_syncdb(sender, **kwargs):
         activity='',
         source='',
         work='',
-        assessment= '',
         plan=plan2
     )
     task10, created = Task.objects.get_or_create(
@@ -180,7 +171,6 @@ def after_syncdb(sender, **kwargs):
         activity='',
         source='',
         work='',
-        assessment= '',
         plan=plan2
     )
 

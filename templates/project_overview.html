@@ -31,6 +31,7 @@
                     'dataType': 'json',
                     'data': (attr),
                     'beforeSend' : function(xhr) {
+                        console.log(xhr);
                         xhr.setRequestHeader('X-CSRFToken', getCookie('csrftoken'));
                     },
                     'success': function (data) {
@@ -178,7 +179,7 @@
 
     <div class="toolbar">
         <div >
-            Week :
+            สัปดาห์ :
             <select id="week_options">
                 {% for i in weeks %}
                 <option>{{ i }}</option>
@@ -186,22 +187,38 @@
             </select>
         </div>
     </div>
-    <input id='current-plan-id' type="hidden" value=""/>
+
+    <form><input id='current-plan-id' type="hidden" value=""/></form>
+
     <div class="thead">
-        <div class="grid_3">เป้าหมายหลัก</div>
-        <div class="grid_3">เนื้อหากิจกรรม/ชิ้นงาน</div>
-        <div class="grid_3">หัวข้อย่อย</div>
-        <div class="grid_3">เครื่องมือการคิด</div>
-        <div class="grid_3">พฤติกรรมที่แสดงว่าเข้าใจ</div>
+        <div class="grid_4">สาระสำคัญ<br />Main Point</div>
+        <div class="grid_8">เป้าหมายหลัก<br />Goal</div>
+        <div class="grid_4">เนื้อหา/กิจกรรม ชิ้นงาน<br />Content/Activity Work</div>
         <div class="clearfix"></div>
     </div>
     <div class="tbody">
         <div class="item odd">
-          <div id="Plan-goal" class="grid_3 editable">-</div>
-          <div id="Plan-activity" class="grid_3 editable">-</div>
-          <div id="Plan-sub_topic" class="grid_3 editable">-</div>
+          <div id="Plan-main_point" class="grid_4 editable">-</div>
+          <div id="Plan-goal" class="grid_8 editable">-</div>
+          <div id="Plan-activity" class="grid_4 editable">-</div>
+          <div class="clearfix"></div>
+        </div>
+    </div>
+    <br/>
+    <hr/>
+    <div class="thead">
+        <div class="grid_5">หัวเรื่อง<br />Sub-Topic</div>
+        <div class="grid_3">เครื่องมือการคิด<br />Key Thinking</div>
+        <div class="grid_4">พฤติกรรมที่แสดงว่าเข้าใจ<br />Understanding Performance</div>
+        <div class="grid_4">การประเมิณ<br />Assessment</div>
+        <div class="clearfix"></div>
+    </div>
+    <div class="tbody">
+        <div class="item odd">
+          <div id="Plan-sub_topic" class="grid_5 editable">-</div>
           <div id="Plan-key_thinking" class="grid_3 editable">-</div>
-          <div id="Plan-performance" class="grid_3 editable">-</div>
+          <div id="Plan-performance" class="grid_4 editable">-</div>
+          <div id="Plan-assessment" class="grid_4 editable"></div>
           <div class="clearfix"></div>
         </div>
     </div>
@@ -209,20 +226,18 @@
     <hr/>
     <div class="thead">
         <div class="grid_2">วัน<br />Day</div>
-        <div class="grid_5">กิจกรรมการเรียนรู้<br />Activities</div>
-        <div class="grid_3">สื่อ/แหล่งเรียนรู้<br />Sources</div>
-        <div class="grid_3">ชิ้นงาน<br />Work</div>
-        <div class="grid_3">การประเมิณ<br />Assessment</div>
+        <div class="grid_6">กิจกรรมการเรียนรู้<br />Activities</div>
+        <div class="grid_4">สื่อ/แหล่งเรียนรู้<br />Sources</div>
+        <div class="grid_4">ชิ้นงาน<br />Work</div>
         <div class="clearfix"></div>
     </div>
     <div class="tbody">
         {% for day, display in days %}
         <div class="item {% cycle 'odd' 'even' as rowtype %}">
-            <div class="grid_2">{{ display }}์</div>
-            <div id="Task-{{ day }}-activity" class="grid_5 editable"></div>
-            <div id="Task-{{ day }}-source" class="grid_3 editable"></div>
-            <div id="Task-{{ day }}-work" class="grid_3 editable"></div>
-            <div id="Task-{{ day }}-assessment" class="grid_3 editable"></div>
+            <div class="grid_2">{{ display }}</div>
+            <div id="Task-{{ day }}-activity" class="grid_6 editable"></div>
+            <div id="Task-{{ day }}-source" class="grid_4 editable"></div>
+            <div id="Task-{{ day }}-work" class="grid_4 editable"></div>
             <div class="clearfix"></div>
         </div>
         {% endfor %}

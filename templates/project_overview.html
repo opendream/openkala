@@ -251,7 +251,10 @@
         {% for day, display in days %}
         <div class="item {% cycle 'odd' 'even' as rowtype %}">
             <div class="grid_2">
-                <div class="ignore hrow">{{ display }}</div>
+                <div class="ignore hrow">
+                    <div class="day-label">{{ display }}</div>
+                    <div class="day-wrap"><span id="Task-{{ day }}-hour" class="editable ignore">-</span> <span class="suffix">ชม.</span></div>
+                </div>
             </div>
             <div class="grid_6">
                 <div id="Task-{{ day }}-activity" class="editable ignore">-</div>

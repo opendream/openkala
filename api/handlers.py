@@ -26,7 +26,7 @@ class ProjectPlanHandler(BaseHandler):
 class ProjectTaskHandler(BaseHandler):
     allowed_methods = ('GET')
     model = Task
-    fields = ['id', 'day', 'activity', 'source', 'work']
+    fields = ['id', 'day', 'activity', 'source', 'work', 'hour']
     def read(self, request, project_id, week_id):
         return Task.objects.filter(plan__week=week_id, plan__project__id=project_id)
 

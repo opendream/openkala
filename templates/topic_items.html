@@ -18,21 +18,23 @@
 {% for topic in topics %}
 <div class="{% cycle 'odd' 'even' as rowtype %} item">
     <div class="grid_{{ grid_topic }}">
-        <div id="Topic-{{ topic.id }}-title" class="editable topic-{{ topic.id }}">{{ topic.title|safe }}</div>
-        <div id="Topic-{{ topic.id }}-body" class="editable topic-{{ topic.id }}">{{ topic.body|safe }}</div>
+        <div id="Topic-{{ topic.id }}-title" class="editable ignore topic-{{ topic.id }}">{{ topic.title|safe }}</div>
+        <div id="Topic-{{ topic.id }}-body" class="editable ignore topic-{{ topic.id }}">{{ topic.body|safe }}</div>
     </div>
     {% for i, name in standard_index %}
     <div id="Topic-{{ topic.id }}-standard{{ i }}" class="editable topic-{{ topic.id }} topic-standard grid_{{ grid }} {{ rowtype }}">{{ topic|get_attr:name|safe }}</div>
     {% endfor %}
     <div class="grid_{{ grid_plan }} {{ rowtype }} plan">
-        <form class="plans-map">
-            {% for plan in plans %}
-            <div class="week">
-                <label for="Topic-{{ topic.id }}-plan-{{ plan.id }}">{{ plan.week }}</label>
-                  <input type="checkbox" {% ifequal plan.topic.id topic.id %}checked="true" {% endifequal %}class="week-map" id="Plan-{{ plan.id }}-topic-{{ topic.id }}" name="Plan-{{ plan.id }}-topic-{{ topic.id }}" value="{{ topic.id }}" />
-            </div>
-            {% endfor %}
-        </form>
+        <div class="ignore">
+            <form class="plans-map">
+                {% for plan in plans %}
+                <div class="week">
+                    <label for="Topic-{{ topic.id }}-plan-{{ plan.id }}">{{ plan.week }}</label>
+                      <input type="checkbox" {% ifequal plan.topic.id topic.id %}checked="true" {% endifequal %}class="week-map" id="Plan-{{ plan.id }}-topic-{{ topic.id }}" name="Plan-{{ plan.id }}-topic-{{ topic.id }}" value="{{ topic.id }}" />
+                </div>
+                {% endfor %}
+            </form>
+        </div>
     </div>
     <div class="clearfix"></div>
 </div>

@@ -14,6 +14,7 @@ urlpatterns = patterns('',
 
     url(r'^api/', include('api.urls')),
 
+    url(r'^$', 'quarter.views.project_list', name='home'),
     url(r'^projects$', 'quarter.views.project_list', name='quarter_project_list'),
     url(r'^projects/(?P<project_id>[^/]+)$', 'quarter.views.project_overview', name='quarter_project_overview'),
     url(r'^projects/(?P<project_id>[^/]+)/plans$', 'quarter.views.plan_overview', kwargs={'week': 1}, name='quarter_plan_overview'),

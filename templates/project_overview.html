@@ -143,35 +143,40 @@
 
 {% block title %}โครงงาน : {{ project.name }}{% endblock %}
 
+
+{% block breadcrumb %}
+<li><a href="{% url quarter_project_list %}">โครงงาน</a></li>
+<li>{{ project.name }}</li>
+{% endblock %}
+
 {% block header %}
-<div class="grid_16"><h1>โครงงาน : <span id="Project-{{ project.id }}-name" class="editable">{{ project.name }}</span></h1></div>
-<div class="grid_3"><p>ชั้นมัธยทศึกษาปีที่ : <span id="Project-{{ project.id }}-grade" class="editable">{{ project.grade }}</span></p></div>
-<div class="grid_3"><p>ปีการศึกษา : <span id="Project-{{ project.id }}-year" class="editable">{{ project.year }}</span></p></div>
-<div class="grid_3"><p>ภาคเรียน : <span id="Project-{{ project.id }}-quarter" class="editable">{{ project.quarter }}</span></p></div>
-<div class="clearfix" />
+<div class="grid_16"><div class="ignore"><h1>โครงงาน : <span id="Project-{{ project.id }}-name" class="editable">{{ project.name }}</span></h1></div></div>
+<div class="grid_3"><div class="ignore"><p>ชั้นมัธยมศึกษาปีที่ : <span id="Project-{{ project.id }}-grade" class="editable">{{ project.grade }}</span></p></div></div>
+<div class="grid_3"><div class="ignore"><p>ปีการศึกษา : <span id="Project-{{ project.id }}-year" class="editable">{{ project.year }}</span></p></div></div>
+<div class="grid_3"><div class="ignore"><p>ภาคเรียน : <span id="Project-{{ project.id }}-quarter" class="editable">{{ project.quarter }}</span></p></div></div>
+<div class="clearfix"></div>
 {% endblock %}
 
 {% block content %}
 
-{{ oooo}}
-
 <ul id="menu" class="menu">
-  <li class="active"><a href="#content">สาระ</a></li>
+  <li class="active"><a href="#topic">สาระ</a></li>
   <li><a href="#plan">แผน</a></li>
 </ul>
-<div id="content" class="content">
-    <div class="thead">
-        <div class="grid_{{ grid_topic }} header_1" style="height: 50px">สาระการเรียนรู้</div>
+
+<div id="topic" class="content">
+    <div class="thead topic-first">
+        <div class="grid_{{ grid_topic }}"><div class="ignore header_1">สาระการเรียนรู้</div></div>
         <div class="left">
             <div class="header_2">มาตรฐานการเรียนรู้และตัวชี้วัด</div>
             {% for header in standard_header %}
-            <div class="grid_{{ grid }} header_2">{{ header.title|safe }}</div>
+            <div class="grid_{{ grid }}"><div class="ignore header_2">{{ header.title|safe }}</div></div>
             {% endfor %}
         </div>
-        <div class="grid_{{ grid_plan }} header_1">แผน</div>
+        <div class="grid_{{ grid_plan }}"><div class="ignore header_1">แผน</div></div>
         <div class="clearfix"></div>
     </div>
-    <div class="tbody">
+    <div class="tbody topic-first">
         {% include "topic_items.html" %}
     </div>
 </div>
@@ -190,58 +195,80 @@
 
     <form><input id='current-plan-id' type="hidden" value=""/></form>
 
-    <div class="thead">
-        <div class="grid_4">สาระสำคัญ<br />Main Point</div>
-        <div class="grid_8">เป้าหมายหลัก<br />Goal</div>
-        <div class="grid_4">เนื้อหา/กิจกรรม ชิ้นงาน<br />Content/Activity Work</div>
+    <div class="thead plan-first">
+        <div class="grid_4"><div class="ignore hrow">สาระสำคัญ<br />Main Point</div></div>
+        <div class="grid_8"><div class="ignore hrow">เป้าหมายหลัก<br />Goal</div></div>
+        <div class="grid_4"><div class="ignore hrow">เนื้อหา/กิจกรรม ชิ้นงาน<br />Content/Activity Work</div></div>
         <div class="clearfix"></div>
     </div>
-    <div class="tbody">
+    <div class="tbody plan-first">
         <div class="item odd">
-          <div id="Plan-main_point" class="grid_4 editable">-</div>
-          <div id="Plan-goal" class="grid_8 editable">-</div>
-          <div id="Plan-activity" class="grid_4 editable">-</div>
+          <div class="grid_4">
+              <div id="Plan-main_point" class="editable ignore">-</div>
+          </div>
+          <div class="grid_8">
+              <div id="Plan-goal" class="editable ignore">-</div>
+          </div>
+          <div class="grid_4">
+              <div id="Plan-activity" class="editable ignore">-</div>
+          </div>
           <div class="clearfix"></div>
         </div>
     </div>
     <br/>
     <hr/>
-    <div class="thead">
-        <div class="grid_5">หัวเรื่อง<br />Sub-Topic</div>
-        <div class="grid_3">เครื่องมือการคิด<br />Key Thinking</div>
-        <div class="grid_4">พฤติกรรมที่แสดงว่าเข้าใจ<br />Understanding Performance</div>
-        <div class="grid_4">การประเมิณ<br />Assessment</div>
+    <div class="thead plan-second">
+        <div class="grid_5"><div class="ignore hrow">หัวเรื่อง<br />Sub-Topic</div></div>
+        <div class="grid_3"><div class="ignore hrow">เครื่องมือการคิด<br />Key Thinking</div></div>
+        <div class="grid_4"><div class="ignore hrow">พฤติกรรมที่แสดงว่าเข้าใจ<br />Understanding Performance</div></div>
+        <div class="grid_4"><div class="ignore hrow">การประเมิณ<br />Assessment</div></div>
         <div class="clearfix"></div>
     </div>
-    <div class="tbody">
+    <div class="tbody plan-second">
         <div class="item odd">
-          <div id="Plan-sub_topic" class="grid_5 editable">-</div>
-          <div id="Plan-key_thinking" class="grid_3 editable">-</div>
-          <div id="Plan-performance" class="grid_4 editable">-</div>
-          <div id="Plan-assessment" class="grid_4 editable"></div>
-          <div class="clearfix"></div>
+            <div class="grid_5">
+                <div id="Plan-sub_topic" class="editable ignore">-</div>
+            </div>
+            <div class="grid_3">
+                <div id="Plan-key_thinking" class="editable ignore">-</div>
+            </div>
+            <div class="grid_4">
+                <div id="Plan-performance" class="editable ignore">-</div>
+            </div>
+            <div class="grid_4">
+                <div id="Plan-assessment" class="editable ignore">-</div>
+            </div>
+            <div class="clearfix"></div>
         </div>
     </div>
     <br/>
     <hr/>
-    <div class="thead">
-        <div class="grid_2">วัน<br />Day</div>
-        <div class="grid_6">กิจกรรมการเรียนรู้<br />Activities</div>
-        <div class="grid_4">สื่อ/แหล่งเรียนรู้<br />Sources</div>
-        <div class="grid_4">ชิ้นงาน<br />Work</div>
+    <div class="thead task">
+        <div class="grid_2 hcol"><div class="ignore">วัน<br />Day</div></div>
+        <div class="grid_6 hcol"><div class="ignore">กิจกรรมการเรียนรู้<br />Activities</div></div>
+        <div class="grid_4 hcol"><div class="ignore">สื่อ/แหล่งเรียนรู้<br />Sources</div></div>
+        <div class="grid_4 hcol"><div class="ignore">ชิ้นงาน<br />Work</div></div>
         <div class="clearfix"></div>
     </div>
-    <div class="tbody">
+    <div class="tbody task">
         {% for day, display in days %}
         <div class="item {% cycle 'odd' 'even' as rowtype %}">
-            <div class="grid_2">{{ display }}</div>
-            <div id="Task-{{ day }}-activity" class="grid_6 editable"></div>
-            <div id="Task-{{ day }}-source" class="grid_4 editable"></div>
-            <div id="Task-{{ day }}-work" class="grid_4 editable"></div>
+            <div class="grid_2">
+                <div class="ignore hrow">{{ display }}</div>
+            </div>
+            <div class="grid_6">
+                <div id="Task-{{ day }}-activity" class="editable ignore">-</div>
+            </div>
+            <div class="grid_4">
+                <div id="Task-{{ day }}-source" class="editable ignore">-</div>
+            </div>
+            <div class="grid_4">
+                <div id="Task-{{ day }}-work" class="editable ignore">-</div>
+            </div>
             <div class="clearfix"></div>
         </div>
         {% endfor %}
     </div>
-    <div class="clear" />
+    <div class="clear"></div>
 </div>
 {% endblock %}

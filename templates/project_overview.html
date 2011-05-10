@@ -31,7 +31,6 @@
                     'dataType': 'json',
                     'data': (attr),
                     'beforeSend' : function(xhr) {
-                        console.log(xhr);
                         xhr.setRequestHeader('X-CSRFToken', getCookie('csrftoken'));
                     },
                     'success': function (data) {
@@ -49,8 +48,6 @@
                 attr['day'] = day;
                 attr['plan'] = $('input#current-plan-id').val();
                 attr[field] = dom.html();
-
-                console.log(attr);
 
                 $.ajax({
                     'url': '/api/' + model.toLowerCase() + 's',

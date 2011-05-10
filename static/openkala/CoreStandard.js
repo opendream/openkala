@@ -15,7 +15,6 @@ repositories.CoreStandard.query = function(p, callback) {
     callback.call(this, d);
 }
 repositories.CoreStandard.markObject = function(obj, resourceItem) {
-    console.log('mark object');
     CoreStandard.updateCoreStandard(obj, resourceItem);
 }
 

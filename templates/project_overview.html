@@ -159,6 +159,7 @@
 <ul id="menu" class="menu">
   <li class="active"><a href="#topic">สาระ</a></li>
   <li><a href="#plan">แผน</a></li>
+  <li><a href="#standard">มาตรฐาน</a></li>
 </ul>
 
 <div id="topic" class="content">
@@ -270,5 +271,32 @@
         {% endfor %}
     </div>
     <div class="clear"></div>
+</div>
+<div id="standard" class="content">
+    <div class="thead standard">
+        <div class="grid_3"><div class="ignore hrow">ข้อมาตรฐาน</div></div>
+        <div class="grid_10"><div class="ignore hrow">คำอธิบาย</div></div>
+        <div class="grid_3"><div class="ignore hrow">อยู่ในแผนแล้ว</div></div>
+        <div class="clearfix"></div>
+    </div>
+    <div class="tbody standard">
+        {% for standard in standards %}
+        <div class="item {% cycle 'odd' 'even' as rowtype %}">
+            <div class="grid_3" style="display:none;">
+                <div id="CoreStandard-{{ standard.id }}-group_code" class="editable ignore">{{ standard.group_code }}</div>
+            </div>
+            <div class="grid_3">
+                <div id="CoreStandard-{{ standard.id }}-code" class="editable ignore">{{ standard.code|safe }}</div>
+            </div>
+            <div class="grid_10">
+                <div id="CoreStandard-{{ standard.id }}-description" class="editable ignore">{{ standard.description|safe }}</div>
+            </div>
+            <div class="grid_3">
+                <div id="CoreStandard-{{ standard.id }}-status" class="ignore"><div class="status">No</div></div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        {% endfor %}
+    </div>
 </div>
 {% endblock %}

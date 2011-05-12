@@ -23,6 +23,8 @@ urlpatterns = patterns('',
     url(r'^projectsExt$', 'quarter.views.project_page'),
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
+
+    url(r'^utility/(?P<app_label>[\d\w]+)/(?P<model_name>[\d\w]+)/csv', 'utility.views.admin_list_export'),
 )
 
 

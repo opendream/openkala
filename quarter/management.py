@@ -7,6 +7,13 @@ import csv
 def import_model(model, filepath):
     rows = csv.DictReader(open(filepath, 'r'))
     for attrs in rows:
+        for key, val in attrs.iteritems():
+            try:
+                attrs[key] = int(val)
+            except ValueError:
+                pass
+
+        print attrs
         obj, created = model.objects.get_or_create(**attrs)
     
 def after_syncdb(sender, **kwargs):
@@ -16,12 +23,12 @@ def after_syncdb(sender, **kwargs):
     """
 
     # ORDERING IMPORTANT
-    import_model(CoreStandard,   'import/corestandard.csv')
-    import_model(StandardHeader, 'import/standardheader.csv')
-    import_model(Project,        'import/project.csv')
-    import_model(Topic,          'import/topic.csv')
-    import_model(Plan,           'import/plan.csv')
-    import_model(Task,           'import/task.csv')
+    import_model(CoreStandard,   'import/CoreStandard.csv')
+    import_model(StandardHeader, 'import/StandardHeader.csv')
+    import_model(Project,        'import/Project.csv')
+    import_model(Topic,          'import/Topic.csv')
+    import_model(Plan,           'import/Plan.csv')
+    import_model(Task,           'import/Task.csv')
 
 
 from django.db.models.signals import post_syncdb

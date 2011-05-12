@@ -1,3 +1,13 @@
+body{
+	font-family: Helvetica, Arial ,sans-serif
+	font-size: 0.875em;
+	line-height: 1.5em;
+}
+
+a{}
+a:hover{}
+
+
 .tbody div.item {
   min-height:7em;
   padding: 10px 0;
@@ -34,7 +44,6 @@
 }
 
 .header_2 {
-/*   height: 25px; */
   line-height: 25px;
   text-align: center;
 }
@@ -94,7 +103,7 @@
 .plan-second, .task,
 .topic-first{
 	border-top : 1px solid #CCCCCC;
-	border-bottom: 1px solid #CCCCCC;
+/* 	border-bottom: 1px solid #CCCCCC; */
 	background-color : #e8efe8;
 	color : #2f365f;
 }
@@ -123,6 +132,8 @@
 	font-weight: normal;
 }
 
+
+/* Editor Text */
 div.editable{
 	padding: 5px !important;
 	color: #716a6e;

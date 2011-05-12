@@ -17,7 +17,8 @@ def export(qs, fields=None):
         for field in model._meta.fields:
             headers.append(field.name)
     # Write data to CSV file
-    rows = []
+    writer.writerow(headers)
+
     for obj in qs:
         row = []
         i = 0
@@ -35,11 +36,7 @@ def export(qs, fields=None):
             row.append(val)
             i = i + 1
 
-        rows.append(row)
-
-    writer.writerow(headers)
-    for r in rows:
-        writer.writerow(r)
+        writer.writerow(row)
     # Return CSV file to browser as download
     return response
 

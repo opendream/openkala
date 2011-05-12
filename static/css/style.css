@@ -144,3 +144,14 @@ div.GENTICS_editable_active{
 .standard_header{
 	border-bottom: 1px solid #CCCCCC;
 }
+
+
+
+/* crosalot */
+.day-wrap {
+  margin-left: 30px;
+  width: 40px;
+}
+.day-hour {
+  float: left;
+}

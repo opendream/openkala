@@ -11,7 +11,13 @@ import urllib
 from quarter.models import *
 
 def urlencoded(raw):
-    return dict([urllib.unquote_plus(part).split('=') for part in raw.split('&')])
+    first = [urllib.unquote_plus(part) for part in raw.split('&')]
+    second = []
+    for part in first:
+        sp = part.split('=')
+        second.append([sp[0], '='.join(sp[1:])])
+           
+    return dict(second)
 
 Mimer.register(urlencoded, ('application/x-www-form-urlencoded; charset=UTF-8',))
 
@@ -138,7 +144,7 @@ class ApiHandler(BaseHandler):
 
 class RequestBlank(object):
     def __init__(self):
-        self.POST = {}
+        self.data = {}
 
 class TaskHandler(ApiHandler):
     model = Task
@@ -192,7 +198,11 @@ class PlanHandler(ApiHandler):
         pkfield = self.model._meta.pk.name
         
         try:
-            inst = self.model.objects.get(project=attrs['project'], week=attrs['week'])
+            if not attrs.get('id'):
+                inst = self.model.objects.get(project=attrs['project'], week=attrs['week'])
+            else:
+                inst = self.model.objects.get(id=attrs['id'])
+
             inst = self.update(request, args, kwargs)
             return inst
         except self.model.DoesNotExist:
@@ -209,7 +219,11 @@ class PlanHandler(ApiHandler):
         attrs = self.flatten_dict(request.data)
 
         try:
-            inst = self.model.objects.get(project=attrs['project'], week=attrs['week'])
+            if not attrs.get('id'):
+                inst = self.model.objects.get(project=attrs['project'], week=attrs['week'])
+            else:
+                inst = self.model.objects.get(id=attrs['id'])
+
         except self.model.DoesNotExist:
             return rc.NOT_FOUND
         
@@ -245,14 +259,14 @@ class ProjectHandler(ApiHandler):
             # Create default plans
             for i in range(10):
                 request = RequestBlank()
-                request.POST = {'project': inst.id, 'week': str(i+1)}
+                request.data = {'project': inst.id, 'week': str(i+1)}
                 plan_handler = PlanHandler()
                 plan_handler.create(request)
 
             # Create default topics
             for i in range(10):
                 request = RequestBlank()
-                request.POST = {'project': inst.id, 'title': str(i+1) + '. topic'}
+                request.data = {'project': inst.id}
                 topic_handler = TopicHandler()
                 topic_handler.create(request)
 

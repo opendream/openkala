@@ -17,7 +17,7 @@
                 var code   = GENTICS.Aloha.getActiveEditable().getId().split('-');
             }
 
-            if (code[0] == 'Plan') {
+            if (code[0] == 'Plan' && !jqobj) {
                 var model  = code[0], field = code[1], week = $('#week_options').val();
                 var attr   = {};
 
@@ -165,7 +165,7 @@
     <div class="thead topic-first">
         <div class="grid_{{ grid_topic }}"><div class="ignore header_1">สาระการเรียนรู้</div></div>
         <div class="left">
-            <div class="header_2">มาตรฐานการเรียนรู้และตัวชี้วัด</div>
+            <div class="standard_header header_2">มาตรฐานการเรียนรู้และตัวชี้วัด</div>
             {% for header in standard_header %}
             <div class="grid_{{ grid }}"><div class="ignore header_2">{{ header.title|safe }}</div></div>
             {% endfor %}
@@ -180,7 +180,7 @@
 <div id="plan" class="content">
 
     <div class="toolbar">
-        <div >
+        <div>
             สัปดาห์ :
             <select id="week_options">
                 {% for i in weeks %}

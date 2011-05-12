@@ -6,6 +6,8 @@ from django.http import HttpResponse, Http404
 import simplejson as json
 
 from openkala.quarter.models import *
+from openkala.quarter.forms import *
+from openkala.api.handlers import *
 
 def postMSG(request):
     c = RequestContext(request, {
@@ -26,14 +28,18 @@ def project_list(request):
     try:
         projects = Project.objects.all()
     except project.DoesNotExist:
-        raise
+        pass
+        # TODO: Why
+
+    if request.method == 'POST':
+        form = ProjectCreateForm(request.POST)
+        if form.is_valid():
+            project_handler = ProjectHandler()
+            project_handler.create(request)
+    else:
+        form = ProjectCreateForm()
     
-    variables = {
-      'projects' : projects
-    }
-    c = RequestContext(request, {
-    })
-    return render_to_response('projects.html', variables, context_instance=RequestContext(request))
+    return render_to_response('projects.html', locals(), context_instance=RequestContext(request))
 
 def project_overview(request, project_id):
     try:

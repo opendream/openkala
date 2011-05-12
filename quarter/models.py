@@ -17,17 +17,17 @@ class StandardHeader(models.Model):
         return self.title
 
 class Project(models.Model):
-    name          = models.CharField(max_length=255)
-    grade         = models.IntegerField()
-    year          = models.IntegerField()
-    quarter       = models.IntegerField()
+    name          = models.CharField(max_length=255, verbose_name='ชื่อโครงการ')
+    grade         = models.IntegerField(verbose_name="ชั้นประถมศึกษาปีที่")
+    year          = models.IntegerField(verbose_name="ปีการศึกษา")
+    quarter       = models.IntegerField(verbose_name="ภาคเรียน")
 
     # Denormalization
-    standard_header1 = models.ForeignKey(StandardHeader, related_name='standard_header1', null=True, blank=True)
-    standard_header2 = models.ForeignKey(StandardHeader, related_name='standard_header2', null=True, blank=True)
-    standard_header3 = models.ForeignKey(StandardHeader, related_name='standard_header3', null=True, blank=True)
-    standard_header4 = models.ForeignKey(StandardHeader, related_name='standard_header4', null=True, blank=True)
-    standard_header5 = models.ForeignKey(StandardHeader, related_name='standard_header5', null=True, blank=True)
+    standard_header1 = models.ForeignKey(StandardHeader, related_name='standard_header1', null=True, blank=True, verbose_name="หัวข้อมาตรฐาน 1")
+    standard_header2 = models.ForeignKey(StandardHeader, related_name='standard_header2', null=True, blank=True, verbose_name="หัวข้อมาตรฐาน 2")
+    standard_header3 = models.ForeignKey(StandardHeader, related_name='standard_header3', null=True, blank=True, verbose_name="หัวข้อมาตรฐาน 3")
+    standard_header4 = models.ForeignKey(StandardHeader, related_name='standard_header4', null=True, blank=True, verbose_name="หัวข้อมาตรฐาน 4")
+    standard_header5 = models.ForeignKey(StandardHeader, related_name='standard_header5', null=True, blank=True, verbose_name="หัวข้อมาตรฐาน 5")
 
     def __unicode__(self):
         return self.name

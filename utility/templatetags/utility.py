@@ -6,4 +6,6 @@ register = template.Library()
 def get_attr(obj, attr):
     return getattr(obj, attr)
 
-#register.filter('getattr', getattr)
+@register.filter
+def rmnone(str):
+    return str or ''

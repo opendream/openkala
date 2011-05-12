@@ -4,18 +4,8 @@
 
 {% block header %}
 <script>
-
-Ext4.onReady(function(){
-    Ext4.define('Project', {
-        extend: 'Ext4.data.Model',
-        fields: [
-            {name: 'id'},
-            {name: 'name', type: 'string'},
-            {name: 'grade', type: 'integer'},
-            {name: 'year', type: 'integer'},
-            {name: 'quarter', type: 'integer'}
-        ]
-    });
+$(document).ready(function () {
+    $('.menu').tabify();
 });
 </script>
 {% endblock %}
@@ -24,6 +14,11 @@ Ext4.onReady(function(){
 <li>โครงงาน</li>
 {% endblock %}
 {% block content %}
+<ul id="menu" class="menu">
+  <li class="active"><a href="#project">โครงงานทั้งหมด</a></li>
+  <li><a href="#project-add">สร้างโครงงานใหม่</a></li>
+</ul>
+
 <div id="project" class="content">
     <div class="thead project">
         <div class="grid_4 hcol"><div class="ignore">ชื่อโครงการ</div></div>
@@ -59,5 +54,13 @@ Ext4.onReady(function(){
         </div>
         {% endfor %}
     </div>
+</div>
+<div id="project-add" class="content">
+  <form id="project-add-form" method="post" action="">
+      <ul>{{ form.as_ul }}</ul>
+      {% csrf_token %}
+      <input id="project-add-submit" type="submit" value="สร้าง" />
+  </form>
+</div>
 <div class="clear"></div>
 {% endblock %}

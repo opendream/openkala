@@ -1,5 +1,7 @@
 .tbody div.item {
   min-height:7em;
+  padding: 10px 0;
+  border-bottom: 1px dashed #ccc;
 }
 
 .tbody .odd {
@@ -32,7 +34,7 @@
 }
 
 .header_2 {
-  height: 25px;
+/*   height: 25px; */
   line-height: 25px;
   text-align: center;
 }
@@ -67,4 +69,78 @@
 }
 .editable {
   min-height: 20px;
+}
+
+
+/***************************************/
+/* Style */
+/***************************************/
+.menu li.active a{
+	background-color : #FAFAFA;
+	border: 1px solid #e3e3e3;
+	border-bottom: none;
+}
+
+.toolbar{
+	margin: 15px 0;
+}
+#plan, #topic{
+	background-color : #FAFAFA;
+	border : 1px solid #e3e3e3;
+}
+
+/* row */
+.plan-first,
+.plan-second, .task,
+.topic-first{
+	border-top : 1px solid #CCCCCC;
+	border-bottom: 1px solid #CCCCCC;
+	background-color : #e8efe8;
+	color : #2f365f;
+}
+
+/* Subject */
+.plan-first div.hrow,
+.plan-second div.hrow,
+.task div.ignore,
+.topic-first .header_1, .topic-first .header_2{
+	padding : 10px 0px 20px;
+	font-weight : bold;
+	font-size : 1.2em;
+	color : #726a6e;
+	text-align: center;
+}
+
+/* List style */
+.tbody .odd{
+	background-color: #fff;
+}
+.tbody .even{
+	background-color: #f8f8f8;
+}
+.task div.item .hrow{ 
+	font-size: 1em;
+	font-weight: normal;
+}
+
+div.editable{
+	padding: 5px !important;
+	color: #716a6e;
+	font-size: 1em !important;
+	font-weight: normal !important;
+	text-align: left !important;
+}
+
+div.GENTICS_editable_active{
+	padding: 3px;
+	border: 1px solid #c9c9c9;
+	background-color: #fff;
+}
+
+/* สาระ */
+#topic div.editable{
+	padding: 5px 0 !important
+}
+.standard_header{
+	border-bottom: 1px solid #CCCCCC;
 }

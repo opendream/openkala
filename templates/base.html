@@ -59,11 +59,12 @@ function getCookie(name) {
     <div id="site-name"><h1>OPENKALA</h1></div>
     <div id="breadcrumb">
         <div class="grid_16">
-            <span>ขณะนี้คุณอยู่ที่: <span>
-            <ul>
-                <li><a href="{% url home %}">หน้าแรก</a></li>
-                {% block breadcrumb %}{% endblock %}
-            </ul>
+		        <div class="list">
+	            <ul>
+	                <li><a href="{% url home %}">หน้าแรก</a></li>
+	                {% block breadcrumb %}{% endblock %}
+	            </ul>
+            </div>
         </div>
     </div>
     

@@ -1,57 +1,201 @@
 body{
-	font-family: Helvetica, Arial ,sans-serif
+	font-family: Helvetica, Arial, sans-serif
 	font-size: 0.875em;
 	line-height: 1.5em;
+	border-top: 5px solid #755C3B;
+	background-color: #fffff9;
 }
 
 a{}
 a:hover{}
 
+/* Openkala */
+#site-name{
+	font-size: 	1.286em;
+	font-family: Georgia;
+	font-style: italic;
+	color: #4f4f4f;
+	border-bottom: 1px dashed #ccc;
+}
 
+/* breadcrumb */
+.list{
+	float: left;
+	margin: 10px 0 15px -10px;
+}
+.list ul{
+	margin: 0;
+	padding: 0;
+}
+#breadcrumb li{
+	float: left;
+	list-style: none;
+	padding: 5px 10px;
+	margin-right: 10px;
+	border: 1px solid #ccc;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	border-radius: 10px;
+	font-style: italic;
+	font-weight: bold;
+	background-color: #efefef;
+	background: -moz-linear-gradient(
+		top,
+		#FCFBE3 0%,
+		#f1f0d4);
+	background: -webkit-gradient(
+		linear, left top, left bottom, 
+		from(#FCFBE3),
+		to(#f1f0d4));
+
+}
+#breadcrumb li a{
+	display: block;
+	font-size: 1.143em;
+	font-weight: bold;
+	font-style: normal;
+	text-decoration: none;
+	color: #6B5344;
+}
+
+/* header-wrapper */
+#header-wrapper{
+	clear: both;
+	margin: 0 0 30px 0;
+	padding: 10px;
+	border: 1px solid #e6e6e6;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	border-radius: 10px;
+	color: #4F4F4F;
+	background-color: #fff;
+}
+#header-wrapper h1{
+	margin: 10px 0;
+	font-size: 1.5em;
+}
+#header-wrapper p{
+	margin: 0;
+}
+
+/* Content */
+.content{
+	padding: 0px;
+}
+
+/* Menu */
+.menu li{
+	float: left;
+	margin: 0 10px 0 0;
+}
+.menu li a{
+	padding: 5px 20px;
+	border: 1px solid #e6e6e6;
+	-moz-border-radius: 5px;
+	-moz-border-radius-bottomleft: 0px;
+	-moz-border-radius-bottomright: 0px;
+	-webkit-border-radius: 5px;
+	-webkit-border-bottom-left-radius: 0px;
+	-webkit-border-bottom-right-radius: 0px;
+	background-color: #f6f6f6;
+}
+.menu li.active a{
+	background-color: #E8EFE8;
+}
+
+/* Grid Style */
+.thead{ /* Heading Column*/
+	border-top : 1px solid #CCCCCC;
+	background-color : #e8efe8;
+	color : #2f365f;
+}
+
+.thead .ignore, .header_2{ /* Bold Heading Font */
+	padding : 10px 0px 20px;
+	font-weight : bold;
+	font-size : 1.2em;
+	color : #4F4F4F;
+	text-align: center;
+}
+
+/* List items */
 .tbody div.item {
   min-height:7em;
   padding: 10px 0;
   border-bottom: 1px dashed #ccc;
 }
-
 .tbody .odd {
-  background-color: #DAEEFB;
+  background-color: #fff;
 }
-
 .tbody .even {
-  background-color: #B5DDF7;
+  background-color: #f8f8f8;
 }
-
+.task div.item .hrow{ 
+	font-size: 1em;
+	font-weight: normal;
+}
 .tbody div.topic-title {
   font-size: 120%;
   min-height: 2em;
   padding-bottom: 5px;
 }
-
 .tbody div.topic-body {
   margin-left: 10px;
 }
-
 .tbody div.topic-standard {
   padding-top: 10px;
   padding-bottom: 10px;
 }
-
+.standard_header{
+	border-bottom: 1px solid #CCCCCC;
+}
 .header_1 {
   height: 50px;
   line-height: 50px;
   text-align: center;
 }
-
 .header_2 {
   line-height: 25px;
   text-align: center;
 }
 
-.left {
-  float: left;
+/* Plan */
+.toolbar{
+	padding: 15px 0 15px 20px;
+	background-color: #E8EFE8;
+}
+#plan, #topic, #standard{
+	background-color : #FAFAFA;
+	border : 1px solid #e3e3e3;
+	border-top: 5px solid #e3e3e3;
 }
 
+/* Editor Text */
+.editable {
+  min-height: 20px;
+}
+div.editable{
+	padding: 5px !important;
+	font-size: 1em !important;
+	font-weight: normal !important;
+	text-align: left !important;
+	color: #716a6e;
+}
+#topic div.editable{
+	padding: 5px 0 !important
+}
+div.GENTICS_editable_active{
+	padding: 3px;
+	border: 1px solid #c9c9c9;
+	background-color: #fff;
+}
+.GENTICS_editable_highlight {
+	outline: #FFE767 solid 2px !important;
+}
+
+.GENTICS_block.core-standard.core-standard-selected {
+  background: yellow !important;
+}
 
 /* custom */
 .week {
@@ -68,95 +212,9 @@ a:hover{}
 .tbody .item .plan {
   text-align: center;
 }
-
-.GENTICS_editable_highlight {
-	outline: #FFE767 solid 2px !important;
+.left {
+  float: left;
 }
-
-.GENTICS_block.core-standard.core-standard-selected {
-  background: yellow !important;
-}
-.editable {
-  min-height: 20px;
-}
-
-
-/***************************************/
-/* Style */
-/***************************************/
-.menu li.active a{
-	background-color : #FAFAFA;
-	border: 1px solid #e3e3e3;
-	border-bottom: none;
-}
-
-.toolbar{
-	margin: 15px 0;
-}
-#plan, #topic{
-	background-color : #FAFAFA;
-	border : 1px solid #e3e3e3;
-}
-
-/* row */
-.plan-first,
-.plan-second, .task,
-.topic-first{
-	border-top : 1px solid #CCCCCC;
-/* 	border-bottom: 1px solid #CCCCCC; */
-	background-color : #e8efe8;
-	color : #2f365f;
-}
-
-/* Subject */
-.plan-first div.hrow,
-.plan-second div.hrow,
-.task div.ignore,
-.topic-first .header_1, .topic-first .header_2{
-	padding : 10px 0px 20px;
-	font-weight : bold;
-	font-size : 1.2em;
-	color : #726a6e;
-	text-align: center;
-}
-
-/* List style */
-.tbody .odd{
-	background-color: #fff;
-}
-.tbody .even{
-	background-color: #f8f8f8;
-}
-.task div.item .hrow{ 
-	font-size: 1em;
-	font-weight: normal;
-}
-
-
-/* Editor Text */
-div.editable{
-	padding: 5px !important;
-	color: #716a6e;
-	font-size: 1em !important;
-	font-weight: normal !important;
-	text-align: left !important;
-}
-
-div.GENTICS_editable_active{
-	padding: 3px;
-	border: 1px solid #c9c9c9;
-	background-color: #fff;
-}
-
-/* สาระ */
-#topic div.editable{
-	padding: 5px 0 !important
-}
-.standard_header{
-	border-bottom: 1px solid #CCCCCC;
-}
-
-
 
 /* crosalot */
 .day-wrap {

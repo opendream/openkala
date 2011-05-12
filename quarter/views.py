@@ -70,6 +70,9 @@ def project_overview(request, project_id):
     weeks = range(1, 11)
     days = Task().DAY_CHOICES 
 
+    # Standard
+    standards = CoreStandard.objects.all().order_by('id')
+
     return render_to_response('project_overview.html', locals(), context_instance=RequestContext(request))
 
 def topic_overview(request, project_id, topic_id):

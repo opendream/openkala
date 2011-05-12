@@ -2,6 +2,7 @@
 
 # Signal after syncdb
 from openkala.quarter.models import *
+from openkala.api.handlers import *
 import csv
 
 def import_model(model, filepath):
@@ -13,8 +14,12 @@ def import_model(model, filepath):
             except ValueError:
                 pass
 
-        print attrs
-        obj, created = model.objects.get_or_create(**attrs)
+        handler = ApiHandler()
+        request = RequestBlank()
+        request.data = attrs
+
+        handler.set_model(model)
+        handler.create(request)
     
 def after_syncdb(sender, **kwargs):
 

@@ -39,6 +39,9 @@ class ProjectTaskHandler(BaseHandler):
 class ApiHandler(BaseHandler):
     allowed_methods = ('GET', 'PUT', 'DELETE', 'POST')
 
+    def set_model(self, model):
+        self.model = model
+
     def flatten_dict(self, dct):
         fd = {}
         for k in dct.keys():

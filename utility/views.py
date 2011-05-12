@@ -44,12 +44,6 @@ def export(qs, fields=None):
     return response
 
 def admin_list_export(request, model_name, app_label, queryset=None, fields=None, list_display=True):
-    """
-    Put the following line in your urls.py BEFORE your admin include
-    (r'^admin/(?P<app_label>[\d\w]+)/(?P<model_name>[\d\w]+)/csv/', 'util.csv_view.admin_list_export'),
-    """
-    if not request.user.is_staff:
-        return HttpResponseForbidden()
     if not queryset:
         model = get_model(app_label, model_name)
         queryset = model.objects.all()

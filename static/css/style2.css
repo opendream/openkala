@@ -1,0 +1,21 @@
+.CoreStandard-code {
+  text-align: center;
+}
+.CoreStandard-status .status {
+  text-indent: -999999em;
+  margin-left: 75px;
+  background-repeat: no-repeat;
+}
+.CoreStandard-status .no {
+  background-image: url("../images/false.png");
+}
+.CoreStandard-status .yes {
+  background-image: url("../images/true.png");
+}
+
+#standard .tbody div.item {
+  min-height: 4em;
+}
+
+#breadcrumb ul li {
+}

@@ -1,7 +1,7 @@
 import os
 import sys
 
-path = '/home/opendream/Labs/django_projects/openkala'
+path = ''/web/sites/openkala/openkala''
 if path not in sys.path:
     sys.path.append(path)
 

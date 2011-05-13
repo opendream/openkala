@@ -58,20 +58,19 @@ function getCookie(name) {
 
 <body>
 <div class="container_16">
-    <div id="site-name"><h1><a href="{% url home %}">OPENKALA</a></h1></div>
-    <div id="breadcrumb">
-        <div class="grid_16">
-		        <div class="list">
-	            <ul>
-	                <li class="first"><a href="{% url home %}">หน้าแรก</a></li>
-	                {% block breadcrumb %}{% endblock %}
-	            </ul>
-            </div>
-        </div>
-    </div>
+    <div id="site-name"><h1><a href="{% url home %}">Openkala</a></h1></div>
     
     <div id="header-wrapper">
         {% block header %}{% endblock %}
+    </div>
+    
+    <div id="breadcrumb">
+        <div class="grid_16">
+            <ul>
+                <li class="first"><a href="{% url home %}">หน้าแรก</a></li>
+                {% block breadcrumb %}{% endblock %}
+            </ul>
+        </div>
     </div>
     
     <div id="content-wrapper" style="min-height:30em">

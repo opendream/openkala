@@ -2,12 +2,16 @@
 
 {% block title %}โครงงาน{% endblock %}
 
-{% block header %}
+{% block script %}
 <script>
 $(document).ready(function () {
     $('.menu').tabify();
 });
 </script>
+{% endblock %}
+
+{% block header %}
+<div class="grid_16"><div class="ignore"><h1>โครงงาน</h1></div></div>
 {% endblock %}
 
 {% block breadcrumb %}

@@ -18,7 +18,7 @@
 {% for topic in topics %}
 <div class="{% cycle 'odd' 'even' as rowtype %} item">
     <div class="grid_{{ grid_topic }}">
-        <div id="Topic-{{ topic.id }}-title" class="editable ignore topic-{{ topic.id }}">{{ topic.titlei|rmnone|safe }}</div>
+        <div id="Topic-{{ topic.id }}-title" class="editable ignore topic-{{ topic.id }}">{{ topic.title|rmnone|safe }}</div>
         <div id="Topic-{{ topic.id }}-body" class="editable ignore topic-{{ topic.id }}">{{ topic.body|rmnone|safe }}</div>
     </div>
     {% for i, name in standard_index %}

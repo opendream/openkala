@@ -29,6 +29,8 @@
         href="{{ STATIC_URL }}css/960.css"/>
     <link rel="stylesheet" type="text/css"
         href="{{ STATIC_URL }}css/style.css"/>
+    <link rel="stylesheet" type="text/css"
+        href="{{ STATIC_URL }}css/style2.css"/>
     <script type="text/javascript"
         src="{{ STATIC_URL }}extjs/builds/ext-all-sandbox-debug.js"></script>
 
@@ -61,7 +63,7 @@ function getCookie(name) {
         <div class="grid_16">
 		        <div class="list">
 	            <ul>
-	                <li><a href="{% url home %}">หน้าแรก</a></li>
+	                <li class="first"><a href="{% url home %}">หน้าแรก</a></li>
 	                {% block breadcrumb %}{% endblock %}
 	            </ul>
             </div>

@@ -173,8 +173,8 @@ border: 1px solid #ccc;
 	float: left;
 	margin-right: 5px;
 }
-.day-wrap div.editable{
-	padding: 0px;
+.day-hour{
+	padding: 0;
 }
 
 /* Plan */
@@ -193,9 +193,10 @@ border: 1px solid #ccc;
   min-height: 20px;
 }
 div.editable{
-	padding: 5px ;
-	font-size: 1em !important;
-	font-weight: normal !important;
+	padding: 5px !important;
+	font-size: 1em ;
+	font-weight: normal ;
+	line-height: 1.5em;
 	text-align: left !important;
 	color: #716a6e;
 }
@@ -241,8 +242,10 @@ div.GENTICS_editable_active{
 /* crosalot */
 .day-wrap {
   margin-left: 30px;
-  width: 40px;
+/*   width: 40px; */
 }
-.day-hour {
+div.day-hour {
   float: left;
+  padding: 0 !important;
+  margin-right: 5px;
 }

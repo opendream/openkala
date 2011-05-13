@@ -9,7 +9,6 @@ $(document).ready(function () {
   });
   
   var build_standard = function (ocodes) {
-    console.log(ocodes);
     var codes = jQuery.extend(true, {}, ocodes);
     var error = [];
     var text = '';

@@ -100,14 +100,6 @@
     }
 
     Ext.onReady(function() {
-
-      repositories.CoreStandard.settings.data = [
-      {% for std in coreStandards %}
-          { id: {{ std.id }}, name: '{{ std.code }}', url: '/coreStandard/{{ std.id }}', type: 'standard'},
-      {% endfor %}
-      ]
-
-      
       GENTICS.Aloha.settings = {
           "i18n": {"current": "en"},
           "ribbon": false,

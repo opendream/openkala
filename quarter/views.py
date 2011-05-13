@@ -5,9 +5,9 @@ from django.template import RequestContext
 from django.http import HttpResponse, Http404
 import simplejson as json
 
-from openkala.quarter.models import *
-from openkala.quarter.forms import *
-from openkala.api.handlers import *
+from quarter.models import *
+from quarter.forms import *
+from api.handlers import *
 
 def postMSG(request):
     c = RequestContext(request, {

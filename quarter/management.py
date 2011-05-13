@@ -1,8 +1,8 @@
 # -*- encoding: utf-8 -*-
 
 # Signal after syncdb
-from openkala.quarter.models import *
-from openkala.api.handlers import *
+from quarter.models import *
+from api.handlers import *
 import csv
 
 def import_model(model, filepath):
@@ -39,4 +39,4 @@ def after_syncdb(sender, **kwargs):
 
 
 from django.db.models.signals import post_syncdb
-post_syncdb.connect(after_syncdb, dispatch_uid="openkala.quarter.management")
+post_syncdb.connect(after_syncdb, dispatch_uid="quarter.management")

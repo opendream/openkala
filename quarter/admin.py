@@ -1,5 +1,5 @@
 from django.contrib import admin
-from openkala.quarter.models import *
+from quarter.models import *
 
 admin.site.register(StandardHeader)
 admin.site.register(Project)

@@ -1,5 +1,5 @@
 from django.forms import ModelForm
-from openkala.quarter.models import *
+from quarter.models import *
 
 class ProjectCreateForm(ModelForm):
     class Meta:

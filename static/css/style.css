@@ -7,7 +7,7 @@ body{
 }
 
 a{}
-a:hover{}
+a:hover{ text-decoration: underline;}
 
 /* Openkala */
 #site-name{
@@ -27,16 +27,25 @@ a:hover{}
 	margin: 0;
 	padding: 0;
 }
+#breadcrumb ul{
+	float: left;
+	border: 1px solid #ccc;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+}
 #breadcrumb li{
 	float: left;
 	list-style: none;
 	padding: 5px 10px;
-	margin-right: 10px;
-	border: 1px solid #ccc;
+	font-size: 1.143em;
+	font-weight: bold;
+	font-style: italic;
+/* 	margin-right: 10px; */
+	/*
+border: 1px solid #ccc;
 	-moz-border-radius: 10px;
 	-webkit-border-radius: 10px;
 	border-radius: 10px;
-	font-style: italic;
 	font-weight: bold;
 	background-color: #efefef;
 	background: -moz-linear-gradient(
@@ -47,12 +56,13 @@ a:hover{}
 		linear, left top, left bottom, 
 		from(#FCFBE3),
 		to(#f1f0d4));
+*/
 
 }
 #breadcrumb li a{
 	display: block;
-	font-size: 1.143em;
-	font-weight: bold;
+	font-size: 1em;
+	font-weight: normal;
 	font-style: normal;
 	text-decoration: none;
 	color: #6B5344;
@@ -158,6 +168,14 @@ a:hover{}
   line-height: 25px;
   text-align: center;
 }
+/* Days Label*/
+.day-label{
+	float: left;
+	margin-right: 5px;
+}
+.day-wrap div.editable{
+	padding: 0px;
+}
 
 /* Plan */
 .toolbar{
@@ -175,7 +193,7 @@ a:hover{}
   min-height: 20px;
 }
 div.editable{
-	padding: 5px !important;
+	padding: 5px ;
 	font-size: 1em !important;
 	font-weight: normal !important;
 	text-align: left !important;
@@ -186,15 +204,19 @@ div.editable{
 }
 div.GENTICS_editable_active{
 	padding: 3px;
-	border: 1px solid #c9c9c9;
+/* 	border: 1px solid #c9c9c9; */
 	background-color: #fff;
 }
 .GENTICS_editable_highlight {
-	outline: #FFE767 solid 2px !important;
+	outline: #FFE767 dashed 2px !important;
 }
 
 .GENTICS_block.core-standard.core-standard-selected {
   background: yellow !important;
+}
+.GENTICS_editable_active, .GENTICS_editable_active[contenteditable="true"]:focus {
+  outline: 2px dashed #B7D6FA !important; /* Override */
+  background-color: #fff;
 }
 
 /* custom */

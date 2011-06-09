@@ -28,6 +28,8 @@ def project_list(request):
         pass
         # TODO: Why
 
+    standard_headers = StandardHeader.objects.all()
+
     if request.method == 'POST':
         form = ProjectCreateForm(request.POST)
         if form.is_valid():

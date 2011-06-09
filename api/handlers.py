@@ -329,6 +329,15 @@ class CoreStandardHandler(ApiHandler):
         inst = super(CoreStandardHandler, self).create(request, args, kwargs)
         return render_to_string('standard_item.html', {'standard': inst})
 
+class StandardHeaderHandler(ApiHandler):
+    model = StandardHeader
+    fields = [(field.name) for field in model._meta.fields]
+    fields.append('cell')
+
+    def create(self, request, *args, **kwargs):
+        inst = super(StandardHeaderHandler, self).create(request, args, kwargs)
+        return render_to_string('standard_header_item.html', {'standard_header': inst})
+
 class ProjectHandler(ApiHandler):
     model = Project
     fields = [(field.name) for field in model._meta.fields]

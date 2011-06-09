@@ -26,6 +26,116 @@ $(document).ready(function () {
 </script>
 {% endblock %}
 
+{% block footer %}
+<script>
+function saveEditableStandardHeader(arg1, arg2, jqobj, val, create_id) {
+    if (jqobj || Aloha.isModified()) {
+        if (jqobj) {
+            var dom    = jqobj;
+            var cell   = jqobj.attr('id');
+        }
+        else {
+            var dom    = Aloha.getActiveEditable().obj;
+            var cell   = Aloha.getActiveEditable().getId();
+        }
+        var code   = cell.split('-');
+        var model  = code[0], id = code[1], field  = code[2];
+        var attr   = {};
+
+        if (id == 0 && !create_id) {
+          return '';
+        }
+
+        attr['id'] = id;
+
+        attr[field] = val? val: dom.html();
+        if (val === false) {
+            attr[field] = 0;
+        }
+
+        attr['cell'] = '#' + cell;
+
+        $.ajax({
+            'url': '/api/' + model.toLowerCase() + 's',
+            'type': 'POST',
+            'dataType': 'json',
+            'data': (attr),
+            'beforeSend' : function(xhr) {
+                xhr.setRequestHeader('X-CSRFToken', getCookie('csrftoken'));
+            },
+            'success': function (data) {
+                $.each(data, function (field_name, val) {
+                    //$('#' + model + '-' + id + '-' + field_name).html(val);
+                });
+            }
+        });
+    }
+}
+
+
+(function(window,undefined){
+  // Prepare
+  var
+    $ = window.jQuery,
+    $body = $('body');
+  
+  Aloha = Aloha;
+  // Aloha
+  $body.bind('aloha',function(){
+
+    Aloha.settings = {
+        "i18n": {"current": "en"},
+        "ribbon": false,
+        "plugins": {
+          "link": {
+              
+          },
+          "format": { 
+            config : [ 'b', 'i','u','del','sub','sup', 'p', 'title', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'pre', 'removeFormat'],
+          } 
+        }
+    };
+
+    Aloha.bind('aloha-editable-deactivated', saveEditableStandardHeader);
+
+    $('.editable').aloha();
+  });
+
+  $('#standard_header-add-submit').click(function () {
+
+    var title = $('#StandardHeader-0-title').html();
+
+    if (!title) {
+      alert('ชื่อวิชาจำเปนตองกรอก');
+    }
+    else {
+      $.ajax({
+          'url': '/api/standardheaders',
+          'type': 'POST',
+          'dataType': 'json',
+          'data': {'title': title},
+          'beforeSend' : function(xhr) {
+              xhr.setRequestHeader('X-CSRFToken', getCookie('csrftoken'));
+          },
+          'success': function (data) {
+
+            var obj = $(data);
+            $('.editable', obj).aloha(); 
+            $('#standard-items').prepend(obj);
+            $('#standard-add .editable').html('');
+            $('#messages-wrapper').append($('<div class="standardheader-message">เพิ่มวิชาบูรณาการแล้ว</div>'));
+            setTimeout(function () {$('.standardheader-message').remove()}, 5000)
+
+          }
+      });
+    }
+  
+  });
+
+})(window);
+</script>
+{% endblock %}
+
 {% block header %}
 <div class="grid_16"><div class="ignore"><h1>โครงงาน</h1></div></div>
 {% endblock %}
@@ -35,61 +145,88 @@ $(document).ready(function () {
 {% endblock %}
 {% block content %}
 <ul id="menu" class="menu">
-  <li class="active"><a href="#project">โครงงานทั้งหมด</a></li>
-  <li><a href="#project-add">สร้างโครงงานใหม่</a></li>
+<li class="active"><a href="#project">โครงงานทั้งหมด</a></li>
+<li><a href="#project-add">สร้างโครงงานใหม่</a></li>
+<li><a href="#standard_header">จัดการวิชาบูรณาการ</a></li>
 </ul>
 
 <div id="project" class="content">
-    <div class="thead project">
-        <div class="grid_4 hcol"><div class="ignore">ชื่อโครงการ</div></div>
-        <div class="grid_2 hcol"><div class="ignore">ชั้นมัธยมศึกษาปีที่</div></div>
-        <div class="grid_2 hcol"><div class="ignore">ปีการศึกษา</div></div>
-        <div class="grid_2 hcol"><div class="ignore">ภาคเรียน</div></div>
-        <div class="grid_2 hcol"><div class="ignore">แก้ไข</div></div>
-        <div class="grid_2 hcol"><div class="ignore">รายงาน</div></div>
-        <div class="clearfix"></div>
-    </div>
-    <div class="tbody project">
-        {% for project in projects %}
-        <div class="item {% cycle 'odd' 'even' as rowtype %}">
-            <div class="grid_4">
-                <div id="Project-{{ project.id }}-name" class="ignore name">{{ project.name }}</div>
-            </div>
-            <div class="grid_2">
-                <div id="Project-{{ project.id }}-grade" class="ignore grade">{{ project.grade }}</div>
-            </div>
-            <div class="grid_2">
-                <div id="Project-{{ project.id }}-year" class="ignore year">{{ project.year }}</div>
-            </div>
-            <div class="grid_2">
-                <div id="Project-{{ project.id }}-quarter" class="ignore quarter">{{ project.quarter }}</div>
-            </div>
-            <div class="grid_2">
-                <div id="Project-{{ project.id }}-edit" class="ignore edit"><a href="{% url quarter_project_overview project.id %}">แก้ไข</a></div>
-            </div>
-            <div class="grid_2">
-                <div id="Project-{{ project.id }}-report" class="ignore report"><a href="#">ออกรายงาน</a></div>
-            </div>
-            <div class="clearfix"></div>
-        </div>
-        {% endfor %}
-    </div>
+<div class="thead project">
+  <div class="grid_4 hcol"><div class="ignore">ชื่อโครงการ</div></div>
+  <div class="grid_2 hcol"><div class="ignore">ชั้นมัธยมศึกษาปีที่</div></div>
+  <div class="grid_2 hcol"><div class="ignore">ปีการศึกษา</div></div>
+  <div class="grid_2 hcol"><div class="ignore">ภาคเรียน</div></div>
+  <div class="grid_2 hcol"><div class="ignore">แก้ไข</div></div>
+  <div class="grid_2 hcol"><div class="ignore">รายงาน</div></div>
+  <div class="clearfix"></div>
+</div>
+<div class="tbody project">
+  {% for project in projects %}
+  <div class="item {% cycle 'odd' 'even' as rowtype %}">
+      <div class="grid_4">
+          <div id="Project-{{ project.id }}-name" class="ignore name">{{ project.name }}</div>
+      </div>
+      <div class="grid_2">
+          <div id="Project-{{ project.id }}-grade" class="ignore grade">{{ project.grade }}</div>
+      </div>
+      <div class="grid_2">
+          <div id="Project-{{ project.id }}-year" class="ignore year">{{ project.year }}</div>
+      </div>
+      <div class="grid_2">
+          <div id="Project-{{ project.id }}-quarter" class="ignore quarter">{{ project.quarter }}</div>
+      </div>
+      <div class="grid_2">
+          <div id="Project-{{ project.id }}-edit" class="ignore edit"><a href="{% url quarter_project_overview project.id %}">แก้ไข</a></div>
+      </div>
+      <div class="grid_2">
+          <div id="Project-{{ project.id }}-report" class="ignore report"><a href="#">ออกรายงาน</a></div>
+      </div>
+      <div class="clearfix"></div>
+  </div>
+  {% endfor %}
+</div>
 </div>
 <div id="project-add" class="content">
-  <form id="project-add-form" method="post" action=".">
-      <ul>
-          {% for field in form %}
-          <li{% if 'standard_header' in field.name %} class="standard-header {{ field.name }}"{% endif %}>{{ field.label_tag }}: {{ field }}</li>
-          {% endfor %}
-      </ul>
-      <input id="project-standard-add-more" type="submit" value="เพิ่มวิชาบูรณาการ" name="standard-add-more" />
-      {% csrf_token %}
-      <div class="submit-wrapper">
-          <input id="project-add-submit" type="submit" value="บันทึก" name="save" />
-          <input id="project-add-more-submit" type="submit" value="บันทึก และ สร้างต่อ" name="savemore" />
-          <input id="project-cancel-submit" type="submit" value="ยกเลิก" name="cancel" />
-      </div>
-  </form>
+    <form id="project-add-form" method="post" action=".">
+    <ul>
+        {% for field in form %}
+        <li{% if 'standard_header' in field.name %} class="standard-header {{ field.name }}"{% endif %}>{{ field.label_tag }}: {{ field }}</li>
+        {% endfor %}
+    </ul>
+    <input id="project-standard-add-more" type="submit" value="เพิ่มวิชาบูรณาการ" name="standard-add-more" />
+    {% csrf_token %}
+    <div class="submit-wrapper">
+        <input id="project-add-submit" type="submit" value="บันทึก" name="save" />
+        <input id="project-add-more-submit" type="submit" value="บันทึก และ สร้างต่อ" name="savemore" />
+        <input id="project-cancel-submit" type="submit" value="ยกเลิก" name="cancel" />
+    </div>
+    </form>
+</div>
+<div id="standard_header" class="content">
+  <div class="thead standard_header">
+    <div class="grid_1" style="display: none;"><div class="ignore hrow">ลำดับ</div></div>
+    <div class="grid_16"><div class="ignore hrow">ชื่อวิชาบูรณาการ</div></div>
+    <div class="clearfix"></div>
+  </div>
+  <div id="standard_header-add" class="tbody standard_header">
+    <div class="grid_1">
+        <div id="StandardHeader-0-weight" class="ignore CoreStandard-weight"></div>
+    </div>
+    <div class="grid_12">
+        <div id="StandardHeader-0-title" class="ignore StandardHeader-title editable"></div>
+    </div>
+    <div class="grid_3">
+        <div id="StandardHeader-0-add" class="ignore StandardHeader-status"><button id="standard_header-add-submit">เพิ่ม</button></div>
+    </div>
+
+    <div class="clearfix"></div>
+  </div>
+  <div id="standard_header-items" class="tbody standard">
+      {% for standard_header in standard_headers %}
+      <div style="display: none;">{% cycle 'odd' 'even' as rowtype %}</div>
+      {% include "standard_header_item.html" %}
+      {% endfor %}
+  </div>
 </div>
 <div class="clear"></div>
 {% endblock %}

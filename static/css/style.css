@@ -24,10 +24,14 @@ input[type="text"]{
 	position: absolute;
 	top: 17px;
 	right: 20px;
-	font-size: 	2.7em;
 	font-family: Georgia;
 	font-style: italic;
 	color: #4f4f4f;
+}
+#site-name h1 {
+	font-size: 	2.7em;
+  margin: 0;
+  padding: 0;
 }
 #user-wrapper {
 	position: absolute;

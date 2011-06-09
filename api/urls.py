@@ -8,6 +8,7 @@ topic_handler                    = Resource(TopicHandler)
 plan_handler                     = Resource(PlanHandler)
 task_handler                     = Resource(TaskHandler)
 corestandard_handler             = Resource(CoreStandardHandler)
+standardheader_handler           = Resource(StandardHeaderHandler)
 project_plan_handler             = Resource(ProjectPlanHandler)
 project_task_handler             = Resource(ProjectTaskHandler)
 project_history_handler          = Resource(ProjectHistoryHandler)
@@ -23,6 +24,9 @@ urlpatterns = patterns('',
    url(r'^topics/(?P<id>[^/]+)$', topic_handler, { 'emitter_format': 'json' }),
    url(r'^topics$', topic_handler, { 'emitter_format': 'json' }),
    
+   url(r'^standardheaders/(?P<id>[^/]+)$', standardheader_handler, { 'emitter_format': 'json' }),
+   url(r'^standardheaders$', standardheader_handler, { 'emitter_format': 'json' }),
+
    url(r'^plans/(?P<id>[^/]+)$', plan_handler, { 'emitter_format': 'json' }),
    url(r'^plans$', plan_handler, { 'emitter_format': 'json' }),
    

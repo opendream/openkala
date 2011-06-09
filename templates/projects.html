@@ -6,6 +6,22 @@
 <script>
 $(document).ready(function () {
     $('.menu').tabify();
+    $('#project-cancel-submit').click(function (e) {
+        e.preventDefault();
+        $('#project-add-form ul li input, #project-add-form ul li select, #project-add-form ul li textarea').val('');
+    });
+
+    $('#project-add-form .standard-header').hide();
+    $('.standard_header1, .standard_header2, .standard_header3').show();
+    $('#project-standard-add-more').click(function (e) {
+        e.preventDefault();
+        var ss = $('#project-add-form .standard-header:hidden:first');
+        ss.show()
+        if ($('#project-add-form .standard-header:hidden:first').length == 0) {
+            $(this).hide();
+        }
+
+    });
 });
 </script>
 {% endblock %}
@@ -60,10 +76,19 @@ $(document).ready(function () {
     </div>
 </div>
 <div id="project-add" class="content">
-  <form id="project-add-form" method="post" action="">
-      <ul>{{ form.as_ul }}</ul>
+  <form id="project-add-form" method="post" action=".">
+      <ul>
+          {% for field in form %}
+          <li{% if 'standard_header' in field.name %} class="standard-header {{ field.name }}"{% endif %}>{{ field.label_tag }}: {{ field }}</li>
+          {% endfor %}
+      </ul>
+      <input id="project-standard-add-more" type="submit" value="เพิ่มวิชาบูรณาการ" name="standard-add-more" />
       {% csrf_token %}
-      <input id="project-add-submit" type="submit" value="สร้าง" />
+      <div class="submit-wrapper">
+          <input id="project-add-submit" type="submit" value="บันทึก" name="save" />
+          <input id="project-add-more-submit" type="submit" value="บันทึก และ สร้างต่อ" name="savemore" />
+          <input id="project-cancel-submit" type="submit" value="ยกเลิก" name="cancel" />
+      </div>
   </form>
 </div>
 <div class="clear"></div>

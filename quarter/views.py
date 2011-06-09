@@ -2,27 +2,24 @@
 #  Create your views here.
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse, Http404, HttpResponseRedirect
+
+from django.contrib import messages
+from django.contrib.auth.views import login
+from django.contrib.auth import REDIRECT_FIELD_NAME
+
 import simplejson as json
 
 from quarter.models import *
 from quarter.forms import *
 from api.handlers import *
 
-def postMSG(request):
-    c = RequestContext(request, {
-    })
-    return render_to_response('postMSG.html', c, context_instance = RequestContext(request))
 
-def test(request):
-    c = RequestContext(request, {
-    })
-    return render_to_response('test.html', c)
-
-def project_page(request):
-    c = RequestContext(request, {
-    })
-    return render_to_response('project.html', c)
+def home(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/accounts/login/')
+    else:
+        return project_list(request)
 
 def project_list(request):
     try:
@@ -34,8 +31,15 @@ def project_list(request):
     if request.method == 'POST':
         form = ProjectCreateForm(request.POST)
         if form.is_valid():
-            project_handler = ProjectHandler()
-            project_handler.create(request)
+            if request.POST.get('cancel'):
+                pass
+            else:
+                project_handler = ProjectHandler()
+                project_handler.create(request)
+                messages.success(request, u'โครงงาน %s ได้ถูกสร้างแล้ว' % request.POST.get('name'))
+                if request.POST.get('save'):
+                    return HttpResponseRedirect('/projects#project-tab')
+
     else:
         form = ProjectCreateForm()
     
@@ -60,7 +64,6 @@ def project_overview(request, project_id):
 
     standard_header_length = len(standard_header)
     
-    coreStandards = CoreStandard.objects.all().order_by('code')
     # calculate grid class
     grid = 12/standard_header_length
     grid_sum = grid * standard_header_length
@@ -71,42 +74,44 @@ def project_overview(request, project_id):
     days = Task().DAY_CHOICES 
 
     # Standard
-    standards = CoreStandard.objects.all().order_by('id')
+    standards = CoreStandard.objects.all().order_by('group_code', 'code', 'id')
+
+    # History
+    histories = ProjectHistory.objects.filter(project=project).order_by('-datetime')[0:10]
+    for hist in histories:
+        try:
+            hist.before = hist.get_previous_by_datetime(project=project)
+        except :
+            hist.before = hist
+            hist.is_last = True
+
+    history_last_id = hist.id if histories.count() else 0
+
+    is_end = not bool(ProjectHistory.objects.filter(project=project, id__lt=history_last_id).count())
 
     return render_to_response('project_overview.html', locals(), context_instance=RequestContext(request))
 
-def topic_overview(request, project_id, topic_id):
+def standard_header_list(request):
     try:
-        project = Project.objects.get(id=project_id)
-        topic = Topic.objects.get(id=topic_id)
-    except topic.DoesNotExist:
-        raise Http404
+        standard_header = StandardHeader.objects.all()
+    except standard_header.DoesNotExist:
+        pass
+        # TODO: Why
 
-    plans = Plan.objects.filter(topic=topic).order_by('week')
-    n_blank_plans = 10 - plans.count()
+    if request.method == 'POST':
+        form = StandardHeaderCreateForm(request.POST)
+        if form.is_valid():
+            if request.POST.get('cancel'):
+                pass
+            else:
+                standard_header = StandardHeader(request.POST)
+                standard_header.save()
+                messages.success(request, u'วิชาบูรณาการ %s ได้ถูกสร้างแล้ว' % request.POST.get('title'))
+                if request.POST.get('save'):
+                    return HttpResponseRedirect('/standard-headers#standard-header-tab')
 
-    variables = {
-        'project': project,
-        'topic': topic,
-        'plans': plans,
-        'range': range(n_blank_plans)
-    }
+    else:
+        form = StandardHeaderCreateForm()
+    
+    return render_to_response('standard_headers.html', locals(), context_instance=RequestContext(request))
 
-    return render_to_response('topic_overview.html', variables, context_instance=RequestContext(request))
-
-def plan_overview(request, project_id, week):
-    try:
-        plan = Plan.objects.get(id=plan_id)
-    except topic.DoesNotExist:
-        raise Http404
-
-    tasks = Task.objects.filter(plan=plan).order_by('day')
-
-    variables = {
-        'project.id': project_id,
-        'topic.id': topic_id,
-        'plan': plan,
-        'tasks' : tasks,
-    }
-
-    return render_to_response('plan_overview.html', variables, context_instance=RequestContext(request))

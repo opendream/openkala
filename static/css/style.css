@@ -22,13 +22,18 @@ input[type="text"]{
 /* Openkala */
 #site-name{
 	position: absolute;
-	top: 0px;
-	right: 0px;
-	width: 165px;
-	font-size: 	1.2em;
+	top: 17px;
+	right: 20px;
+	font-size: 	2.7em;
 	font-family: Georgia;
 	font-style: italic;
 	color: #4f4f4f;
+}
+#user-wrapper {
+	position: absolute;
+	top: -19px;
+	right: 15px;
+	color: #777;
 }
 #site-name h1{
 	line-height: 1em;
@@ -248,9 +253,12 @@ div.GENTICS_editable_active{
 }
 
 /* Create new prject */
-#project-add-form{
-	margin: 0;
+#project-add-form ul{
 	padding: 0;
+}
+#project-add-form ul {
+	margin: 20px 0 0 20px;
+  overflow: hidden;
 }
 #project-add-form li{
 	float: left;
@@ -261,7 +269,75 @@ div.GENTICS_editable_active{
 #project-add-form label{
 	float: left;
 	width: 170px;
+  font-weight: bold;
 }
-#project-add-submit{
-	margin: 0 0 20px 40px;
+
+#project-add-form .submit-wrapper {
+  padding: 10px 20px;
+  margin: 10px 0 0 0 ;
+  border-top: 1px solid #999999;
+  background-color: #E3E3E3;
 }
+
+#project-standard-add-more {
+  display: block;
+	margin: 5px 0 0 20px;
+}
+
+/* History */
+.ProjectHistory-id {
+  height: 18px;
+}
+#project-history-items {
+  text-align: center;
+}
+#project-history-items .item {
+  min-height: 18px;
+}
+.project-history-submit {
+  height: 50px;
+}
+
+.project-history-submit button {
+  font-weight:bold;
+  border-style:outset;
+  background-color: #DDDCDC;
+  padding: 3px 5px;
+}
+.project-history-submit button:hover {
+  background-color: #EEEEEE;
+}
+.project-history-submit button.active {
+  background-color: #C4C4C4;
+  border-style:inset;
+}
+.history-message {
+  border:solid 1px #DEDEDE;
+  background:#FFEACC;
+  color:#222222;
+  padding:4px;
+  text-align:center;
+}
+.corestandard-message {
+  border:solid 1px #DEDEDE;
+  background:#99FFCC;
+  color:#222222;
+  padding:4px;
+  text-align:center;
+}
+#standard-add {
+  background-color: #F8F8F8;
+  border-color: #E3E3E3;
+  border-style: solid;
+  border-width: 0px 0px 5px 0px;
+  min-height: 60px;
+}
+#CoreStandard-0-add {
+  text-align: center;
+}
+#standard-add .CoreStandard-code,
+#standard-add .CoreStandard-description,
+#standard-add .CoreStandard-status {
+  margin-top: 15px
+}
+

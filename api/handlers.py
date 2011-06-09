@@ -4,11 +4,14 @@ from piston.utils import rc, Mimer
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.db import models
+from django.template.loader import render_to_string
 
 import simplejson as json
 import urllib
 
 from quarter.models import *
+from utility.dmp import diff_match_patch
+import utility
 
 def urlencoded(raw):
     first = [urllib.unquote_plus(part) for part in raw.split('&')]
@@ -21,10 +24,36 @@ def urlencoded(raw):
 
 Mimer.register(urlencoded, ('application/x-www-form-urlencoded; charset=UTF-8',))
 
+def insertProjectHistory(project, cell, new_value, model, id, field, user): 
+    current_value = getattr(model.objects.get(id=id), field)
+
+    if current_value == None:
+        current_value = ''
+    elif type(current_value) == int:
+        current_value = str(current_value)
+
+    #new_value = str(new_value)
+    #new_value = new_value.decode('utf-8')
+    print current_value
+    print new_value
+    if new_value != current_value:
+        dmp = diff_match_patch()
+        patches = dmp.patch_make(new_value, current_value)
+        project_history = ProjectHistory(project=project, cell=cell, patch=dmp.patch_toText(patches), user=user)
+        project_history.save()
+        # This is a bug
+        if ProjectHistory.objects.filter(project=project).count() > 1:
+            project_history.before = project_history.get_previous_by_datetime(project=project)
+        else:
+            project_history.before = {'id': 0}
+
+        return render_to_string('history_item.html', {'project_id': project.id, 'history': project_history, 'is_new': True})
+
 class ProjectPlanHandler(BaseHandler):
     allowed_methods = ('GET')
     model = Plan
     fields = ['id', 'week', 'main_point', 'goal', 'activity', 'key_thinking', 'sub_topic', 'performance', 'assessment']
+    fields.append('cell')
     def read(self, request, project_id, week_id):
         obj = Plan.objects.get(project__id=project_id, week=week_id)
         return obj
@@ -33,6 +62,7 @@ class ProjectTaskHandler(BaseHandler):
     allowed_methods = ('GET')
     model = Task
     fields = ['id', 'day', 'activity', 'source', 'work', 'hour']
+    fields.append('cell')
     def read(self, request, project_id, week_id):
         return Task.objects.filter(plan__week=week_id, plan__project__id=project_id)
 
@@ -47,20 +77,30 @@ class ApiHandler(BaseHandler):
         for k in dct.keys():
             k = k.encode('utf8')
             try:
-                if dct.get(k):
+                if k in dct:
                     typ = type(self.model._meta.get_field(k))
 
                     if typ == models.IntegerField:
                         fd[k] = int(dct.get(k))
                     elif typ == models.ForeignKey:
                         parent_model = self.model._meta.get_field(k).related.parent_model
-                        pk = int(dct.get(k))
+                        pk = dct.get(k)
+                        if type(pk) == list and len(pk):
+                            pk = pk[0]
+
                         if pk:
                             fd[k] = parent_model.objects.get(pk=pk)
                         else:
                             fd[k] = None
                     else:
-                      fd[k] = dct.get(k)
+                        val = dct.get(k)
+                        if val:
+                            try:
+                                fd[k] = val.decode('utf-8')
+                            except:
+                                fd[k] = val
+                        else:
+                            fd[k] = None
 
             except models.FieldDoesNotExist:
                 # TODO: Do something
@@ -77,14 +117,24 @@ class ApiHandler(BaseHandler):
         pkfield = self.model._meta.pk.name
         
         try:
-            if attrs.get(pkfield):
-                inst = self.model.objects.get(pk=attrs.get(pkfield))
+            if attrs.get(pkfield) and int(attrs.get(pkfield)):
+                inst = self.model.objects.get(pk=int(attrs.get(pkfield)))
             else:
-                inst = self.model.objects.get(**attrs)
+                tmp = {}
+                for k, attr in attrs.iteritems():
+                    if type(self.model._meta.get_field(k)) != models.ForeignKey:
+                        tmp[k] = attr
+
+                if tmp:
+                    inst = self.model.objects.get(**tmp)
+                else:
+                    inst = self.model.objects.get(pk=0)
 
             inst = self.update(request, args, kwargs)
             return inst
         except self.model.DoesNotExist:
+            if 'id' in attrs:
+                del(attrs['id'])
             inst = self.model(**attrs)
             inst.save()
             return inst
@@ -105,12 +155,24 @@ class ApiHandler(BaseHandler):
                 inst = self.model.objects.get(**attrs)
         except self.model.DoesNotExist:
             return rc.NOT_FOUND
+
+        project = None
+        if hasattr(inst, 'project'):
+            project = inst.project
         
+        histories = []
         for k,v in attrs.iteritems():
             setattr( inst, k, v )
 
+            if k not in ('id', ) and project and request.data.get('cell'):
+                history = insertProjectHistory(project, request.data.get('cell'), v, self.model, inst.id, k, request.user)
+                if history:
+                    histories.append(history)
+
+        print inst.__dict__
         inst.save()
-        return inst
+        inst.histories = histories
+        return inst.__dict__
     
     def read(self, request, *args, **kwargs):
         if not self.has_model():
@@ -152,6 +214,7 @@ class RequestBlank(object):
 class TaskHandler(ApiHandler):
     model = Task
     fields = [(field.name) for field in model._meta.fields]
+    fields.append('cell')
 
     def create(self, request, *args, **kwargs):
         if not hasattr(request, 'data'): 
@@ -183,15 +246,25 @@ class TaskHandler(ApiHandler):
         except self.model.DoesNotExist:
             return rc.NOT_FOUND
         
+        project = attrs['plan'].project
+        histories = []
+
         for k,v in attrs.iteritems():
             setattr( inst, k, v )
 
+            if k not in ('plan', 'day') and project and request.data.get('cell'):
+                history = insertProjectHistory(project, request.data.get('cell'), v, self.model, inst.id, k, request.user)
+                if history:
+                    histories.append(history)
+
         inst.save()
-        return inst
+        inst.histories = histories
+        return inst.__dict__
 
 class PlanHandler(ApiHandler):
     model = Plan
     fields = ['week', 'topic', 'goal', 'activity', 'key_thingking', 'sub_topic', 'performance']
+    fields.append('cell')
 
     def create(self, request, *args, **kwargs):
         if not hasattr(request, 'data'): 
@@ -230,20 +303,36 @@ class PlanHandler(ApiHandler):
         except self.model.DoesNotExist:
             return rc.NOT_FOUND
         
+        histories = []
         for k,v in attrs.iteritems():
             setattr( inst, k, v )
+            if k not in ('week', 'project') and attrs.get('project') and request.data.get('cell'):
+                history = insertProjectHistory(attrs.get('project'), request.data.get('cell'), v, self.model, inst.id, k, request.user)
+                if history:
+                    histories.append(history)
 
         inst.save()
-        return inst
+        inst.histories = histories
+        return inst.__dict__
     
 class TopicHandler(ApiHandler):
     model = Topic
     fields = [(field.name) for field in model._meta.fields]
+    fields.append('cell')
 
+class CoreStandardHandler(ApiHandler):
+    model = CoreStandard
+    fields = [(field.name) for field in model._meta.fields]
+    fields.append('cell')
+
+    def create(self, request, *args, **kwargs):
+        inst = super(CoreStandardHandler, self).create(request, args, kwargs)
+        return render_to_string('standard_item.html', {'standard': inst})
 
 class ProjectHandler(ApiHandler):
     model = Project
     fields = [(field.name) for field in model._meta.fields]
+    fields.append('cell')
 
     def create(self, request, *args, **kwargs):
         if not hasattr(request, 'data'): 
@@ -276,5 +365,57 @@ class ProjectHandler(ApiHandler):
             return inst
         except self.model.MultipleObjectsReturned:
             return rc.DUPLICATE_ENTRY
+
+class ProjectHistoryHandler(ApiHandler):
+    model = ProjectHistory
+    fields = [(field.name) for field in model._meta.fields]
+    def read(self, request, project_id, old_id, diff_id):
+
+        project_id, old_id, diff_id = [int(project_id), int(old_id), int(diff_id)]
+        
+        dmp = diff_match_patch()
+
+        old = utility.prev_point_text(project_id, old_id)
+
+        if diff_id:
+            diff = utility.prev_point_text(project_id, diff_id)
+        else:
+            diff = utility.get_current_text(project_id, old.keys())
+
+        result = {}
+        for cell, html in old.iteritems():
+            if cell in diff:
+                d  = dmp.diff_main(html, diff[cell])
+                #dmp.diff_cleanupEfficiency(d) # Suck
+                dmp.diff_cleanupSemantic(d) # Damn it
+                html = dmp.diff_prettyHtml(d)
+                
+                # I don't know why dmp replace this char
+                html = html.replace("&amp;", "&").replace("&lt;", "<").replace("&gt;", ">").replace("&para;<br>", "\n").replace("<br>", "\n").replace("<br/>", "\n").replace("<br />", "\n")
+
+                result[cell] = html
+
+        return result
+
+
+class ProjectHistoryGetPage(ApiHandler):
+    model = ProjectHistory
+    fields = [(field.name) for field in model._meta.fields]
+    def read(self, request, project_id, history_id):
+        histories = ProjectHistory.objects.filter(project__id=project_id, id__lt=history_id).order_by('-datetime')[0:10]
+
+        for hist in histories:
+            try:
+                hist.before = hist.get_previous_by_datetime(project__id=project_id)
+            except :
+                hist.before = hist
+                hist.is_last = True
+
+        history_last_id = hist.id
+        is_end = not bool(ProjectHistory.objects.filter(project__id=project_id, id__lt=history_last_id).count())
+        html = render_to_string('history_items.html', {'project_id': project_id, 'histories': histories, 'added': True})
+
+        return {'list': html, 'history_last_id': history_last_id, 'is_end': is_end}
+
 
 

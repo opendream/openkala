@@ -1,22 +1,165 @@
 {% extends "base.html" %}
 
 {% block script %}
-<script type="text/javascript" src="{{ STATIC_URL }}openkala/plan.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}openkala/corestandard.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}openkala/plan.js"></script>
 
 <script type="text/javascript" charset="utf-8">
     var project_id = {{ project.id }};
+    var history_last_id = {{ history_last_id }};
 
-    function saveEditableHelper(arg1, arg2, jqobj, val) {
-        if (jqobj || GENTICS.Aloha.isModified()) {
+    // History
+
+    var History = function (project_id) {
+      var self = this;
+      var mode = 'disabled';
+      var week = 1;
+      var compare_data = {};
+      var original_data = {};
+
+      self.init = function () {
+        original_data = {};
+        week = $('#week_options').val();
+        $('.editable').each(function () {
+          original_data[$(this).attr('id')] = {'jqobj': $(this), 'html':  $(this).html()}; 
+        });
+      };
+
+      self.setMode = function (m) {
+        mode = m;
+        if (mode == 'normal') {
+          $('.editable').attr("contentEditable", "true");
+          $('.history-message').remove();
+        }
+        else if (mode == 'compare') {
+          $('.editable').attr("contentEditable", "false");
+        }
+      };
+
+      self.getMode = function () {
+        return mode;
+      };
+
+      self.disable = function () {
+        self.setMode('normal');
+        $('#week_options').val(week);
+        $.each(original_data, function(selector, origin) {
+          origin['jqobj'].html(origin['html']);
+        });
+      };
+
+      self.reload = function() {
+        $.each(compare_data, function (cell, text) {
+          $(cell).html(text);
+        });
+      };
+
+      self.compare = function (old_id, diff_id, url) {
+        if (mode == 'disabled') {
+          self.init();
+          return null;
+        }
+        else if (mode == 'normal') {
+          $('#messages-wrapper').append($('<div class="history-message">ขณะนี้คุณอยู่ในหมวดเปรียบเทียบ จะไม่สามารถแก้ไขข้อความใดๆได้ <a id="normal-mode">กลับสู่โหมดแก้ไข</a></div>'));
+          $('#normal-mode').click(function () { $('#compare-cancel').click(); });
+        }
+        self.setMode('compare');
+        old_id = old_id? old_id: 0;
+        url = url? url: '/api/projecthistorys/' + project_id + '/' + old_id + '/' +diff_id;
+        $.getJSON(url, {}, function (resp) {
+          compare_data = resp
+          self.reload();
+        });
+      };
+
+
+
+      self.init();
+
+
+    };
+
+    // init history
+    pHistory = new History (project_id);
+
+
+    function historyClick(obj) {
+      obj = obj.target? obj.target: obj;
+
+      var current_val = parseInt($(obj).val());
+      current_val = current_val? current_val: 99999999;
+      var current_class = $(obj).attr('class');
+      var swop_class = {
+        'ProjectHistory-diff-id': 'ProjectHistory-old-id', 
+        'ProjectHistory-old-id': 'ProjectHistory-diff-id'
+      };
+      var tf = {true: 'none', false: 'block'};
+      var display = {'ProjectHistory-diff-id': tf, 'ProjectHistory-old-id': tf};
+
+      $('.' + current_class).attr('checked', false);
+      $(obj).attr('checked', true);
+
+      $('.' + swop_class[current_class]).each(function () {
+
+
+        var other_val = parseInt($(this).val());
+        other_val = other_val? other_val: 99999999;
+        var idx = current_class == 'ProjectHistory-diff-id'? other_val >= current_val: other_val <= current_val;
+        $(this).css('display', display[current_class][idx]);
+      });
+    }
+
+    function curpreClick(obj) {
+      obj.preventDefault();
+      var current_mode = pHistory.getMode();
+
+      pHistory.setMode('disabled');
+      var tmp = $(obj.target).attr('href').split('/');
+      $('#ProjectHistory-' + tmp[4] + '-old-id').click();
+      $('#ProjectHistory-' + tmp[5] + '-diff-id').click();
+      pHistory.setMode(current_mode);
+
+      pHistory.compare(0, 0, $(this).attr('href'));
+
+
+    }
+
+
+    function prependHistories(histories) {
+      var current = $('#project-history-items .current');
+      $.each(histories, function (i, history) {
+        history = $(history);
+        current.after(history);
+
+        history.find('.ProjectHistory-old-id').click(historyClick);
+        history.find('.ProjectHistory-diff-id').click(historyClick);
+        history.find('.ProjectHistory-curpre a').click(curpreClick);
+        $('.ProjectHistory-old-id:checked').click();
+        $('.ProjectHistory-diff-id:checked').click();
+      });
+    }
+
+    function addEventHistories() {
+      $('.added .ProjectHistory-old-id').click(historyClick);
+      $('.added .ProjectHistory-diff-id').click(historyClick);
+      $('.added .ProjectHistory-curpre a').click(curpreClick);
+      $('.ProjectHistory-old-id:checked').click();
+      $('.ProjectHistory-diff-id:checked').click();
+      $('.added').removeClass('added');
+    }
+
+
+    function saveEditableHelper(arg1, arg2, jqobj, val, create_id) {
+        if (jqobj || Aloha.isModified()) {
             if (jqobj) {
                 var dom    = jqobj;
-                var code   = jqobj.attr('id').split('-');
+                var cell   = jqobj.attr('id');
             }
             else {
-                var dom    = GENTICS.Aloha.getActiveEditable().obj;
-                var code   = GENTICS.Aloha.getActiveEditable().getId().split('-');
+                var dom    = Aloha.getActiveEditable().obj;
+                var cell   = Aloha.getActiveEditable().getId();
             }
+            var code   = cell.split('-');
 
             if (code[0] == 'Plan' && !jqobj) {
                 var model  = code[0], field = code[1], week = $('#week_options').val();
@@ -25,6 +168,7 @@
                 attr['week'] = week;
                 attr['project'] = project_id;
                 attr[field] = dom.html();
+                attr['cell'] = '.week-' + week + ' #' + cell;
 
                 $.ajax({
                     'url': '/api/' + model.toLowerCase() + 's',
@@ -36,9 +180,10 @@
                     },
                     'success': function (data) {
                         $.each(data, function (field_name, val) {
-                            $('#' + model + '-' + field_name).html(val);
+                            //$('#' + model + '-' + field_name).html(val);
                         });
                         $('input#current-plan-id').val(data['id']);
+                        prependHistories(data['histories']);
                     }
                 });
             }
@@ -49,6 +194,7 @@
                 attr['day'] = day;
                 attr['plan'] = $('input#current-plan-id').val();
                 attr[field] = dom.html();
+                attr['cell'] = '.week-' + week + ' #' + cell;
 
                 $.ajax({
                     'url': '/api/' + model.toLowerCase() + 's',
@@ -60,14 +206,20 @@
                     },
                     'success': function (data) {
                         $.each(data, function (field_name, val) {
-                            $('#' + model + '-' + day + '-' + field_name).html(val);
+                            //$('#' + model + '-' + day + '-' + field_name).html(val);
                         });
+                        prependHistories(data['histories']);
+
                     }
                 });
             }
             else {
                 var model  = code[0], id = code[1], field  = code[2];
                 var attr   = {};
+
+                if (id == 0 && !create_id) {
+                  return '';
+                }
 
                 attr['id'] = id;
 
@@ -76,6 +228,8 @@
                     attr[field] = 0;
                 }
 
+                attr['cell'] = '#' + cell;
+
                 $.ajax({
                     'url': '/api/' + model.toLowerCase() + 's',
                     'type': 'POST',
@@ -86,8 +240,12 @@
                     },
                     'success': function (data) {
                         $.each(data, function (field_name, val) {
-                            $('#' + model + '-' + id + '-' + field_name).html(val);
+                            //$('#' + model + '-' + id + '-' + field_name).html(val);
                         });
+                        if (model == 'CoreStandard' && field == 'code') {
+                          build_standard(ocodes);
+                        }
+                        prependHistories(data['histories']);
                     }
                 });
             }
@@ -95,39 +253,153 @@
         };
     }
 
-    function saveEditable(jqobj, val) {
-        saveEditableHelper(null, null, jqobj, val);
+    function saveEditable(jqobj, val, create) {
+        return saveEditableHelper(null, null, jqobj, val, create);
     }
 
-    Ext.onReady(function() {
-      GENTICS.Aloha.settings = {
-          "i18n": {"current": "en"},
-          "ribbon": false,
-          "plugins": {
-            "com.gentics.aloha.plugins.Link": {
-                
-            },
-            "com.gentics.aloha.plugins.GCN": { 
-              "enabled": true 
-            },
-            "com.gentics.aloha.plugins.Format": { 
-              config : [ 'b', 'i','u','del','sub','sup', 'p', 'title', 'h1', 'h2', 'h3', 'h4', 
-    'h5', 'h6', 'pre', 'removeFormat'],
-            } 
-          }
+
+</script>
+{% endblock %}
+
+{% block script_override %}
+<script type="text/javascript">
+
+</script>
+{% endblock %}
+
+{% block footer %}
+<script>
+
+    (function(window,undefined){
+      // Prepare
+      var
+        $ = window.jQuery,
+        $body = $('body');
+      
+      Aloha = Aloha;
+      // Aloha
+      $body.bind('aloha',function(){
+
+        Aloha.settings = {
+            "i18n": {"current": "en"},
+            "ribbon": false,
+            "plugins": {
+              "link": {
+                  
+              },
+              "format": { 
+                config : [ 'b', 'i','u','del','sub','sup', 'p', 'title', 'h1', 'h2', 'h3', 'h4', 
+      'h5', 'h6', 'pre', 'removeFormat'],
+              } 
+            }
         };
-      $('.editable').aloha();
+
+        Aloha.bind('aloha-editable-deactivated', saveEditableHelper);
+
+        $('.editable').aloha();
+
+        $('.menu').tabify();
+
+        // init plan
+        planHandler.init( {{project.id }} , '{{ STATIC_URL }}' );
+        planHandler.load(1);
+
+
+        $('#compare-cancel').click(function () {
+          pHistory.disable();
+          pHistory.setMode('disabled');
+        });
+
+        $('#compare-submit').click(function () {
+          pHistory.setMode('normal');
+          pHistory.compare($('.ProjectHistory-old-id:checked').val(), $('.ProjectHistory-diff-id:checked').val());
+        });
+
+        $('#week_options').change(function() {
+          $('#week-markup').attr('class', 'week-' + $(this).val());
+          planHandler.load($(this).val(), function () {
+            if (pHistory.getMode() == 'compare') {
+              pHistory.reload();
+            }
+          });
+          stack = new Undo.Stack();
+        });
+
+        $('.ProjectHistory-old-id, .ProjectHistory-diff-id').click(historyClick).click(function () {
+          pHistory.compare($('.ProjectHistory-old-id:checked').val(), $('.ProjectHistory-diff-id:checked').val());
+        });
+
+        $('.ProjectHistory-diff-id').eq(0).click();
+        $('.ProjectHistory-old-id').eq(1).click();
+
+        $('.project-history-submit button').click(function () {
+          $('.project-history-submit button').removeClass('active');
+          $(this).addClass('active');
+        });
+
+        $('.ProjectHistory-curpre a').click(curpreClick);
+
+        $('#history-more a').click(function (e) {
+          e.preventDefault();
+          $.getJSON('/api/projecthistorys/getpage/' + project_id + '/' + history_last_id, {}, function (resp) {
+            if (resp['is_end']) {
+              $('#history-more').remove();
+            }
+            history_last_id = resp['history_last_id'];
+            $('#project-history-items').append(resp['list']);
+            addEventHistories();
+          });
+        });
+        
+
+      });
+
+      $('#standard-add-submit').click(function () {
+
+        var code = $('#CoreStandard-0-code').html();
+        var description = $('#CoreStandard-0-description').html();
+
+        if (!code) {
+          alert('ข้อมาตรฐานจำเป็นต้องกรอก');
+        }
+        else {
+          $.ajax({
+              'url': '/api/corestandards',
+              'type': 'POST',
+              'dataType': 'json',
+              'data': {'code': code, 'description': description},
+              'beforeSend' : function(xhr) {
+                  xhr.setRequestHeader('X-CSRFToken', getCookie('csrftoken'));
+              },
+              'success': function (data) {
+
+                var obj = $(data);
+                $('.editable', obj).aloha(); 
+                $('#standard-items').prepend(obj);
+                $('#standard-add .editable').html('');
+                $('.CoreStandard-code', obj).map(function () {
+                  ocodes[$(this).html().trim()] = {
+                    'jqobj': $(this).parent().next().next().children('.CoreStandard-status').children('.status'),
+                    'status':false
+                  };
+                });
+                build_standard(ocodes);
+
+                $('#messages-wrapper').append($('<div class="corestandard-message">เพิ่มมาตรฐานแล้ว</div>'));
+                setTimeout(function () {$('.corestandard-message').remove()}, 5000)
+
+              }
+          });
+        }
       
-      GENTICS.Aloha.EventRegistry.subscribe(GENTICS.Aloha, "editableDeactivated", saveEditableHelper);
+      });
 
-      $('.menu').tabify();
+      $('#menu a').click(function () {
+        stack = new Undo.Stack();
+      });
 
 
-      // init plan
-      planHandler.init( {{project.id }} , '{{ STATIC_URL }}' );
-      planHandler.load(1);
-      
-    });
+    })(window);
 </script>
 {% endblock %}
 
@@ -153,6 +425,7 @@
   <li id="tab-topic" class="active"><a href="#topic">สาระ</a></li>
   <li><a id="tab-plan" href="#plan">แผน</a></li>
   <li><a id="tab-standard" href="#standard">มาตรฐาน</a></li>
+  <li><a id="tab-project-history" href="#project-history">ประวัติ</a></li>
 </ul>
 
 <div id="topic" class="content">
@@ -172,98 +445,100 @@
     </div>
 </div>
 <div id="plan" class="content">
+    <div id="week-markup" class="week-1">
 
-    <div class="toolbar">
-        <div>
-            สัปดาห์ :
-            <select id="week_options">
-                {% for i in weeks %}
-                <option>{{ i }}</option>
-                {% endfor %}
-            </select>
+        <div class="toolbar">
+            <div>
+                สัปดาห์ :
+                <select id="week_options">
+                    {% for i in weeks %}
+                    <option>{{ i }}</option>
+                    {% endfor %}
+                </select>
+            </div>
         </div>
-    </div>
 
-    <form><input id='current-plan-id' type="hidden" value=""/></form>
+        <form><input id='current-plan-id' type="hidden" value=""/></form>
 
-    <div class="thead plan-first">
-        <div class="grid_4"><div class="ignore hrow">สาระสำคัญ<br />Main Point</div></div>
-        <div class="grid_8"><div class="ignore hrow">เป้าหมายหลัก<br />Goal</div></div>
-        <div class="grid_4"><div class="ignore hrow">เนื้อหา/กิจกรรม ชิ้นงาน<br />Content/Activity Work</div></div>
-        <div class="clearfix"></div>
-    </div>
-    <div class="tbody plan-first">
-        <div class="item odd">
-          <div class="grid_4">
-              <div id="Plan-main_point" class="editable ignore">-</div>
-          </div>
-          <div class="grid_8">
-              <div id="Plan-goal" class="editable ignore">-</div>
-          </div>
-          <div class="grid_4">
-              <div id="Plan-activity" class="editable ignore">-</div>
-          </div>
-          <div class="clearfix"></div>
-        </div>
-    </div>
-    <br/>
-    <hr/>
-    <div class="thead plan-second">
-        <div class="grid_5"><div class="ignore hrow">หัวเรื่อง<br />Sub-Topic</div></div>
-        <div class="grid_3"><div class="ignore hrow">เครื่องมือการคิด<br />Key Thinking</div></div>
-        <div class="grid_4"><div class="ignore hrow">พฤติกรรมที่แสดงว่าเข้าใจ<br />Understanding Performance</div></div>
-        <div class="grid_4"><div class="ignore hrow">การประเมิณ<br />Assessment</div></div>
-        <div class="clearfix"></div>
-    </div>
-    <div class="tbody plan-second">
-        <div class="item odd">
-            <div class="grid_5">
-                <div id="Plan-sub_topic" class="editable ignore">-</div>
-            </div>
-            <div class="grid_3">
-                <div id="Plan-key_thinking" class="editable ignore">-</div>
-            </div>
-            <div class="grid_4">
-                <div id="Plan-performance" class="editable ignore">-</div>
-            </div>
-            <div class="grid_4">
-                <div id="Plan-assessment" class="editable ignore">-</div>
-            </div>
+        <div class="thead plan-first">
+            <div class="grid_4"><div class="ignore hrow">สาระสำคัญ<br />Main Point</div></div>
+            <div class="grid_8"><div class="ignore hrow">เป้าหมายหลัก<br />Goal</div></div>
+            <div class="grid_4"><div class="ignore hrow">เนื้อหา/กิจกรรม ชิ้นงาน<br />Content/Activity Work</div></div>
             <div class="clearfix"></div>
         </div>
-    </div>
-    <br/>
-    <hr/>
-    <div class="thead task">
-        <div class="grid_2 hcol"><div class="ignore">วัน<br />Day</div></div>
-        <div class="grid_6 hcol"><div class="ignore">กิจกรรมการเรียนรู้<br />Activities</div></div>
-        <div class="grid_4 hcol"><div class="ignore">สื่อ/แหล่งเรียนรู้<br />Sources</div></div>
-        <div class="grid_4 hcol"><div class="ignore">ชิ้นงาน<br />Work</div></div>
-        <div class="clearfix"></div>
-    </div>
-    <div class="tbody task">
-        {% for day, display in days %}
-        <div class="item {% cycle 'odd' 'even' as rowtype %}">
-            <div class="grid_2">
-                <div class="ignore hrow">
-                    <div class="day-label">{{ display }}</div>
-                    <div class="day-wrap"><div id="Task-{{ day }}-hour" class="editable ignore day-hour">-</div> <span class="suffix">ชม.</span></div>
+        <div class="tbody plan-first">
+            <div class="item odd">
+              <div class="grid_4">
+                  <div id="Plan-main_point" class="editable ignore">-</div>
+              </div>
+              <div class="grid_8">
+                  <div id="Plan-goal" class="editable ignore">-</div>
+              </div>
+              <div class="grid_4">
+                  <div id="Plan-activity" class="editable ignore">-</div>
+              </div>
+              <div class="clearfix"></div>
+            </div>
+        </div>
+        <br/>
+        <hr/>
+        <div class="thead plan-second">
+            <div class="grid_5"><div class="ignore hrow">หัวเรื่อง<br />Sub-Topic</div></div>
+            <div class="grid_3"><div class="ignore hrow">เครื่องมือการคิด<br />Key Thinking</div></div>
+            <div class="grid_4"><div class="ignore hrow">พฤติกรรมที่แสดงว่าเข้าใจ<br />Understanding Performance</div></div>
+            <div class="grid_4"><div class="ignore hrow">การประเมิณ<br />Assessment</div></div>
+            <div class="clearfix"></div>
+        </div>
+        <div class="tbody plan-second">
+            <div class="item odd">
+                <div class="grid_5">
+                    <div id="Plan-sub_topic" class="editable ignore">-</div>
                 </div>
+                <div class="grid_3">
+                    <div id="Plan-key_thinking" class="editable ignore">-</div>
+                </div>
+                <div class="grid_4">
+                    <div id="Plan-performance" class="editable ignore">-</div>
+                </div>
+                <div class="grid_4">
+                    <div id="Plan-assessment" class="editable ignore">-</div>
+                </div>
+                <div class="clearfix"></div>
             </div>
-            <div class="grid_6">
-                <div id="Task-{{ day }}-activity" class="editable ignore">-</div>
-            </div>
-            <div class="grid_4">
-                <div id="Task-{{ day }}-source" class="editable ignore">-</div>
-            </div>
-            <div class="grid_4">
-                <div id="Task-{{ day }}-work" class="editable ignore">-</div>
-            </div>
+        </div>
+        <br/>
+        <hr/>
+        <div class="thead task">
+            <div class="grid_2 hcol"><div class="ignore">วัน<br />Day</div></div>
+            <div class="grid_6 hcol"><div class="ignore">กิจกรรมการเรียนรู้<br />Activities</div></div>
+            <div class="grid_4 hcol"><div class="ignore">สื่อ/แหล่งเรียนรู้<br />Sources</div></div>
+            <div class="grid_4 hcol"><div class="ignore">ชิ้นงาน<br />Work</div></div>
             <div class="clearfix"></div>
         </div>
-        {% endfor %}
+        <div class="tbody task">
+            {% for day, display in days %}
+            <div class="item {% cycle 'odd' 'even' as rowtype %}">
+                <div class="grid_2">
+                    <div class="ignore hrow">
+                        <div class="day-label">{{ display }}</div>
+                        <div class="day-wrap"><div id="Task-{{ day }}-hour" class="editable ignore day-hour">-</div> <span class="suffix">ชม.</span></div>
+                    </div>
+                </div>
+                <div class="grid_6">
+                    <div id="Task-{{ day }}-activity" class="editable ignore">-</div>
+                </div>
+                <div class="grid_4">
+                    <div id="Task-{{ day }}-source" class="editable ignore">-</div>
+                </div>
+                <div class="grid_4">
+                    <div id="Task-{{ day }}-work" class="editable ignore">-</div>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="clear"></div>
     </div>
-    <div class="clear"></div>
 </div>
 <div id="standard" class="content">
     <div class="thead standard">
@@ -272,24 +547,53 @@
         <div class="grid_3"><div class="ignore hrow">อยู่ในแผนแล้ว</div></div>
         <div class="clearfix"></div>
     </div>
-    <div class="tbody standard">
-        {% for standard in standards %}
-        <div class="item {% cycle 'odd' 'even' as rowtype %}">
-            <div class="grid_3" style="display:none;">
-                <div id="CoreStandard-{{ standard.id }}-group_code" class="ignore CoreStandard-group_code">{{ standard.group_code }}</div>
-            </div>
-            <div class="grid_3">
-                <div id="CoreStandard-{{ standard.id }}-code" class="ignore CoreStandard-code">{{ standard.code|safe }}</div>
-            </div>
-            <div class="grid_10">
-                <div id="CoreStandard-{{ standard.id }}-description" class="ignore CoreStandard-description">{{ standard.description|safe }}</div>
-            </div>
-            <div class="grid_3">
-                <div id="CoreStandard-{{ standard.id }}-status" class="ignore CoreStandard-status"><div class="status">No</div></div>
-            </div>
-            <div class="clearfix"></div>
+    <div id="standard-add" class="tbody standard">
+        <div class="grid_3" style="display:none;">
+            <div id="CoreStandard-0-group_code" class="ignore CoreStandard-group_code"></div>
         </div>
+        <div class="grid_3">
+            <div id="CoreStandard-0-code" class="ignore CoreStandard-code editable"></div>
+        </div>
+        <div class="grid_10">
+            <div id="CoreStandard-0-description" class="ignore CoreStandard-description editable"></div>
+        </div>
+        <div class="grid_3">
+            <div id="CoreStandard-0-add" class="ignore CoreStandard-status"><button id="standard-add-submit">เพิ่ม</button></div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <div id="standard-items" class="tbody standard">
+        {% for standard in standards %}
+        <div style="display: none;">{% cycle 'odd' 'even' as rowtype %}</div>
+        {% include "standard_item.html" %}
         {% endfor %}
+    </div>
+</div>
+<div id="project-history" class="content">
+    <div class="thead project-history-submit">
+        <div class="grid_16">
+            <div class="ignore hrow">
+                <button id="compare-cancel" class="active">อยู่กับปัจจุบัน</button>
+                <button id="compare-submit">เปรียบเทียบ</button>
+            </div>
+        </div>
+    </div>
+    <div class="thead project-history">
+        <div class="grid_3"><div class="ignore hrow">เปรียบเทียบกับ</div></div>
+        <div class="grid_1"><div class="ignore hrow">เก่า</div></div>
+        <div class="grid_1"><div class="ignore hrow">ใหม่</div></div>
+        <div class="grid_6"><div class="ignore hrow">วันเวลา</div></div>
+        <div class="grid_5"><div class="ignore hrow">คนแก้ไข</div></div>
+        <div class="clearfix"></div>
+    </div>
+    <div id="project-history-items" class="tbody project-history">
+        {% include "history_item.html" %}
+        {% include "history_items.html" %}
+    </div>
+    <div class="tbody project-history">
+      {% if not is_end %}
+      <div id="history-more"><a href="" class="more">ดูที่เก่ากว่านี้</a></div>
+      {% endif %}
     </div>
 </div>
 {% endblock %}

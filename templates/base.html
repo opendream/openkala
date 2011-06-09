@@ -3,16 +3,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>{% block title %}{% endblock %}</title>
-    <script type="text/javascript" src="{{ STATIC_URL }}aloha/aloha.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}aloha/plugins/com.gentics.aloha.plugins.Format/plugin.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}aloha/plugins/com.gentics.aloha.plugins.Table/plugin.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}aloha/plugins/com.gentics.aloha.plugins.List/plugin.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}aloha/plugins/com.gentics.aloha.plugins.HighlightEditables/plugin.js"></script> 
-    <script type="text/javascript" src="{{ STATIC_URL }}aloha/plugins/com.gentics.aloha.plugins.Link/plugin.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}openkala/CoreStandard.js"></script>
-    
-    <script type="text/javascript" src="{{ STATIC_URL }}jquery.tabify.js"></script>
-    
+
     <style>
     .menu { padding: 0; clear: both; }
     .menu li { display: inline; }
@@ -26,42 +17,75 @@
     <link rel="stylesheet" type="text/css"
         href="{{ STATIC_URL }}extjs/resources/css/ext-sandbox.css"/>
     <link rel="stylesheet" type="text/css"
+        href="{{ STATIC_URL }}aloha/aloha.css"/>
+    <link rel="stylesheet" type="text/css"
         href="{{ STATIC_URL }}css/960.css"/>
     <link rel="stylesheet" type="text/css"
         href="{{ STATIC_URL }}css/style.css"/>
     <link rel="stylesheet" type="text/css"
         href="{{ STATIC_URL }}css/style2.css"/>
-    <script type="text/javascript"
-        src="{{ STATIC_URL }}extjs/builds/ext-all-sandbox-debug.js"></script>
+
+
+
+    <script type="text/javascript" src="{{ STATIC_URL }}aloha/dep/jquery-1.5.1.js" ></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}aloha/plugin/undo/dep/undo.js" ></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}jquery.tabify.js"></script>
+
+    
+    <script 
+      type="text/javascript" 
+      src="{{ STATIC_URL }}aloha/aloha.js" 
+      id="aloha-script-include" 
+      data-plugins="format,table,list,link,highlighteditables,undo">
+    </script>
 
     {% block script %}{% endblock %}
     {% block myScript %}{% endblock %}
-<script>
+    {% block script_override %}{% endblock %}
+    <script>
 
-function getCookie(name) {
-    var cookieValue = null;
-    if (document.cookie && document.cookie != '') {
-        var cookies = document.cookie.split(';');
-        for (var i = 0; i < cookies.length; i++) {
-            var cookie = cookies[i].trim();
-            // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) == (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
             }
         }
+        return cookieValue;
     }
-    return cookieValue;
-}
-</script>
+    </script>
 </head>
 
 <body>
 <div class="container_16">
     <div id="site-name"><h1><a href="{% url home %}">Openkala</a></h1></div>
     
+    <div id="user-wrapper">
+        {% if user.is_authenticated %}
+        <div class="logged-in">สวัสดีคุณ {{ user.username }} <a class="accounts-logout" href="/accounts/logout/">ออกจากระบบ</a></div>
+        {% else %}
+        <div class="logged-out"><a class="accounts-login" href="/accounts/login/">เข้าสู่ระบบ</a><a class="accounts-register" href="/accounts/register/">สมัครสมาชิก</a></div>
+        {% endif %}
+    </div>
+
     <div id="header-wrapper">
         {% block header %}{% endblock %}
+    </div>
+
+    <div id="messages-wrapper">
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
     </div>
     
     <div id="breadcrumb">
@@ -86,5 +110,6 @@ function getCookie(name) {
     <div class="clear"/>
 </div>
 <form>{% csrf_token %}</form>
+{% block script_footer %}{% endblock %}
 </body>
 </html>

@@ -8,23 +8,20 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    url(r'^test/', 'quarter.views.test'),
-    url(r'^post', 'quarter.views.postMSG'),
-    url(r'^oldproject', 'quarter.views.project_page'),
 
+    url(r'^$', 'quarter.views.home', name='home'),
     url(r'^api/', include('api.urls')),
+    #url(r'^accounts/login$', 'quarter.views.accounts_login', name='accounts_login'),
 
-    url(r'^$', 'quarter.views.project_list', name='home'),
+    # quarter
     url(r'^projects$', 'quarter.views.project_list', name='quarter_project_list'),
     url(r'^projects/(?P<project_id>[^/]+)$', 'quarter.views.project_overview', name='quarter_project_overview'),
-    url(r'^projects/(?P<project_id>[^/]+)/plans$', 'quarter.views.plan_overview', kwargs={'week': 1}, name='quarter_plan_overview'),
-    url(r'^projects/(?P<project_id>[^/]+)/plans/(?P<week>[^/]+)$', 'quarter.views.plan_overview', name='quarter_plan_week'),
+    url(r'^standard-headers$', 'quarter.views.standard_header_list', name='quarter_standard_header_list'),
 
-    url(r'^projectsExt$', 'quarter.views.project_page'),
-    # Uncomment the next line to enable the admin:
-    url(r'^admin/', include(admin.site.urls)),
-
+    # other
     url(r'^utility/(?P<app_label>[\d\w]+)/(?P<model_name>[\d\w]+)\.csv', 'utility.views.admin_list_export'),
+    url(r'^admin/', include(admin.site.urls)),
+    url(r'^accounts/', include('registration.backends.default.urls')),
 )
 
 

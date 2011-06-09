@@ -2,7 +2,7 @@
 
 # Signal after syncdb
 from quarter.models import *
-from api.handlers import *
+from api.handlers import ApiHandler, RequestBlank
 import csv
 
 def import_model(model, filepath):
@@ -28,14 +28,15 @@ def after_syncdb(sender, **kwargs):
     """
     THIS IS DUMMY CONTENT CODE
     """
+    pass
 
     # ORDERING IMPORTANT
-    import_model(CoreStandard,   'import/CoreStandard.csv')
-    import_model(StandardHeader, 'import/StandardHeader.csv')
-    import_model(Project,        'import/Project.csv')
-    import_model(Topic,          'import/Topic.csv')
-    import_model(Plan,           'import/Plan.csv')
-    import_model(Task,           'import/Task.csv')
+    #import_model(CoreStandard,   'import/CoreStandard.csv')
+    #import_model(StandardHeader, 'import/StandardHeader.csv')
+    #import_model(Project,        'import/Project.csv')
+    #import_model(Topic,          'import/Topic.csv')
+    #import_model(Plan,           'import/Plan.csv')
+    #import_model(Task,           'import/Task.csv')
 
 
 from django.db.models.signals import post_syncdb

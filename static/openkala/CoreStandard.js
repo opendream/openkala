@@ -1,3 +1,4 @@
+/*
 repositories = {
     CoreStandard: new GENTICS.Aloha.Repository('CoreStandard')
 }
@@ -17,6 +18,7 @@ repositories.CoreStandard.query = function(p, callback) {
 repositories.CoreStandard.markObject = function(obj, resourceItem) {
     CoreStandard.updateCoreStandard(obj, resourceItem);
 }
+*/
 
 CoreStandard = new GENTICS.Aloha.Plugin('CoreStandard');
 CoreStandard.init = function() {

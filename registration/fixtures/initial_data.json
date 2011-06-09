@@ -1,0 +1,1 @@
+[{"pk": 1, "model": "registration.registrationprofile", "fields": {"activation_key": "ALREADY_ACTIVATED", "user": 2}}, {"pk": 2, "model": "registration.registrationprofile", "fields": {"activation_key": "ALREADY_ACTIVATED", "user": 3}}]

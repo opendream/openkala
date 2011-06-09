@@ -122,6 +122,8 @@ TEMPLATE_DIRS = (
 )
 
 FIXTURE_DIRS = (
+   os.path.join(PROJECT_DIR, 'auth/fixtures'),
+   os.path.join(PROJECT_DIR, 'registration/fixtures'),
    os.path.join(PROJECT_DIR, 'quarter/fixtures'),
 )
 

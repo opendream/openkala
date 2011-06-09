@@ -1,0 +1,15 @@
+<div class="item {{ rowtype }}">
+    <div class="grid_3" style="display:none;">
+        <div id="CoreStandard-{{ standard.id }}-group_code" class="ignore CoreStandard-group_code">{{ standard.group_code }}</div>
+    </div>
+    <div class="grid_3">
+        <div id="CoreStandard-{{ standard.id }}-code" class="ignore CoreStandard-code editable">{{ standard.code|safe }}</div>
+    </div>
+    <div class="grid_10">
+        <div id="CoreStandard-{{ standard.id }}-description" class="ignore CoreStandard-description editable">{{ standard.description|safe }}</div>
+    </div>
+    <div class="grid_3">
+        <div id="CoreStandard-{{ standard.id }}-status" class="ignore CoreStandard-status"><div class="status">No</div></div>
+    </div>
+    <div class="clearfix"></div>
+</div>

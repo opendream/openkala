@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}ยืนยันการลงทะเบียน{% endblock %}
+{% block breadcrumb %}<li>ยืนยันการลงทะเบียน</li>{% endblock %}
+{% block header %}
+<div class="grid_16"><div class="ignore"><h1>ยืนยันการลงทะเบียน</h1></div></div>
+{% endblock %}
+
+{% block content %}
+
+{% if account %}
+
+<p>{% trans "Account successfully activated" %}</p>
+
+<p><a href="{% url auth_login %}">{% trans "Log in" %}</a></p>
+
+{% else %}
+
+<p>{% trans "Account activation failed" %}</p>
+
+{% endif %}
+
+{% endblock %}

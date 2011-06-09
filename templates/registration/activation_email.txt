@@ -1,0 +1,5 @@
+ยืนยันการลงทะเบียน {{ site.name }}
+
+http://{{ site.domain }}{% url registration_activate activation_key %}
+
+กรุณายืนยันการลงทะเบียนภายใน {{ expiration_days }} วัน

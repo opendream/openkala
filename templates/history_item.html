@@ -1,0 +1,22 @@
+<div class="item{% if is_new %} new{% endif %}{% if not history %} current{% endif %}{% if added %} added{% endif %}">
+    <div class="grid_3">
+        <div id="ProjectHistory-{% if history %}{{ history.id }}{% else %}0{% endif %}-curpre" class="ignore ProjectHistory-curpre">{% if history %}{% if history.is_last %}(<a href="{% url api_project_history project_id history.id 0 %}">ปัจจุบัน</a>){% else %}(<a href="{% url api_project_history project_id history.id 0%}">ปัจจุบัน</a>|<a href="{% url api_project_history project_id history.before.id history.id %}">ก่อนหน้านี้</a>){% endif %}{% else %}(ก่อนหน้านี้){% endif %}</div>
+    </div>
+    <div class="grid_1">
+        <div class="ignore ProjectHistory-id">
+            <input id="ProjectHistory-{% if history %}{{ history.id }}{% else %}0{% endif %}-old-id" class="ProjectHistory-old-id" type="radio" value="{% if history %}{{ history.id }}{% else %}0{% endif %}" name="ProjectHistory-{% if history %}{{ history.id }}{% else %}0{% endif %}-old-id" />
+        </div>
+    </div>
+    <div class="grid_1">
+        <div class="ignore ProjectHistory-id">
+            <input id="ProjectHistory-{% if history %}{{ history.id }}{% else %}0{% endif %}-diff-id" class="ProjectHistory-diff-id" type="radio" value="{% if history %}{{ history.id }}{% else %}0{% endif %}" name="ProjectHistory-{% if history %}{{ history.id }}{% else %}0{% endif %}-diff-id"/>
+        </div>
+    </div>
+    <div class="grid_6">
+        <div id="ProjectHistory-{% if history %}{{ history.id }}{% else %}0{% endif %}-datetime" class="ignore ProjectHistory-datetime">{% if history %}{{ history.datetime|date:'d/m/Y H:i:s' }}{% else %}ปัจจุบัน{% endif %}</div>
+    </div>
+    <div class="grid_5">
+        <div id="ProjectHistory-{% if history %}{{ history.id }}{% else %}0{% endif %}-user" class="ignore ProjectHistory-user">{% if history %}{{ history.user.username }}{% else %}{{ user.username }}{% endif %}</div>
+    </div>
+    <div class="clearfix"></div>
+</div>

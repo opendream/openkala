@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}ลงทะเบียน{% endblock %}
+{% block breadcrumb %}<li>ลงทะเบียน</li>{% endblock %}
+
+{% block header %}
+<div class="grid_16"><div class="ignore"><h1>ลงทะเบียน</h1></div></div>
+{% endblock %}
+
+{% block content %}
+<form action="/accounts/register/" method="post" accept-charset="utf-8">
+    {% csrf_token %}
+    <ul>
+        <li>
+            <label for="id_username">ชื่อผู้ใช้</label>:{{ form.username }}
+            {% if form.username.errors %}
+                <span class="quiet red"><br />* {{ form.username.errors|join:"; " }}</span>
+            {% endif %}
+        </li>
+        <li>
+            <label for="id_email">อีเมล{% if not form.email.field.required %} (ไม่บังคับ){% endif %}</label>:{{ form.email }}
+            {% if form.email.errors %}
+                <span class="quiet red"><br />* {{ form.email.errors|join:"; " }}</span>
+            {% endif %}
+        </li>
+        <li>
+            <label for="id_password1">รหัสผ่าน</label>:{{ form.password1 }}
+            {% if form.password1.errors %}
+                <span class="quiet red"><br />* {{ form.password1.errors|join:"; " }}</span>
+            {% endif %}
+        </li>
+        <li>
+            <label for="id_password2">ยืนยันรหัสผ่าน</label>:{{ form.password2 }}
+            {% if form.password2.errors %}
+                <span class="quiet red"><br />* {{ form.password2.errors|join:"; " }}</span>
+            {% endif %}
+        </li>
+        {% if form.non_field_errors %}
+            <ul class="quiet red">{{ form.non_field_errors.as_ul }}</ul>
+        {% endif %}
+    </ul>
+    <div class="submit-wrapper">
+        <input type="submit" value="ลงทะเบียน" />
+    </div>
+</form>
+{% endblock %}

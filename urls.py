@@ -21,7 +21,7 @@ urlpatterns = patterns('',
     # other
     url(r'^utility/(?P<app_label>[\d\w]+)/(?P<model_name>[\d\w]+)\.csv', 'utility.views.admin_list_export'),
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^accounts/', include('registration.backends.default.urls')),
+    url(r'^accounts/', include('registration.urls')),
 )
 
 

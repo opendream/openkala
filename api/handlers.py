@@ -10,6 +10,7 @@ import simplejson as json
 import urllib
 
 from quarter.models import *
+from stockphoto.models import *
 from utility.dmp import diff_match_patch
 import utility
 
@@ -426,5 +427,12 @@ class ProjectHistoryGetPage(ApiHandler):
 
         return {'list': html, 'history_last_id': history_last_id, 'is_end': is_end}
 
+class GalleryHandler(ApiHandler):
+    model = Gallery
+    fields = [(field.name) for field in model._meta.fields]
+    fields.append('cell')
 
-
+class PhotoHandler(ApiHandler):
+    model = Photo
+    fields = [(field.name) for field in model._meta.fields]
+    fields.append('cell')

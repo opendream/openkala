@@ -345,3 +345,16 @@ div.GENTICS_editable_active{
   margin-top: 15px
 }
 
+/* Upload photo */
+.progress {
+  width: 200px;
+  border: 1px solid #BBB;
+  background-color: #FFF;
+  padding: 0;
+}
+.progress span {
+  display: block;
+  width: 0px;
+  height: 10px;
+  background-color: #DDD;
+}

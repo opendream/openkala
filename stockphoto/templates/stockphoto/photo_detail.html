@@ -1,0 +1,91 @@
+{% extends "stockphoto/base.html" %}
+{% block title %} stockphoto photos : 
+
+{% if object %}
+{{ object.gallery.title }} : {{ object.title }}
+{% endif %}
+
+{% endblock %}
+
+{% block content %}
+
+{% if object %}
+
+<p id="breadcrumbs">
+  <a href="../..">Galleries</a> &raquo;
+  <a href="../../{{ object.gallery.id }}">{{ object.gallery.title }}</a>
+</p>
+
+{% if object.prev %}
+<div class="small-image-box">
+  <a href="../{{ object.prev.id }}/">
+    <img src="{{ object.prev.thumburl}}" alt="{{ object.prev.title }}"/>
+  </a>
+  <a href="../{{ object.prev.id }}/">
+  <span>&laquo;  {{ object.prev.title }} </span></a>
+</div>
+{% endif %}
+{% if object.next %}
+<div class="small-image-box">
+  <a href="../{{ object.next.id }}/">
+    <img src="{{ object.next.thumburl}}" alt="{{ object.next.title }}"/> 
+  </a>
+  <a href="../{{ object.next.id }}/">
+  <span>{{ object.next.title }} &raquo;</span></a>
+</div>
+
+{% endif %}
+
+<br id="imageboxes-break"/>
+
+
+<div id="large-image-box">
+  <a href="{{ object.fullurl }}">
+    <img src="{{ object.dispurl }}"
+         alt="{{ object.title }}" />
+  </a>
+  <div>
+    <h2 class="phototitle">{{ object.title }}</h2>
+    <div class="photodesc"> {{ object.desc}} </div>
+    {% if object.photographer %}
+    <p class="photographer">Photo by {{ object.photographer }}.</p>
+    {% endif %}
+    {% if object.date %}
+    <p class="photodate">Photo taken {{ object.date }}.</p>
+    {% endif %}
+    {% if object.extra %}
+    <h3 class="photoextra">More information</h3>
+    <p class="photoextra">{{ object.extra }}</p>
+    {% endif %}
+  </div>
+</div>
+{% if object.prev %}
+  <a href="../{{ object.prev.id }}/">
+    &laquo; previous
+  </a>
+{% endif %}
+{% if object.next %}
+  <a href="../{{ object.next.id }}/">
+    next &raquo;
+  </a>
+{% endif %}
+
+{% if not user.is_anonymous %}
+<p>
+  <a href="{{ admin_url }}/stockphoto/photo/{{ object.id }}/">
+    Edit this image.
+  </a>
+</p>
+{%else %}
+<p>
+  <a href="/accounts/login/?next={{ request.path }}">
+    Login</a> to edit this image.
+</p>
+{% endif %}
+
+{% else %}
+<p>This is not the photo you are looking for.</p>
+{% endif %}
+
+
+{% endblock %}

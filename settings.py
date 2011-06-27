@@ -137,6 +137,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.messages',
     'registration',
+    'stockphoto',
     'quarter',
     'utility'
 )

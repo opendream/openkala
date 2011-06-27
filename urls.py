@@ -17,6 +17,16 @@ urlpatterns = patterns('',
     url(r'^projects$', 'quarter.views.project_list', name='quarter_project_list'),
     url(r'^projects/(?P<project_id>[^/]+)$', 'quarter.views.project_overview', name='quarter_project_overview'),
     url(r'^standard-headers$', 'quarter.views.standard_header_list', name='quarter_standard_header_list'),
+    
+    # gallery
+    url(r'^projects/(?P<project_id>[^/]+)/stockphoto$', 'stockphoto.views.gallery_list', name='stockphoto_gallery_list'),
+    url(r'^projects/(?P<project_id>[^/]+)/stockphoto/add$', 'stockphoto.views.gallery_add', name='stockphoto_gallery_add'),
+    url(r'^projects/(?P<project_id>[^/]+)/stockphoto/(?P<gallery_id>[^/]+)$', 'stockphoto.views.gallery_detail', name='stockphoto_gallery_detail'),
+    url(r'^projects/(?P<project_id>[^/]+)/stockphoto/detail/(?P<photo_id>[^/]+)$', 'stockphoto.views.photo_detail', name='stockphoto_photo_detail'),
+    url(r'^projects/(?P<project_id>[^/]+)/stockphoto/detail/(?P<photo_id>[^/]+)/delete$', 'stockphoto.views.photo_delete', name='stockphoto_photo_delete'),
+
+    url(r'^projects/(?P<project_id>[^/]+)/import/(\d+)/$', 'stockphoto.views.import_photos', name="stockphoto_import"),
+    url(r'^projects/(?P<project_id>[^/]+)/export/(\d+)/$', 'stockphoto.views.export', name="stockphoto_export"),
 
     # other
     url(r'^utility/(?P<app_label>[\d\w]+)/(?P<model_name>[\d\w]+)\.csv', 'utility.views.admin_list_export'),

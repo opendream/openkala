@@ -1,0 +1,61 @@
+{% extends "stockphoto/base.html" %}
+{% block title %}stockphoto : import photos{% endblock %}
+
+
+{% block content %}
+<h1>Import photos into a gallery</h1>
+
+{% if gallery %}
+<h2>Gallery: {{ gallery.title }}</h2>
+
+<form action="../../import/{{ gallery.id }}/" method="post"
+      enctype="multipart/form-data">
+  <div>
+      {%if form.zipfile.errors %}
+      <span style="color: red;">
+        {{ form.zipfile.errors|join:", " }}
+      </span><br/>
+      {% endif %}
+
+    <label class="fortextinput" for="id_zip_file">
+      ZIP archive to upload:
+    </label>
+    {{ form.zip_file }}<br/>
+
+    {%if form.photographer.errors %}
+    <span style="color: red;">
+      {{ form.photographer.errors|join:", " }}
+      </span><br/>
+    {% endif %}
+
+    <label class="fortextinput" for="id_photographer">
+      Name of photographer:
+    </label>
+    {{ form.photographer }}<br/>
+
+    {%if form.date.errors %}
+    <span style="color: red;">
+      {{ form.date.errors|join:", " }}
+      </span><br/>
+    {% endif %}
+    
+    <label class="fortextinput" for="id_date">
+      Date photos were taken:
+    </label>
+    {{ form.date }}<br/>
+    <input type="submit" value="Upload"/>
+  </div>
+</form>
+<p>
+  When you upload a batch of photos in a zipfile, it will give each of
+  them a title based on its filename, and assigns them all the same
+  photographer and date.  That's probably not always what you want, so
+  you can change any of these settings on a per-photo basis
+  <em>after</em> you upload the images.
+</p>
+
+{% else %}
+<p>Oops!  No gallery here!</p>
+{% endif %}
+
+{% endblock %}

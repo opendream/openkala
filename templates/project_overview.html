@@ -258,6 +258,55 @@
     }
 
 
+    // Gallery ================================
+    var gallery_render = function (e, pathname, state) {
+      pathname = pathname? pathname: $(this).attr('href');
+      if (pathname && pathname.indexOf('stockphoto') > 0 && pathname.indexOf('media') == -1) {
+        if (e) {
+          e.preventDefault();
+        }
+
+        var spliter = pathname.indexOf('?') > -1? '&': '?';
+        $('#gallery-render').load(pathname + spliter + 'ajax=1', function () {
+          $('#gallery-render a').click(gallery_render);
+          $('.editable', this).aloha();
+        });
+
+        if (!state) {
+          window.history.pushState('', '', pathname + '#gallery-tab');
+        }
+      }
+    }
+
+    var gallery_init = function (access_from_url) {
+      var pathname = window.location.pathname;
+      var hash = window.location.hash;
+      var state = '';
+
+      if (access_from_url && access_from_url !== true && access_from_url['type']) {
+        state = access_from_url['type'];
+      }
+
+      // Click from menu tab
+      if (access_from_url !== true && pathname.indexOf('stockphoto') == -1 && hash == '#gallery-tab') {
+        gallery_render(null, pathname + '/stockphoto');
+      }
+      // Access from push or pop state
+      if (access_from_url !== true && pathname.indexOf('stockphoto') != -1 && hash == '#gallery-tab') {
+        gallery_render(null, pathname, state);
+      }
+      // Access from url with stockphoto path
+      else if (access_from_url === true && pathname.indexOf('stockphoto') != -1) {
+        gallery_render(null, pathname);
+      }
+      // Leave from gallery tab
+      else if (hash != '#gallery-tab') {
+        window.history.pushState('', '', '/projects/' + project_id + hash);
+        $('#gallery-render').html('');
+      }
+      $('#gallery-render a').click(gallery_render);
+    }
+
 </script>
 {% endblock %}
 
@@ -398,6 +447,11 @@
         stack = new Undo.Stack();
       });
 
+      $(window).bind('hashchange', gallery_init);
+      $(window).bind('popstate', gallery_init);
+      $(window).bind('pushstate', gallery_init);
+      gallery_init(true);
+
 
     })(window);
 </script>
@@ -426,6 +480,7 @@
   <li><a id="tab-plan" href="#plan">แผน</a></li>
   <li><a id="tab-standard" href="#standard">มาตรฐาน</a></li>
   <li><a id="tab-project-history" href="#project-history">ประวัติ</a></li>
+  <li><a id="tab-gallery" href="#gallery">อัลบัมภาพ</a></li>
 </ul>
 
 <div id="topic" class="content">
@@ -595,5 +650,9 @@
       <div id="history-more"><a href="" class="more">ดูที่เก่ากว่านี้</a></div>
       {% endif %}
     </div>
+</div>
+<div id="gallery" class="content">
+  <div id="gallery-render">
+  </div>
 </div>
 {% endblock %}

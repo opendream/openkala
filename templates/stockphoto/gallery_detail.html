@@ -1,0 +1,49 @@
+{% if gallery %}
+<div id="Gallery-{{ gallery.id }}-title" class="ignore editable gallery-{{ gallery.id }} gallerytitle">{{ gallery.title }}</div>
+<div class="gallery-navi">
+    <a href="{% url stockphoto_gallery_list project_id %}">อัลบัมทั้งหมด</a>
+</div>
+
+{% if not user.is_anonymous %}
+<form id="photo-upload-form" action='#' method='post' enctype='multipart/form-data'>
+  <input id="photo-upload" name="uploads[]" type="file" multiple="multiple" value="อัพโหลดรูป" />
+  <div id="photo-current-wrap"></div>
+</form>
+<script>
+
+$(document).ready(function () {
+  photo_upload_build();
+});
+</script>
+{% else %}
+<p>
+  <a href="/accounts/login/?next={{ request.path }}">เข้าสู่ระบบ</a> เพื่อเพิ่มหรือแก้ไขรูป
+</p>
+{% endif %}
+
+{% if gallery.photo_set.count %}
+
+<div id="thumbnail-box">
+<ul id="thumbnails">
+{% for item in gallery.photo_set.all %}
+<li>
+  <div class="small-image-box">
+    <a href="{% url stockphoto_photo_detail project_id item.id %}">
+      <img src="{{ item.thumburl }}"
+           alt="{{ item.title }}" />
+    </a>
+    <a href="{% url stockphoto_photo_detail project_id item.id %}"><span>{{ item.desc }}</span></a>
+  </div>
+</li>                  
+{% endfor %}
+</ul>
+</div>
+{% else %}
+<p>ยังไม่มีภาพในอัลบัม</p>
+{% endif %}
+<br class="imageboxes-break"/>
+
+
+{% else %}
+<p>ไม่พบอัลบัมรูปที่คุณค้นหา</p>
+{% endif %}

@@ -13,6 +13,7 @@ import simplejson as json
 from quarter.models import *
 from quarter.forms import *
 from api.handlers import *
+from stockphoto.models import *
 
 
 def home(request):

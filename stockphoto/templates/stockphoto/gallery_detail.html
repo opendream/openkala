@@ -1,0 +1,64 @@
+{% extends "stockphoto/base.html" %}
+{% block title %} stockphoto photos: 
+{% if object %}
+{{ object.title }}
+{% endif %}
+{% endblock %}
+
+{% block content %}
+{% if object %}
+<p id="breadcrumbs">
+  <a href="../">Galleries</a> 
+</p>
+
+
+<h1>{{ object.title }}</h1>
+
+{% if object.photo_set.count %}
+
+<div id="thumbnail-box">
+<ul id="thumbnails">
+{% for item in object.photo_set.all %}
+<li>
+  <div class="small-image-box">
+    <a href="../detail/{{ item.id }}">
+      <img src="{{ item.thumburl }}"
+           alt="{{ item.title }}" />
+    </a>
+    <a href="../detail/{{ item.id }}"> <span>{{ item.title }}</span></a>
+  </div>
+</li>                  
+{% endfor %}
+</ul>
+</div>
+{% else %}
+<p>There are no photos in this gallery.  If you just uploaded a batch
+of photos, try hitting your browser's reload button to see if they
+show up.</p>
+{% endif %}
+<br class="imageboxes-break"/>
+
+{% if not user.is_anonymous %}
+<p>
+  <a href="{{ object.get_admin_url }}">Edit this gallery.</a><br/>
+  <a href="{{ admin_url }}/stockphoto/photo/add/">Add a photo to 
+  this gallery.</a><br/>
+  {% comment %}
+  <a href="{{stockphoto_url}}/import/{{ object.id }}/">Add a bunch 
+  of photos to this gallery.</a>
+  {% endcomment %}
+  <a href="{% url stockphoto_import object.id %}">Add a bunch 
+  of photos to this gallery.</a>
+</p>
+{% else %}
+<p>
+  <a href="/accounts/login/?next={{ request.path }}">
+    Login</a> to add or edit photos
+</p>
+{% endif %}
+
+{% else %}
+<p>This is not the gallery you are looking for.</p>
+{% endif %}
+
+{% endblock %}

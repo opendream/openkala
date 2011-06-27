@@ -1,0 +1,60 @@
+{% if photo %}
+
+<h1>รุปจากอัลบัม - {{ photo.gallery.title }}</h1>
+<div class="gallery-navi">
+    <a href="{% url stockphoto_gallery_detail project_id photo.gallery.id %}">กลับไปที่อัลบัม</a>
+    .
+    <a href="{% url stockphoto_gallery_list project_id %}">อัลบัมทั้งหมด</a>
+</div>
+
+<div id="photo-delete-wrap"><a id="photo-delete" href="{% url stockphoto_photo_delete project_id photo.id %}">ลบ</a></div>
+
+{% if photo.prev %}
+<div class="small-image-box">
+  <a href="{% url stockphoto_photo_detail project_id photo.prev.id %}">
+    <img src="{{ photo.prev.thumburl}}" alt="{{ photo.prev.title }}"/>
+  </a>
+  <a href="{% url stockphoto_photo_detail project_id photo.prev.id %}">
+  <span>&laquo;  {{ photo.prev.title }} </span></a>
+</div>
+{% endif %}
+{% if photo.next %}
+<div class="small-image-box">
+  <a href="{% url stockphoto_photo_detail project_id photo.next.id %}">
+    <img src="{{ photo.next.thumburl}}" alt="{{ photo.next.title }}"/> 
+  </a>
+  <a href="{% url stockphoto_photo_detail project_id photo.next.id %}">
+  <span>{{ photo.next.title }} &raquo;</span></a>
+</div>
+
+{% endif %}
+
+<br id="imageboxes-break"/>
+
+
+<div id="large-image-box">
+  <a href="{{ photo.fullurl }}">
+    <img src="{{ photo.dispurl }}"
+         alt="{{ photo.title }}" />
+  </a>
+  <div>
+    <div id="Photo-{{ photo.id }}-desc" class="ignore editable photo-{{ photo.id }} photodesc">{{ photo.desc }}</div>
+    {% if datetime %}
+    <p class="photodate">ถ่ายเมื่อ {{ datetime|date:'d/m/Y H:i' }}</p>
+    {% endif %}
+  </div>
+</div>
+{% if photo.prev %}
+  <a href="{% url stockphoto_photo_detail project_id photo.prev.id %}">
+    &laquo; ย้อนกลับ
+  </a>
+{% endif %}
+{% if photo.next %}
+  <a href="{% url stockphoto_photo_detail project_id photo.next.id %}">
+    ถัดไป &raquo;
+  </a>
+{% endif %}
+
+{% else %}
+<p>This is not the photo you are looking for.</p>
+{% endif %}

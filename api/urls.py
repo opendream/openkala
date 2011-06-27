@@ -9,6 +9,8 @@ plan_handler                     = Resource(PlanHandler)
 task_handler                     = Resource(TaskHandler)
 corestandard_handler             = Resource(CoreStandardHandler)
 standardheader_handler           = Resource(StandardHeaderHandler)
+gallery_handler                  = Resource(GalleryHandler)
+photo_handler                    = Resource(PhotoHandler)
 project_plan_handler             = Resource(ProjectPlanHandler)
 project_task_handler             = Resource(ProjectTaskHandler)
 project_history_handler          = Resource(ProjectHistoryHandler)
@@ -35,6 +37,12 @@ urlpatterns = patterns('',
 
    url(r'^corestandards/(?P<id>[^/]+)$', corestandard_handler, { 'emitter_format': 'json' }),
    url(r'^corestandards$', corestandard_handler, { 'emitter_format': 'json' }),
+
+   url(r'^gallerys/(?P<id>[^/]+)$', gallery_handler, { 'emitter_format': 'json' }),
+   url(r'^gallerys$', gallery_handler, { 'emitter_format': 'json' }),
+
+   url(r'^photos/(?P<id>[^/]+)$', photo_handler, { 'emitter_format': 'json' }),
+   url(r'^photos$', photo_handler, { 'emitter_format': 'json' }),
 
    url(r'^projecthistorys/getpage/(?P<project_id>[^/]+)/(?P<history_id>[^/]+)$', project_history_get_page_handler, { 'emitter_format': 'json' }, name="api_project_history_get_page"),
    url(r'^projecthistorys/(?P<project_id>[^/]+)/(?P<old_id>[^/]+)/(?P<diff_id>[^/]+)$', project_history_handler, { 'emitter_format': 'json' }, name="api_project_history"),

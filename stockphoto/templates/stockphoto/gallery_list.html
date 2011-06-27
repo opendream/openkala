@@ -1,0 +1,51 @@
+{% extends "stockphoto/base.html" %}
+{% block title %}stockphoto photogalleries{% endblock %}
+
+{% block content %}
+<h1>stockphoto photo galleries</h1>
+
+{% if object_list %}
+<div id="thumbnail-box">
+  <div id="thumbnails">
+    {% for item in object_list %}
+    <div class="small-image-box">
+      <a href="{{ item.id }}/">
+        {% if item.first %}
+        <img src="{{ item.first.thumburl }}"
+             alt="{{ item.first.title }}" />
+        {% else %}
+        No photo available
+        {% endif %}
+      </a>
+      <a href="{{ item.id }}/"><span>{{ item.title }}</span></a>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% else %}
+<p>No galleries have been set up yet.</p>
+{% endif %}
+<br id="imageboxes-break"/>
+
+
+{% if is_paginated %}
+
+{% if has_previous %}
+<a href="./?page={{ previous }}">&laquo; previous</a> |
+{% endif %}
+{% if has_next %}
+<a href="./?page={{ next }}">next &raquo;</a>
+{% endif %}
+{% endif %}
+{% if not user.is_anonymous %}
+<p>
+  <a href="{{admin_url}}/stockphoto/gallery/add/">Create a new gallery.</a>
+</p>
+{% else %}
+<p>
+  <a href="/accounts/login/?next={{ request.path }}">
+    Login</a> to create a new gallery.
+</p>
+{% endif %}
+
+{% endblock %}

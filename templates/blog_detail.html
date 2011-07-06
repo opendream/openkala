@@ -1,0 +1,33 @@
+{%if blog_full %} 
+<div class="blog-navi">
+  <a href="{% url quarter_blog_list project_id %}">บล็อกทั้งหมด</a>
+</div>
+<script>
+$('#blog-add').hide();
+</script>
+{% endif %}
+<div class="item{%if blog_full %} full{% else %} teaser{% endif %}">
+    <div class="grid_2">
+        <div class="Blog-meta">
+            <div id="Blog-{{ blog.id }}-created" class="ignore Blog-created">{{ blog.created|date:'d/m/Y' }}</div>
+            <div id="Blog-{{ blog.id }}-user" class="ignore Blog-user">โดย {{ blog.user.username }}</div>
+            {% if blog.plan %}
+            <div id="Blog-{{ blog.id }}-plan" class="ignore Blog-user">ใน {{ blog.plan }}</div>
+            {% endif %}
+        </div>
+    </div>
+    <div class="grid_14">
+        <h2 id="Blog-{{ blog.id }}-title" class="ignore Blog-title{% if blog_full %} editable{% endif %}">
+          {% if blog_full %}
+          {{ blog.title|safe }}
+          {% else %}
+          <a href="{% url quarter_blog_detail project_id blog.id %}">{{ blog.title|safe }}</a>
+          {% endif %}
+        </h2>
+    </div>
+    <div class="grid_14">
+        <div id="Blog-{{ blog.id }}-body" class="ignore Blog-title{% if blog_full %} editable{% endif %}">{%if blog_full %}{{ blog.body|safe }}{% else %}{{ blog.body|safe|truncatewords_html:400 }}{% endif %}</div>
+    </div>
+    <div class="clearfix"></div>
+</div>
+

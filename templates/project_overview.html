@@ -7,6 +7,95 @@
 <script type="text/javascript" charset="utf-8">
     var project_id = {{ project.id }};
     var history_last_id = {{ history_last_id }};
+    var is_authenticated = {% if user.is_authenticated %}true{% else %}false{%endif %};
+    var static_url = '{{ STATIC_URL }}';
+
+    // Site
+    var Site = function() {
+      var self = this;
+      var mode = 'view';
+      self.latest_mode = 'view';
+
+      self.canEdit = function () {
+        return mode == 'edit';
+      }
+
+      self.getMode = function (is_default) {
+        if (is_default) {
+          var resp = $.ajax({
+              type: 'GET',
+              url: '/projects/' + project_id + '/getmode',
+              dataType: 'json',
+              async: false
+          });
+          mode = resp.responseText;
+        } 
+        return mode;
+        
+      }
+
+      self.setMode = function (m, fn, force){
+        if (m != mode || force) {
+          var resp = $.ajax({
+              type: 'GET',
+              url: '/projects/' + project_id + '/setmode/' + m,
+              dataType: 'json',
+              async: false
+          });
+          mode = resp.responseText;
+
+          if (m == 'view') {
+            $('#mode-style').html('.form-add { display: none !important; }');
+            $('.editable').contentEditable(false);
+            $('.plans-map').hide();
+            $('.plans-show').show();
+            $('#topic .tbody .item').each(function () {
+              var has_content = false;
+              $('.editable', this).each(function () {
+                if ($(this).html()) {
+                  has_content = true;
+                }
+              });
+
+              if (!has_content) {
+                $(this).hide();
+              }
+            });
+          }
+          else if (m == 'edit') {
+            if (!is_authenticated) {
+              self.setMode('view');
+              return false;
+            }
+            $('.editable').contentEditable(true);
+            $('#mode-style').html('.form-add { display: block !important;}');
+            $('.plans-show').hide();
+            $('.plans-map').show();
+            $('#topic .tbody .item').show();
+          }
+
+          if (fn) {
+            $('#mode-button').click();
+          }
+          else {
+            self.latest_mode = m;
+          }
+        }
+
+      }
+
+      self.init = function () {
+        self.setMode(mode, false, true);
+      }
+      mode = self.getMode(true);
+      self.latest_mode = mode;
+    }
+
+    site = new Site();
+
+    // Plan
+    planHandler.init(project_id, static_url);
+
 
     // History
 
@@ -26,13 +115,17 @@
       };
 
       self.setMode = function (m) {
+        if (m == mode) {
+          return false;
+        }
         mode = m;
         if (mode == 'normal') {
-          $('.editable').attr("contentEditable", "true");
           $('.history-message').remove();
+          $('#mode-status').hide();
         }
         else if (mode == 'compare') {
-          $('.editable').attr("contentEditable", "false");
+          site.setMode('view', true);
+          $('#mode-status').show();
         }
       };
 
@@ -41,11 +134,14 @@
       };
 
       self.disable = function () {
-        self.setMode('normal');
+        //self.setMode('normal');
         $('#week_options').val(week);
         $.each(original_data, function(selector, origin) {
           origin['jqobj'].html(origin['html']);
         });
+        site.setMode(site.latest_mode, true);
+        $('#mode-status').hide();
+        $('.history-message').remove();
       };
 
       self.reload = function() {
@@ -60,8 +156,10 @@
           return null;
         }
         else if (mode == 'normal') {
-          $('#messages-wrapper').append($('<div class="history-message">ขณะนี้คุณอยู่ในหมวดเปรียบเทียบ จะไม่สามารถแก้ไขข้อความใดๆได้ <a id="normal-mode">กลับสู่โหมดแก้ไข</a></div>'));
-          $('#normal-mode').click(function () { $('#compare-cancel').click(); });
+          if (site.canEdit()) {
+            $('#messages-wrapper').append($('<div class="history-message">ขณะนี้คุณอยู่ในหมวดเปรียบเทียบ จะไม่สามารถแก้ไขข้อความใดๆได้ <a id="normal-mode">ยกเลิกการดูประวัติ</a></div>'));
+            $('#normal-mode').click(function () { $('#compare-cancel').click(); });
+          }
         }
         self.setMode('compare');
         old_id = old_id? old_id: 0;
@@ -80,7 +178,7 @@
     };
 
     // init history
-    pHistory = new History (project_id);
+    pHistory = new History(project_id);
 
 
     function historyClick(obj) {
@@ -221,6 +319,7 @@
                   return '';
                 }
 
+
                 attr['id'] = id;
 
                 attr[field] = val? val: dom.html();
@@ -259,8 +358,13 @@
 
 
     // Gallery ================================
-    var gallery_render = function (e, pathname, state) {
+    var gallery_render = function (e, pathname, state, loaded) {
       pathname = pathname? pathname: $(this).attr('href');
+      if (loaded) {
+        window.history.pushState('', '', pathname + '#gallery-tab');
+        return false;
+      }
+
       if (pathname && pathname.indexOf('stockphoto') > 0 && pathname.indexOf('media') == -1) {
         if (e) {
           e.preventDefault();
@@ -269,7 +373,9 @@
         var spliter = pathname.indexOf('?') > -1? '&': '?';
         $('#gallery-render').load(pathname + spliter + 'ajax=1', function () {
           $('#gallery-render a').click(gallery_render);
-          $('.editable', this).aloha();
+          if (site.canEdit()) {
+            $('.editable', this).aloha();
+          }
         });
 
         if (!state) {
@@ -278,7 +384,8 @@
       }
     }
 
-    var gallery_init = function (access_from_url) {
+    var gallery_loaded = false;
+    var gallery_init = function (access_from_url, id) {
       var pathname = window.location.pathname;
       var hash = window.location.hash;
       var state = '';
@@ -289,22 +396,125 @@
 
       // Click from menu tab
       if (access_from_url !== true && pathname.indexOf('stockphoto') == -1 && hash == '#gallery-tab') {
-        gallery_render(null, pathname + '/stockphoto');
+        gallery_render(null, '/projects/' + project_id + '/stockphoto', false, gallery_loaded);
+        gallery_loaded = true;
       }
       // Access from push or pop state
-      if (access_from_url !== true && pathname.indexOf('stockphoto') != -1 && hash == '#gallery-tab') {
+      else if (access_from_url !== true && pathname.indexOf('stockphoto') != -1 && hash == '#gallery-tab') {
         gallery_render(null, pathname, state);
       }
       // Access from url with stockphoto path
       else if (access_from_url === true && pathname.indexOf('stockphoto') != -1) {
         gallery_render(null, pathname);
       }
-      // Leave from gallery tab
-      else if (hash != '#gallery-tab') {
-        window.history.pushState('', '', '/projects/' + project_id + hash);
-        $('#gallery-render').html('');
-      }
       $('#gallery-render a').click(gallery_render);
+    }
+
+    // Blog ================================
+    var blog_render = function (e, pathname, state, loaded) {
+      pathname = pathname? pathname: $(this).attr('href');
+      if (loaded) {
+        window.history.pushState('', '', pathname + '#blog-tab');
+        return false;
+      }
+      if (pathname && pathname.indexOf('blogs') > 0 && pathname.indexOf('media') == -1) {
+        if (e) {
+          e.preventDefault();
+        }
+
+        var spliter = pathname.indexOf('?') > -1? '&': '?';
+        $('#blog-render').load(pathname + spliter + 'ajax=1', function () {
+          $('#blog-render a').click(blog_render);
+          if (site.canEdit()) {
+            $('.editable', this).aloha();
+          }
+        });
+
+        if (!state) {
+          window.history.pushState('', '', pathname + '#blog-tab');
+        }
+      }
+    }
+
+    var blog_loaded = false;
+    var blog_init = function (access_from_url) {
+      var pathname = window.location.pathname;
+      var hash = window.location.hash;
+      var state = '';
+
+      if (access_from_url && access_from_url !== true && access_from_url['type']) {
+        state = access_from_url['type'];
+      }
+
+      // Click from menu tab
+      if (access_from_url !== true && pathname.indexOf('blogs') == -1 && hash == '#blog-tab') {
+        blog_render(null, '/projects/' + project_id + '/blogs', false, blog_loaded);
+        blog_loaded = true;
+      }
+      // Access from push or pop state
+      else if (access_from_url !== true && pathname.indexOf('blogs') != -1 && hash == '#blog-tab') {
+        blog_render(null, pathname, state);
+      }
+      // Access from url with stockphoto path
+      else if (access_from_url === true && pathname.indexOf('blogs') != -1) {
+        blog_render(null, pathname);
+      }
+      $('#blog-render a').click(blog_render);
+    }
+
+    // Plan ================================
+    var plan_loaded = false;
+    var plan_init = function (access_from_url) {
+      var pathname = window.location.pathname;
+      var hash = window.location.hash;
+      var state = '';
+      var week = pathname.split('/')[4];
+      if(!week) {
+        week = 1;
+      }
+
+      // Click from link
+      if (access_from_url && access_from_url !== true && access_from_url['type'] && access_from_url['type'] == 'click') {
+        access_from_url.preventDefault();
+        state = access_from_url['type'];
+        pathname = $(access_from_url.target).attr('href');
+        week = pathname.split('/')[4].split('#')[0];
+        planHandler.load(week);
+      }
+      // Click from menu tab
+      else if (access_from_url !== true && pathname.indexOf('plans') == -1 && hash == '#plan-tab') {
+        planHandler.load(week, function() {}, false, plan_loaded);
+        plan_loaded = true;
+      }
+      // Access from push or pop state
+      else if (access_from_url !== true && pathname.indexOf('plans') != -1 && hash == '#plan-tab') {
+        planHandler.load(week, function() {}, true);
+      }
+      // Access from url with plan path
+      else if (access_from_url === true && pathname.indexOf('plans') != -1) {
+        planHandler.load(week);
+      }
+    }
+
+    // State Control =============================
+    var state_control = function (e) {
+      var pathname = window.location.pathname;
+      var hash = window.location.hash;
+
+      var hashmap = {
+        '#topic-tab': true,
+        '#plan-tab': false,
+        '#standard-tab': true,
+        '#project-history-tab': true,
+        '#gallery-tab': false,
+        '#blog-tab': false
+      };
+
+      if (hashmap[hash]) {
+        window.history.pushState('', '', '/projects/' + project_id + hash);
+        console.log(hash);
+      }
+
     }
 
 </script>
@@ -316,10 +526,11 @@
 </script>
 {% endblock %}
 
-{% block footer %}
+{% block script_footer %}
 <script>
 
     (function(window,undefined){
+
       // Prepare
       var
         $ = window.jQuery,
@@ -345,13 +556,32 @@
 
         Aloha.bind('aloha-editable-deactivated', saveEditableHelper);
 
-        $('.editable').aloha();
+        // mark active Editable with a css class
+        Aloha.bind(
+            "aloha-editable-activated",
+            function (jEvent, aEvent) {
+              aEvent.editable.obj.addClass('GENTICS_editable_active');
+            }
+        );
+  
+        // remove active Editable ccs class
+        Aloha.bind("aloha-editable-deactivated",
+            function (jEvent, aEvent) {
+              aEvent.editable.obj.removeClass('GENTICS_editable_active');
+            }
+        );
+
+
+        if (is_authenticated) {
+          if (!site.canEdit()) {
+            Aloha.bind('aloha-editable-created',function(event, editable){ 
+              editable.obj.contentEditable('false');
+            });
+          }
+          $('.editable').aloha();
+        }
 
         $('.menu').tabify();
-
-        // init plan
-        planHandler.init( {{project.id }} , '{{ STATIC_URL }}' );
-        planHandler.load(1);
 
 
         $('#compare-cancel').click(function () {
@@ -399,7 +629,8 @@
             addEventHistories();
           });
         });
-        
+
+        site.init();
 
       });
 
@@ -423,7 +654,9 @@
               'success': function (data) {
 
                 var obj = $(data);
-                $('.editable', obj).aloha(); 
+                if (site.canEdit()) {
+                  $('.editable', obj).aloha(); 
+                }
                 $('#standard-items').prepend(obj);
                 $('#standard-add .editable').html('');
                 $('.CoreStandard-code', obj).map(function () {
@@ -443,17 +676,85 @@
       
       });
 
+      $('#blog-add-link').click(function (e) {
+        e.preventDefault();
+        $('#blog-add-form').show();
+        $('#add-frame').show();
+      });
+
+      $('#blog-add-cancel').click(function () {
+        $('#blog-add-form').hide();
+        $('#add-frame').hide();
+        $('#blog-add .editable').html('');
+      });
+
+      $('#blog-add-submit').click(function () {
+
+        var title = $('#Blog-0-title').html();
+        var body = $('#Blog-0-body').html();
+        var user = $('#Blog-0-user').html();
+
+        if (!title) {
+          alert('ชื่อเรื่องจำเป็นต้องกรอก');
+        }
+        else {
+          $.ajax({
+              'url': '/api/blogs',
+              'type': 'POST',
+              'dataType': 'json',
+              'data': {'title': title, 'body': body, 'user': user, 'project': project_id},
+              'beforeSend' : function(xhr) {
+                  xhr.setRequestHeader('X-CSRFToken', getCookie('csrftoken'));
+              },
+              'success': function (data) {
+                blog_init();
+                $('#messages-wrapper').append($('<div class="blog-message">เพิ่มบล็อกแล้ว</div>'));
+                setTimeout(function () {$('.blog-message').remove()}, 5000)
+                $('#blog-add-form').hide();
+                $('#add-frame').hide();
+
+              }
+          });
+        }
+      
+      });
+
+
       $('#menu a').click(function () {
         stack = new Undo.Stack();
       });
 
-      $(window).bind('hashchange', gallery_init);
+
       $(window).bind('popstate', gallery_init);
-      $(window).bind('pushstate', gallery_init);
-      gallery_init(true);
+      $(window).bind('popstate', blog_init);
+      $(window).bind('popstate', plan_init);
+
+      $(window).bind('hashchange', gallery_init);
+      $(window).bind('hashchange', blog_init);
+      $(window).bind('hashchange', plan_init);
+
+      $(window).bind('hashchange', state_control);
+
+      $('a.plan-week-link').click(plan_init);
+
+      $('#mode-button').iphoneSwitch(site.canEdit()? 'on': 'off', 
+        function() {
+          site.setMode('edit');
+        },
+        function() {
+          site.setMode('view');
+        },
+        {
+          switch_on_container_path: static_url + 'images/iphone_switch_container_off.png',
+          switch_off_container_path: static_url + 'images/iphone_switch_container_on.png',
+          switch_path: static_url + 'images/iphone_switch.png',
+        }
+      );
+
 
 
     })(window);
+
 </script>
 {% endblock %}
 
@@ -481,7 +782,15 @@
   <li><a id="tab-standard" href="#standard">มาตรฐาน</a></li>
   <li><a id="tab-project-history" href="#project-history">ประวัติ</a></li>
   <li><a id="tab-gallery" href="#gallery">อัลบัมภาพ</a></li>
+  <li><a id="tab-blog" href="#blog">บล็อก</a></li>
 </ul>
+
+{% if user.is_authenticated %}
+<div id="mode-wrap">
+  <div id="mode-status"></div>
+  <div id="mode-button"></div>
+</div>
+{% endif %}
 
 <div id="topic" class="content">
     <div class="thead topic-first">
@@ -602,7 +911,8 @@
         <div class="grid_3"><div class="ignore hrow">อยู่ในแผนแล้ว</div></div>
         <div class="clearfix"></div>
     </div>
-    <div id="standard-add" class="tbody standard">
+    {% if user.is_authenticated %}
+    <div id="standard-add" class="tbody standard form-add" style="display:{% if is_view_mode %}none{% else %}block{% endif %};">
         <div class="grid_3" style="display:none;">
             <div id="CoreStandard-0-group_code" class="ignore CoreStandard-group_code"></div>
         </div>
@@ -617,6 +927,7 @@
         </div>
         <div class="clearfix"></div>
     </div>
+    {% endif %}
     <div id="standard-items" class="tbody standard">
         {% for standard in standards %}
         <div style="display: none;">{% cycle 'odd' 'even' as rowtype %}</div>
@@ -628,7 +939,7 @@
     <div class="thead project-history-submit">
         <div class="grid_16">
             <div class="ignore hrow">
-                <button id="compare-cancel" class="active">อยู่กับปัจจุบัน</button>
+                <button id="compare-cancel" class="active">ยกเลิกการเปรียบเทียบ</button>
                 <button id="compare-submit">เปรียบเทียบ</button>
             </div>
         </div>
@@ -654,5 +965,46 @@
 <div id="gallery" class="content">
   <div id="gallery-render">
   </div>
+</div>
+<div id="blog" class="content">
+    {% if user.is_authenticated %}
+    <div id="blog-add" class="thead blog blog-navi">
+      <div id="blog-add-link" class="form-add" style="display:{% if is_view_mode %}none{% else %}block{% endif %};">
+        <a href="#">สร้างบล็อกใหม่</a>
+      </div>
+      <div id="blog-add-form">
+        <div class="grid_14 head-wrapper">
+            <h1>สร้างบล็อก</h1>
+        </div>
+        <div class="clearfix"></div>
+        <div class="grid_1">
+            <div id="Blog-0-title-label">ชื่อเรื่อง</div>
+        </div>
+        <div class="grid_13">
+            <div id="Blog-0-title" class="ignore Blog-title editable"></div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="grid_1">
+            <div for="Blog-0-body-label">เนื้อหา</div>
+        </div>
+        <div class="grid_13">
+            <div id="Blog-0-body" class="ignore Blog-body editable"></div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="grid_14" style="display: none;">
+            <div id="Blog-0-user" class="ignore Blog-user">{{ user.id }}</div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="grid_14 submit-wrapper">
+            <button id="blog-add-submit">สรา้ง</button>
+            <button id="blog-add-cancel">ยกเลิก</button>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    {% endif %}
+
+    <div id="blog-render">
+    </div>
 </div>
 {% endblock %}

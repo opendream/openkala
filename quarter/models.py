@@ -21,11 +21,17 @@ class CoreStandard(models.Model):
     def __unicode__(self):
         return self.code
 
+    def striphtml(self):
+        return ['code', 'group_code']
+
 class StandardHeader(models.Model):
     title  = models.CharField(max_length=255, null=True, blank=True)
 
     def __unicode__(self):
-        return self.title
+        return self.title or ''
+
+    def striphtml(self):
+        return ['title']
 
 class Project(models.Model):
     GRADE_CHOICES = ((1, 1), (2, 2), (3, 3), (4, 4), (5, 5), (6, 6),)
@@ -50,6 +56,9 @@ class Project(models.Model):
     def __unicode__(self):
         return self.name
 
+    def striphtml(self):
+        return ['name']
+
 class Topic(models.Model):
     title   = models.CharField(max_length=255, null=True, blank=True)
     body    = models.TextField(null=True, blank=True)
@@ -67,7 +76,6 @@ class Topic(models.Model):
 
     def __unicode__(self):
         return self.title
-
 
 class Plan(models.Model):
     week         = models.IntegerField()
@@ -117,3 +125,26 @@ class ProjectHistory(models.Model):
     patch    = models.TextField(null=True, blank=True)
     datetime = models.DateTimeField(auto_now_add=True)
     data     = models.CharField(max_length=255, null=True, blank=True)
+
+class Blog(models.Model):
+    title   = models.CharField(max_length=255, null=True, blank=True)
+    body    = models.TextField(null=True, blank=True)
+    created = models.DateTimeField(auto_now_add=True)
+    changed = models.DateTimeField(auto_now=True)
+    user    = models.ForeignKey(User)
+    project = models.ForeignKey(Project, null=True, blank=True)
+
+    class Meta:
+        get_latest_by = '-created'
+        ordering = ['-created',]
+
+    def allowhtml(self):
+        return ['body']
+
+    def striphtml(self):
+        return ['title']
+
+class ProjectUserMode(models.Model):
+    project = models.ForeignKey(Project)
+    user    = models.ForeignKey(User)
+    mode    = models.CharField(max_length=10, default='view')

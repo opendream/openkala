@@ -51,7 +51,7 @@ import Image
 from PIL.ExifTags import TAGS
 from datetime import datetime
 
-from quarter.views import project_overview
+from quarter.views import project_overview, project_getmode_helper
 from quarter.models import Project
 
 
@@ -109,14 +109,17 @@ def gallery_list(request, project_id):
         return photo_add(request, project_id, None)
     elif not request.GET.get('ajax'):
         return project_overview(request, project_id)
+    # Mode
+    mode = project_getmode_helper(request, project_id)
+    is_view_mode = mode == 'view'
 
     return object_list(
         request, 
         Gallery.objects.filter(project__id=project_id), 
         template_object_name='gallery', 
         template_name='stockphoto/gallery_list.html',
-        paginate_by=2,
-        extra_context={'project_id': project_id}
+        paginate_by=15,
+        extra_context={'project_id': project_id, 'is_view_mode': is_view_mode}
     )
 
 def gallery_add(request, project_id):
@@ -133,6 +136,9 @@ def gallery_detail(request, project_id, gallery_id):
         return photo_add(request, project_id, gallery_id)
     elif not request.GET.get('ajax'):
         return project_overview(request, project_id)
+    # Mode
+    mode = project_getmode_helper(request, project_id)
+    is_view_mode = mode == 'view'
 
     return object_detail(
         request, 
@@ -140,7 +146,7 @@ def gallery_detail(request, project_id, gallery_id):
         object_id=gallery_id,
         template_object_name='gallery', 
         template_name='stockphoto/gallery_detail.html',
-        extra_context={'project_id': project_id}
+        extra_context={'project_id': project_id, 'is_view_mode': is_view_mode}
     )
 
 def photo_detail(request, project_id, photo_id):
@@ -158,13 +164,17 @@ def photo_detail(request, project_id, photo_id):
     else:
         dt = None
 
+    # Mode
+    mode = project_getmode_helper(request, project_id)
+    is_view_mode = mode == 'view'
+
     return object_detail(
         request, 
         Photo.objects.all(), 
         object_id=photo_id,
         template_object_name='photo', 
         template_name='stockphoto/photo_detail.html',
-        extra_context={'project_id': project_id, 'datetime': dt}
+        extra_context={'project_id': project_id, 'datetime': dt, 'is_view_mode': is_view_mode}
     )
 
 def photo_delete(request, project_id, photo_id):

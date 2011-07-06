@@ -4,9 +4,16 @@ planHandler = {
 		this.baseUrl = baseUrl.replace('/static','');
 		var self = this;
 	},
-	load: function(weekId, callback) {
+	load: function(weekId, callback, state, loaded) {
 		var planUrl = this.baseUrl + 'api/projects/' + this.projectId + "/plans/" + weekId;
 		var taskUrl = this.baseUrl + 'api/projects/' + this.projectId + "/tasks/" + weekId;
+    var pid = this.projectId;
+    var hash = '#plan-tab';
+
+    if (loaded) {
+      window.history.pushState('', '', '/projects/' + pid + '/plans/' + weekId + hash); 
+      return false;
+    }
 
     $('#plan .editable').html('');
 		$.ajax({
@@ -25,6 +32,10 @@ planHandler = {
                 $('#Task-' + obj.day + '-' + field_name).html(val);
               });
             })
+            $('#week_options').val(weekId);
+            if (!state) {
+              window.history.pushState('', '', '/projects/' + pid + '/plans/' + weekId + hash); 
+            }
             callback();
           }
         })

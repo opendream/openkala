@@ -1,5 +1,6 @@
 from quarter.models import *
-
+from stockphoto.models import *
+from BeautifulSoup import *
 from utility.dmp import diff_match_patch
 
 def get_field_from_cell(project_id, cell):
@@ -44,3 +45,19 @@ def prev_point_text(project_id, history_id):
 def get_current_text(project_id, keys):
     return dict([(cell, get_field_from_cell(project_id, cell)) for cell in keys])
     
+def sanitize_html(value, valid_tags):
+    valid_tags = valid_tags.split()
+    valid_attrs = 'href src'.split()
+    soup = BeautifulSoup(value)
+    for comment in soup.findAll(
+        text=lambda text: isinstance(text, Comment)):
+        comment.extract()
+    for tag in soup.findAll(True):
+        if tag.name not in valid_tags:
+            tag.hidden = True
+        tag.attrs = [(attr, val) for attr, val in tag.attrs
+                     if attr in valid_attrs]
+    return soup.renderContents().decode('utf8').replace('javascript:', '')
+
+def filter_html(value):
+    return sanitize_html(value, 'p i strong b u a br img')

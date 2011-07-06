@@ -146,46 +146,49 @@ function saveEditableStandardHeader(arg1, arg2, jqobj, val, create_id) {
 {% block content %}
 <ul id="menu" class="menu">
 <li class="active"><a href="#project">โครงงานทั้งหมด</a></li>
+{% if user.is_authenticated %}
 <li><a href="#project-add">สร้างโครงงานใหม่</a></li>
 <li><a href="#standard_header">จัดการวิชาบูรณาการ</a></li>
+{% endif %}
 </ul>
 
 <div id="project" class="content">
-<div class="thead project">
-  <div class="grid_4 hcol"><div class="ignore">ชื่อโครงการ</div></div>
-  <div class="grid_2 hcol"><div class="ignore">ชั้นมัธยมศึกษาปีที่</div></div>
-  <div class="grid_2 hcol"><div class="ignore">ปีการศึกษา</div></div>
-  <div class="grid_2 hcol"><div class="ignore">ภาคเรียน</div></div>
-  <div class="grid_2 hcol"><div class="ignore">แก้ไข</div></div>
-  <div class="grid_2 hcol"><div class="ignore">รายงาน</div></div>
-  <div class="clearfix"></div>
-</div>
-<div class="tbody project">
-  {% for project in projects %}
-  <div class="item {% cycle 'odd' 'even' as rowtype %}">
-      <div class="grid_4">
-          <div id="Project-{{ project.id }}-name" class="ignore name">{{ project.name }}</div>
-      </div>
-      <div class="grid_2">
-          <div id="Project-{{ project.id }}-grade" class="ignore grade">{{ project.grade }}</div>
-      </div>
-      <div class="grid_2">
-          <div id="Project-{{ project.id }}-year" class="ignore year">{{ project.year }}</div>
-      </div>
-      <div class="grid_2">
-          <div id="Project-{{ project.id }}-quarter" class="ignore quarter">{{ project.quarter }}</div>
-      </div>
-      <div class="grid_2">
-          <div id="Project-{{ project.id }}-edit" class="ignore edit"><a href="{% url quarter_project_overview project.id %}">แก้ไข</a></div>
-      </div>
-      <div class="grid_2">
-          <div id="Project-{{ project.id }}-report" class="ignore report"><a href="#">ออกรายงาน</a></div>
-      </div>
-      <div class="clearfix"></div>
+  <div class="thead project">
+    <div class="grid_4 hcol"><div class="ignore">ชื่อโครงการ</div></div>
+    <div class="grid_2 hcol"><div class="ignore">ชั้นมัธยมศึกษาปีที่</div></div>
+    <div class="grid_2 hcol"><div class="ignore">ปีการศึกษา</div></div>
+    <div class="grid_2 hcol"><div class="ignore">ภาคเรียน</div></div>
+    <div class="grid_2 hcol"><div class="ignore">รายละเอียด</div></div>
+    <div class="grid_2 hcol"><div class="ignore">รายงาน</div></div>
+    <div class="clearfix"></div>
   </div>
-  {% endfor %}
+  <div class="tbody project">
+    {% for project in projects %}
+    <div class="item {% cycle 'odd' 'even' as rowtype %}">
+        <div class="grid_4">
+            <div id="Project-{{ project.id }}-name" class="ignore name">{{ project.name }}</div>
+        </div>
+        <div class="grid_2">
+            <div id="Project-{{ project.id }}-grade" class="ignore grade">{{ project.grade }}</div>
+        </div>
+        <div class="grid_2">
+            <div id="Project-{{ project.id }}-year" class="ignore year">{{ project.year }}</div>
+        </div>
+        <div class="grid_2">
+            <div id="Project-{{ project.id }}-quarter" class="ignore quarter">{{ project.quarter }}</div>
+        </div>
+        <div class="grid_2">
+            <div id="Project-{{ project.id }}-edit" class="ignore edit"><a href="{% url quarter_project_overview project.id %}">รายละเอียด</a></div>
+        </div>
+        <div class="grid_2">
+            <div id="Project-{{ project.id }}-report" class="ignore report"><a href="#">ออกรายงาน</a></div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    {% endfor %}
+  </div>
 </div>
-</div>
+{% if user.is_authenticated %}
 <div id="project-add" class="content">
     <form id="project-add-form" method="post" action=".">
     <ul>
@@ -229,4 +232,5 @@ function saveEditableStandardHeader(arg1, arg2, jqobj, val, create_id) {
   </div>
 </div>
 <div class="clear"></div>
+{% endif %}
 {% endblock %}

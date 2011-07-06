@@ -1,0 +1,19 @@
+{% if blog_list %}
+    {% for blog in blog_list %}
+    {% include "blog_detail.html" %}
+    {% endfor %}
+{% else %}
+<p>ยังไม่มีบล็อก</p>
+{% endif %}
+
+{% if is_paginated %}
+{% if has_previous %}
+<a href="{% url quarter_blog_list project_id %}?page={{ previous }}">&laquo; ย้อนกลับ</a> |
+{% endif %}
+{% if has_next %}
+<a href="{% url quarter_blog_list project_id %}?page={{ next }}">ถัดไป &raquo;</a>
+{% endif %}
+{% endif %}
+<script>
+$('#blog-add').show();
+</script>

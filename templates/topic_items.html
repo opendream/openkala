@@ -18,15 +18,16 @@
 {% for topic in topics %}
 <div class="{% cycle 'odd' 'even' as rowtype %} item">
     <div class="grid_{{ grid_topic }}">
-        <div id="Topic-{{ topic.id }}-title" class="editable ignore topic-{{ topic.id }}">{{ topic.title|rmnone|safe }}</div>
-        <div id="Topic-{{ topic.id }}-body" class="editable ignore topic-{{ topic.id }}">{{ topic.body|rmnone|safe }}</div>
+        <div id="Topic-{{ topic.id }}-title" class="editable ignore topic-title topic-{{ topic.id }}">{{ topic.title|rmnone|safe }}</div>
+        <div id="Topic-{{ topic.id }}-body" class="editable ignore topic-body topic-{{ topic.id }}">{{ topic.body|rmnone|safe }}</div>
     </div>
     {% for i, name in standard_index %}
     <div id="Topic-{{ topic.id }}-standard{{ i }}" class="editable topic-{{ topic.id }} topic-standard grid_{{ grid }} {{ rowtype }}">{{ topic|get_attr:name|rmnone|safe }}</div>
     {% endfor %}
     <div class="grid_{{ grid_plan }} {{ rowtype }} plan">
         <div class="ignore">
-            <form class="plans-map">
+            {% if user.is_authenticated %}
+            <form class="plans-map form-add" style="display:{% if is_view_mode %}none{% else %}block{% endif %};">
                 {% for plan in plans %}
                 <div class="week">
                     <label for="Topic-{{ topic.id }}-plan-{{ plan.id }}">{{ plan.week }}</label>
@@ -34,6 +35,17 @@
                 </div>
                 {% endfor %}
             </form>
+            {% endif %}
+            <div class="plans-show" style="display:{% if is_view_mode %}block{% else %}none{% endif %};">
+                <ul>
+                    {% for plan in plans %}
+                    {% ifequal plan.topic.id topic.id %}
+                    <li><a href="{% url quarter_plan project_id plan.week %}#plan-tab" class="plan-week-link">{{ plan.week }}</a></li>
+                    {% endifequal %}
+                    {% endfor %}
+                </ul>
+            </div>
+
         </div>
     </div>
     <div class="clearfix"></div>

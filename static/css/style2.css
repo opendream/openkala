@@ -19,3 +19,108 @@
 
 #breadcrumb ul li {
 }
+
+/* gallery - album list */
+.small-album-box {
+  position: relative;
+  float: left;
+  margin: 0 0 10px 14px; 
+  border: 1px solid #DDDDDD;
+  background: #fff;
+  width: 170px;
+  height: 138px;
+}
+.small-album-box .small-image-box {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  margin-top: 0;
+  margin-left: 0;
+}
+.small-album-box .small-image-box:hover,
+.small-album-box .small-image-box:active {
+}
+.small-image-box img {
+  opacity: 0.8;
+  -moz-transition: opacity 0.5s ease;
+  -webkit-transition: opacity 0.5s ease;
+  -o-transition: opacity 0.5s ease;
+  transition: opacity 0.5s ease;
+}
+.small-image-box:hover img,
+.small-image-box:active img {
+  opacity: 1;
+}
+
+/* gallery - image viewer */
+#gallery {
+  padding: 10px;
+}
+#gallery-render {
+  position: relative;
+}
+#large-image-box {
+  position: relative;
+  float: none;
+  margin: 0 auto;
+  padding-top: 30px;
+  z-index: 99;
+}
+.small-image-box-np,
+.image-prev-link,
+.image-next-link {
+  position: absolute;
+  float: none;
+}
+.small-image-box-np {
+  top: 60px;
+  z-index: 9;
+  padding: 15px;
+  background: #fff;
+  opacity: 0.6;
+  -moz-transition: opacity 0.5s ease;
+  -webkit-transition: opacity 0.5s ease;
+  -o-transition: opacity 0.5s ease;
+  transition: opacity 0.5s ease;
+}
+#large-image-box,
+.small-image-box-np {
+  border: 1px solid #DDDDDD;
+}
+.small-image-box-np:hover,
+.small-image-box-np:active {
+  opacity: 1;
+}
+.image-prev {
+  left: 60px;
+  -moz-transition: left 0.5s ease;
+  -webkit-transition: left 0.5s ease;
+  -o-transition: left 0.5s ease;
+  transition: left 0.5s ease;
+}
+.image-prev:hover,
+.image-prev:active {
+  left: 0;
+}
+.image-next {
+  right: 60px;
+  -moz-transition: right 0.5s ease;
+  -webkit-transition: right 0.5s ease;
+  -o-transition: right 0.5s ease;
+  transition: right 0.5s ease;
+}
+.image-next:hover,
+.image-next:active {
+  right: 0;
+}
+.image-prev-link,
+.image-next-link {
+  top: 60px;
+  z-index: 999;
+}
+.image-prev-link {
+  left: 160px;
+}
+.image-next-link {
+  right: 160px;
+}

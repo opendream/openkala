@@ -5,6 +5,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.db import models
 from django.template.loader import render_to_string
+from django.utils.html import strip_tags
 
 import simplejson as json
 import urllib
@@ -33,10 +34,6 @@ def insertProjectHistory(project, cell, new_value, model, id, field, user):
     elif type(current_value) == int:
         current_value = str(current_value)
 
-    #new_value = str(new_value)
-    #new_value = new_value.decode('utf-8')
-    print current_value
-    print new_value
     if new_value != current_value:
         dmp = diff_match_patch()
         patches = dmp.patch_make(new_value, current_value)
@@ -80,12 +77,28 @@ class ApiHandler(BaseHandler):
             try:
                 if k in dct:
                     typ = type(self.model._meta.get_field(k))
+                    text = dct.get(k)
+                    text = text.strip()
+
+
+                    # Strip html tags, default is strip.
+                    # if you want to keep tags please return list of fields 
+                    # in the model class and method name is allowhtml() and striphtml()
+                    if hasattr(self.model, 'striphtml') and k in self.model.striphtml(self.model()):
+                        text = strip_tags(text)
+                    elif hasattr(self.model, 'allowhtml') and k not in self.model.allowhtml(self.model()):
+                        # TODO: strip some tags
+                        pass
+                    else:
+                        text = utility.filter_html(text)
+
+                    print text
 
                     if typ == models.IntegerField:
-                        fd[k] = int(dct.get(k))
+                        fd[k] = int(strip_tags(text))
                     elif typ == models.ForeignKey:
                         parent_model = self.model._meta.get_field(k).related.parent_model
-                        pk = dct.get(k)
+                        pk = text
                         if type(pk) == list and len(pk):
                             pk = pk[0]
 
@@ -94,7 +107,7 @@ class ApiHandler(BaseHandler):
                         else:
                             fd[k] = None
                     else:
-                        val = dct.get(k)
+                        val = text
                         if val:
                             try:
                                 fd[k] = val.decode('utf-8')
@@ -170,7 +183,6 @@ class ApiHandler(BaseHandler):
                 if history:
                     histories.append(history)
 
-        print inst.__dict__
         inst.save()
         inst.histories = histories
         return inst.__dict__
@@ -436,3 +448,12 @@ class PhotoHandler(ApiHandler):
     model = Photo
     fields = [(field.name) for field in model._meta.fields]
     fields.append('cell')
+
+class BlogHandler(ApiHandler):
+    model = Blog
+    fields = [(field.name) for field in model._meta.fields]
+    fields.append('cell')
+
+    def create(self, request, *args, **kwargs):
+        inst = super(BlogHandler, self).create(request, args, kwargs)
+        return render_to_string('blog_detail.html', {'blog': inst, 'project_id': inst.project.id})

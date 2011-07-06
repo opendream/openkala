@@ -11,6 +11,7 @@ corestandard_handler             = Resource(CoreStandardHandler)
 standardheader_handler           = Resource(StandardHeaderHandler)
 gallery_handler                  = Resource(GalleryHandler)
 photo_handler                    = Resource(PhotoHandler)
+blog_handler                     = Resource(BlogHandler)
 project_plan_handler             = Resource(ProjectPlanHandler)
 project_task_handler             = Resource(ProjectTaskHandler)
 project_history_handler          = Resource(ProjectHistoryHandler)
@@ -43,6 +44,9 @@ urlpatterns = patterns('',
 
    url(r'^photos/(?P<id>[^/]+)$', photo_handler, { 'emitter_format': 'json' }),
    url(r'^photos$', photo_handler, { 'emitter_format': 'json' }),
+
+   url(r'^blogs/(?P<id>[^/]+)$', blog_handler, { 'emitter_format': 'json' }),
+   url(r'^blogs$', blog_handler, { 'emitter_format': 'json' }),
 
    url(r'^projecthistorys/getpage/(?P<project_id>[^/]+)/(?P<history_id>[^/]+)$', project_history_get_page_handler, { 'emitter_format': 'json' }, name="api_project_history_get_page"),
    url(r'^projecthistorys/(?P<project_id>[^/]+)/(?P<old_id>[^/]+)/(?P<diff_id>[^/]+)$', project_history_handler, { 'emitter_format': 'json' }, name="api_project_history"),

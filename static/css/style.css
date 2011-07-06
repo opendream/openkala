@@ -152,8 +152,8 @@ input[type="text"]{
 }
 .tbody div.topic-title {
   font-size: 120%;
-  min-height: 2em;
-  padding-bottom: 5px;
+  min-height: 1.5em;
+  margin-bottom: 10px;
 }
 .tbody div.topic-body {
   margin-left: 10px;
@@ -220,10 +220,9 @@ div.GENTICS_editable_active{
 /* 	border: 1px solid #c9c9c9; */
 	background-color: #fff;
 }
-.GENTICS_editable_highlight {
+.editable[contenteditable="true"] {
 	outline: #FFE767 dashed 2px !important;
 }
-
 .GENTICS_block.core-standard.core-standard-selected {
   background: yellow !important;
 }
@@ -287,6 +286,10 @@ div.GENTICS_editable_active{
   display: block;
 	margin: 5px 0 0 20px;
 }
+.GENTICS_editable_active, .GENTICS_editable_active[contenteditable=true]:focus {
+  outline: #B7D6FA solid 5px !important;
+}
+
 
 /* History */
 .ProjectHistory-id {
@@ -358,3 +361,61 @@ div.GENTICS_editable_active{
   height: 10px;
   background-color: #DDD;
 }
+
+/* blog */
+#blog-add-form {
+  display: none;
+  position: absolute;
+  background-color: #FFFFFF;
+  border: 5px solid #DDDDDD;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	border-radius: 3px;
+  top: 150px;
+  left: 50px;
+  z-index: 10000;
+}
+#Blog-0-body {
+  min-height: 250px;
+}
+
+#add-frame {
+  display: none;
+  position: absolute;
+  z-index: 100;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  opacity: 0.5;
+  background-color: #000000;
+}
+
+/* Edit mode botton */
+#mode-wrap {
+  width: 95px;
+  float: right;
+  position: relative;
+}
+#mode-button{
+  float:left;
+  width:95px;
+}
+
+#mode-status {
+  float:left;
+  width:95px;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: #FFF;
+  z-index: 1000;
+  opacity: 0.7;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	border-radius: 4px;
+  display: none;
+
+}
+

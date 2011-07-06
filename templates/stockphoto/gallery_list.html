@@ -1,16 +1,30 @@
+{% if user.is_authenticated %}
+<form id="photo-upload-form" class="form-add" action='#' method='post' enctype='multipart/form-data' style="display:{% if is_view_mode %}none{% else %}block{% endif %};">
+  <input id="photo-upload" name="uploads[]" type="file" multiple="multiple" value="อพโหลดรป" />
+  <div id="photo-current-wrap"></div>
+</form>
+<script>
+
+$(document).ready(function () {
+  photo_upload_build(true);
+});
+</script>
+{% endif %}
 {% if gallery_list %}
 <div id="thumbnail-box">
   <div id="thumbnails">
     {% for item in gallery_list %}
-    <div class="small-image-box">
-      <a href="{% url stockphoto_gallery_detail project_id item.id %}">
-        {% if item.first %}
-        <img src="{{ item.first.thumburl }}" alt="{{ item.first.title }}" />
-        {% else %}
-        ยังไม่มีรูปในอัลบัม
-        {% endif %}
-      </a>
-      <a href="{% url stockphoto_gallery_detail project_id item.id %}"><span>{{ item.title }}</span></a>
+    <div class="small-album-box">
+      <div class="small-image-box">
+        <a href="{% url stockphoto_gallery_detail project_id item.id %}">
+          {% if item.first %}
+          <img src="{{ item.first.thumburl }}" alt="{{ item.first.title }}" />
+          {% else %}
+          ยังไม่มีรูปในอัลบัม
+          {% endif %}
+        </a>
+        <a href="{% url stockphoto_gallery_detail project_id item.id %}"><span>{{ item.title }}</span></a>
+      </div>
     </div>
     {% endfor %}
   </div>
@@ -24,25 +38,10 @@
 {% if is_paginated %}
 
 {% if has_previous %}
-<a href="{% url stockphoto_gallery_list project_id %}?page={{ previous }}">&laquo; กลับ</a> |
+<a href="{% url stockphoto_gallery_list project_id %}?page={{ previous }}">&laquo; ย้อนกลับ</a> |
 {% endif %}
 {% if has_next %}
-<a href="{% url stockphoto_gallery_list project_id %}?page={{ next }}">ไป &raquo;</a>
+<a href="{% url stockphoto_gallery_list project_id %}?page={{ next }}">ถัดไป &raquo;</a>
 {% endif %}
 {% endif %}
-{% if not user.is_anonymous %}
-<form id="photo-upload-form" action='#' method='post' enctype='multipart/form-data'>
-  <input id="photo-upload" name="uploads[]" type="file" multiple="multiple" value="อพโหลดรป" />
-  <div id="photo-current-wrap"></div>
-</form>
-<script>
 
-$(document).ready(function () {
-  photo_upload_build(true);
-});
-</script>
-{% else %}
-<p>
-  <a href="/accounts/login/?next={{ request.path }}">เข้าสู่ระบบ</a> เพื่อสร้างอัลบัมภาพ
-</p>
-{% endif %}

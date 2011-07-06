@@ -81,13 +81,19 @@ class Gallery(models.Model):
     thumbnail_height = models.IntegerField(
         _("height to display thumbnails"),
         default=100)
+    thumbnail2_width = models.IntegerField(
+        _("width to display thumbnails 2"),
+        default=560)
+    thumbnail2_height = models.IntegerField(
+        _("height to display thumbnails 2"),
+        default=374)
 
     project = models.ForeignKey(Project)
 
     class Meta:
-        get_latest_by = 'date'
+        get_latest_by = '-date'
         verbose_name_plural = _("galleries")
-        ordering = ['date',]
+        ordering = ['-date',]
 
  
     def save(self):
@@ -121,6 +127,11 @@ class Gallery(models.Model):
         for photo in self.photo_set.all():
             photo.create_disp()
             photo.create_thumb()
+            photo.create_thumb2()
+
+    def striphtml(self):
+        return ['title']
+
 
 class Photo(models.Model):
     # import os, os.path, Image
@@ -150,6 +161,10 @@ class Photo(models.Model):
         """
         try:
             os.unlink(self.thumbpath())
+        except (IOError, OSError):
+            pass
+        try:
+            os.unlink(self.thumb2path())
         except (IOError, OSError):
             pass
         try:
@@ -186,6 +201,25 @@ class Photo(models.Model):
         return settings.MEDIA_URL + '/' + STOCKPHOTO_BASE + \
             "/cache/thumbs/" + photobase
             
+    def thumb2path(self):
+        """Path to the thumbnail
+        """
+        photobase = self.image.name[len(STOCKPHOTO_BASE)+1:]
+        return os.path.join( settings.MEDIA_ROOT, STOCKPHOTO_BASE,
+                     "cache", "thumbs2", photobase)
+
+    def thumb2url(self):
+        """URL to the thumbnail
+        """
+        photobase = self.image.name[len(STOCKPHOTO_BASE)+1:]
+        # for windows -- to avoid urls with '\' in them
+        if os.sep != '/':
+            photobase = photobase.replace(os.sep, '/')
+        if settings.MEDIA_URL.endswith('/'):
+            return settings.MEDIA_URL + STOCKPHOTO_BASE + \
+                "/cache/thumbs2/" + photobase
+        return settings.MEDIA_URL + '/' + STOCKPHOTO_BASE + \
+            "/cache/thumbs2/" + photobase
 
     def disppath(self):
         photobase = self.image.name[len(STOCKPHOTO_BASE)+1:]
@@ -251,6 +285,9 @@ class Photo(models.Model):
     def thumb_exists(self):
         return os.path.exists( self.thumbpath() )
 
+    def thumb2_exists(self):
+        return os.path.exists( self.thumb2path() )
+
     def create_disp(self):
         im = Image.open( self.fullpath() )
         format = im.format
@@ -281,6 +318,21 @@ class Photo(models.Model):
                      Image.ANTIALIAS)
         im.save(thumb_path, format)
 
+    def create_thumb2(self):
+        im = Image.open( self.fullpath() )
+        format = im.format
+        # create the path for the thumbnail image
+        thumb2_path = self.thumb2path()
+        thumb2_dir = os.path.dirname(thumb2_path)
+        if not os.path.exists(thumb2_dir):
+            os.makedirs(thumb2_dir, 0775)
+
+        # Make a copy of the image, scaled, if needed.
+        im.thumbnail((self.gallery.thumbnail2_width,
+                      self.gallery.thumbnail2_height),
+                     Image.ANTIALIAS)
+        im.save(thumb2_path, format)
+
     def build_display_images(self):
         """Make thumbnail and display-sized images after saving.
         
@@ -291,6 +343,8 @@ class Photo(models.Model):
         if self.image:
             if not self.thumb_exists():
                 self.create_thumb()
+            if not self.thumb2_exists():
+                self.create_thumb2()
             if not self.disp_exists():
                 self.create_disp()
 

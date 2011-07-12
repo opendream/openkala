@@ -10,13 +10,13 @@
 
 {% if account %}
 
-<p>{% trans "Account successfully activated" %}</p>
+<p>ยืนยันการลงทะเบียนเสร็จสิ้น</p>
 
-<p><a href="{% url auth_login %}">{% trans "Log in" %}</a></p>
+<p><a href="{% url auth_login %}">เขาสระบบ</a></p>
 
 {% else %}
 
-<p>{% trans "Account activation failed" %}</p>
+<p>ยืนยันการลงทะเบียนผิดพลาด</p>
 
 {% endif %}
 

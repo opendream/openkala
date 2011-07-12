@@ -93,6 +93,15 @@ ADMIN_MEDIA_PREFIX = '/static/admin/'
 # Examples: "http://foo.com/media/", "/media/".
 ADMIN_MEDIA_PREFIX = '/media/admin/'
 
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'openkala.in.th@gmail.com'
+EMAIL_HOST_PASSWORD = 'openpubyesroti'
+EMAIL_PORT = 587
+EMAIL_SUBJECT_PREFIX = '[OPENKALA] '
+
+SYSTEM_NOREPLY_EMAIL = EMAIL_HOST_USER
+
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '6#0jb3-gdqyqrl$z*&93zb19kt%l7##9=yp3475_n811hg*_*^'
 

@@ -1,7 +1,9 @@
+# -*- coding: utf8 -*-
 from quarter.models import *
 from stockphoto.models import *
 from BeautifulSoup import *
 from utility.dmp import diff_match_patch
+from django.template.loader import render_to_string
 
 def get_field_from_cell(project_id, cell):
     model, id, field = cell.split('-')[0:3]
@@ -61,3 +63,41 @@ def sanitize_html(value, valid_tags):
 
 def filter_html(value):
     return sanitize_html(value, 'p i strong b u a br img')
+
+def plan_tags_form(project_id, obj, nweek):
+    obj_id = obj.id
+    model = obj._meta.object_name
+    daymap = {1: u'จ', 2: u'อ', 3: u'พ', 4: u'พฤ', 5: u'ศ'}
+
+    html_id = 'plan-tags-%s-%s' % (model, obj_id)
+
+    default = {1: {}, 2: {}, 3: {}, 4:{}, 5:{}}
+    for task in obj.tasks.all():
+        default[task.day][task.plan.week] = 'active'
+
+
+    ca = '<div id="%s"><table class="plan-tags"><thead>' % html_id
+    ca += '<tr class="plan-tags-day-head"><th class="plan-tags-conner">%s</th>' % u'สัปดาห์/วัน'
+    for d, day in daymap.iteritems():
+        ca += '<th>%s</th>' % day
+    ca += '</tr></thaed><tbody>'
+
+    for week in range(1, nweek + 1):
+        ca += '<tr class="plan-tags-week">'
+        ca += '<th class="plan-tags-week"><div><a href="/projects/%s/%s/%s/weeks/%s/days/%s">%s</a></div></th>' % (project_id, model, obj_id, week, '1,2,3,4,5', week)
+        for d, day in daymap.iteritems():
+            ca += '<td class="plan-tags-day"><div class="%s"><a href="/projects/%s/%s/%s/weeks/%s/days/%s">%s</a></div></td>' % (default[d].get(week) or '', project_id, model, obj_id, week, d, day)
+            pass
+        ca += '</tr>'
+
+    ca += '</tbody></table></div>'
+
+    return render_to_string('plan_tags.html', {'ca': ca, 'html_id': html_id});
+
+
+
+
+
+
+
+

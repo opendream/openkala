@@ -15,6 +15,7 @@ from quarter.models import *
 from quarter.forms import *
 from api.handlers import *
 from stockphoto.models import *
+import utility
 
 def project_getmode_helper(request, project_id):
     if not request.user.is_authenticated():
@@ -118,6 +119,7 @@ def project_overview(request, project_id):
     mode = project_getmode_helper(request, project_id)
     is_view_mode = mode == 'view'
 
+
     return render_to_response('project_overview.html', locals(), context_instance=RequestContext(request))
 
 def plan_overview(request, project_id, plan_week):
@@ -148,11 +150,81 @@ def blog_detail(request, project_id, blog_id):
     mode = project_getmode_helper(request, project_id)
     is_view_mode = mode == 'view'
 
+    blog_full = True
+
+    # Plan tags
+    plan_tags_form = utility.plan_tags_form(project_id, Blog.objects.get(id=blog_id), 10)
+    
+
     return object_detail(
         request,
         Blog.objects.all(),
         object_id=blog_id,
         template_object_name='blog',
         template_name='blog_detail.html',
-        extra_context={'project_id': project_id, 'blog_full': True, 'is_view_mode': is_view_mode}
+        extra_context=locals()
     )
+
+def blog_delete(request, project_id, blog_id):
+    if not request.GET.get('ajax'):
+        return project_overview(request, project_id)
+
+    try:
+        blog = Blog.objects.get(id=blog_id)
+    except:
+        pass
+        #return HttpResponse('')
+
+    blog.delete()
+
+    return blog_list(request, project_id)
+
+def plan_tags(request, project_id, model, obj_id, weeks, days):
+    model = eval(model)
+    days = eval('(%s,)' % days)
+
+    obj = model.objects.get(id=obj_id)
+    plan = Plan.objects.get(project__id=project_id, week=weeks)
+    obj_task = obj.tasks.filter(plan=plan, day__in=days)
+
+    print obj_task
+
+    if len(days) == 1:
+        task, create = Task.objects.get_or_create(plan=plan, day=days[0])
+        if obj_task.count():
+            print task
+            obj.tasks.remove(task)
+            resp = ''
+        else:
+            obj.tasks.add(task)
+            resp = 'active'
+    else:
+        if obj.tasks.filter(plan=plan).count() == 5:
+            for task in Task.objects.filter(plan=plan):
+                obj.tasks.remove(task)
+            resp = ''
+        else:
+            for task in Task.objects.filter(plan=plan):
+                obj.tasks.add(task)
+            resp = 'active'
+
+    if obj.tasks.filter(plan=plan).count():
+        obj.plans.add(plan)
+    else:
+        obj.plans.remove(plan)
+
+    return HttpResponse(resp) 
+
+
+
+
+
+
+
+
+
+
+
+
+
+

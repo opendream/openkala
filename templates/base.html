@@ -100,7 +100,7 @@
 <body>
 <div id="add-frame"></div>
 <div class="container_16">
-    <div id="site-name"><h1><a href="{% url home %}">Openkala</a></h1></div>
+    <div id="site-name"><h1><a href="{% url home %}"><span class="site-name-first">open</span><span class="site-name-last">kala</span></a></h1></div>
     
     <div id="user-wrapper">
         {% if user.is_authenticated %}
@@ -110,19 +110,14 @@
         {% endif %}
     </div>
 
-    <div id="header-wrapper">
-        {% block header %}{% endblock %}
-    </div>
-
-    <div id="messages-wrapper">
-        {% if messages %}
-        <ul class="messages">
-            {% for message in messages %}
-                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-            {% endfor %}
-        </ul>
+    <ul id="primary-menu">
+        <li><a href="/projects#project-tab">โครงงานทั้งหมด</a></li>
+        {% if user.is_authenticated %}
+        <li><a href="/projects#project-add-tab">สร้างโครงงานใหม่</a></li>
+        <li><a href="/projects#standard_header-tab">จัดการวิชาบูรณาการ</a></li>
         {% endif %}
-    </div>
+    </ul>
+
     
     <div id="breadcrumb">
         <div class="grid_16">
@@ -135,6 +130,23 @@
     <script>
       breadc = new Breadcrumb('breadcrumb');
     </script>
+
+    <div id="header-wrapper">
+        {% block header %}{% endblock %}
+    </div>
+    <div id="second-wrapper">
+        {% block second %}{% endblock %}
+    </div>
+
+    <div id="messages-wrapper">
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
     
     <div id="content-wrapper" style="min-height:30em">
         {% block content %}{% endblock %}

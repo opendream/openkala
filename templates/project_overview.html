@@ -712,6 +712,7 @@
                 setTimeout(function () {$('.blog-message').remove()}, 5000)
                 $('#blog-add-form').hide();
                 $('#add-frame').hide();
+                $('#blog-add-form .editable').html('');
 
               }
           });
@@ -774,8 +775,8 @@
 <div class="clearfix"></div>
 {% endblock %}
 
-{% block content %}
 
+{% block second %}
 <ul id="menu" class="menu">
   <li id="tab-topic" class="active"><a href="#topic">สาระ</a></li>
   <li><a id="tab-plan" href="#plan">แผน</a></li>
@@ -784,7 +785,6 @@
   <li><a id="tab-gallery" href="#gallery">อัลบัมภาพ</a></li>
   <li><a id="tab-blog" href="#blog">บล็อก</a></li>
 </ul>
-
 {% if user.is_authenticated %}
 <div id="mode-wrap">
   <div id="mode-status"></div>
@@ -792,8 +792,12 @@
 </div>
 {% endif %}
 
+{% endblock %}
+
+{% block content %}
+
 <div id="topic" class="content">
-    <div class="thead topic-first">
+    <div class="thead topic-first head-2">
         <div class="grid_{{ grid_topic }}"><div class="ignore header_1">สาระการเรียนรู้</div></div>
         <div class="left">
             <div class="standard_header header_2">มาตรฐานการเรียนรู้และตัวชี้วัด</div>
@@ -811,7 +815,7 @@
 <div id="plan" class="content">
     <div id="week-markup" class="week-1">
 
-        <div class="toolbar">
+        <div class="toolbar head-1">
             <div>
                 สัปดาห์ :
                 <select id="week_options">
@@ -824,7 +828,7 @@
 
         <form><input id='current-plan-id' type="hidden" value=""/></form>
 
-        <div class="thead plan-first">
+        <div class="thead plan-first head-2">
             <div class="grid_4"><div class="ignore hrow">สาระสำคัญ<br />Main Point</div></div>
             <div class="grid_8"><div class="ignore hrow">เป้าหมายหลัก<br />Goal</div></div>
             <div class="grid_4"><div class="ignore hrow">เนื้อหา/กิจกรรม ชิ้นงาน<br />Content/Activity Work</div></div>
@@ -905,14 +909,14 @@
     </div>
 </div>
 <div id="standard" class="content">
-    <div class="thead standard">
+    <div class="thead standard head-2">
         <div class="grid_3"><div class="ignore hrow">ข้อมาตรฐาน</div></div>
         <div class="grid_10"><div class="ignore hrow">คำอธิบาย</div></div>
         <div class="grid_3"><div class="ignore hrow">อยู่ในแผนแล้ว</div></div>
         <div class="clearfix"></div>
     </div>
     {% if user.is_authenticated %}
-    <div id="standard-add" class="tbody standard form-add" style="display:{% if is_view_mode %}none{% else %}block{% endif %};">
+    <div id="standard-add" class="tbody standard form-add head-1" style="display:{% if is_view_mode %}none{% else %}block{% endif %};">
         <div class="grid_3" style="display:none;">
             <div id="CoreStandard-0-group_code" class="ignore CoreStandard-group_code"></div>
         </div>
@@ -936,7 +940,7 @@
     </div>
 </div>
 <div id="project-history" class="content">
-    <div class="thead project-history-submit">
+    <div class="thead project-history-submit head-1">
         <div class="grid_16">
             <div class="ignore hrow">
                 <button id="compare-cancel" class="active">ยกเลิกการเปรียบเทียบ</button>
@@ -944,7 +948,7 @@
             </div>
         </div>
     </div>
-    <div class="thead project-history">
+    <div class="thead project-history head-2">
         <div class="grid_3"><div class="ignore hrow">เปรียบเทียบกับ</div></div>
         <div class="grid_1"><div class="ignore hrow">เก่า</div></div>
         <div class="grid_1"><div class="ignore hrow">ใหม่</div></div>
@@ -968,7 +972,7 @@
 </div>
 <div id="blog" class="content">
     {% if user.is_authenticated %}
-    <div id="blog-add" class="thead blog blog-navi">
+    <div id="blog-add" class="thead blog blog-navi head-1">
       <div id="blog-add-link" class="form-add" style="display:{% if is_view_mode %}none{% else %}block{% endif %};">
         <a href="#">สร้างบล็อกใหม่</a>
       </div>

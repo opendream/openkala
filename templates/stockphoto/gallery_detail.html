@@ -1,10 +1,12 @@
 {% if gallery %}
-<div id="Gallery-{{ gallery.id }}-title" class="ignore editable gallery-{{ gallery.id }} gallerytitle">{{ gallery.title }}</div>
-<div class="gallery-navi">
-    <a href="{% url stockphoto_gallery_list project_id %}">อัลบัมทั้งหมด</a>
+<div class="head-2">
+    <div id="Gallery-{{ gallery.id }}-title" class="ignore editable gallery-{{ gallery.id }} gallerytitle">{{ gallery.title }}</div>
+    <div class="gallery-navi">
+        <a href="{% url stockphoto_gallery_list project_id %}">อัลบัมทั้งหมด</a>
+    </div>
 </div>
 {% if user.is_authenticated %}
-<form id="photo-upload-form" class="form-add" action='#' method='post' enctype='multipart/form-data' style="display:{% if is_view_mode %}none{% else %}block{% endif %};">
+<form id="photo-upload-form" class="form-add head-1" action='#' method='post' enctype='multipart/form-data' style="display:{% if is_view_mode %}none{% else %}block{% endif %};">
   <input id="photo-upload" name="uploads[]" type="file" multiple="multiple" value="อัพโหลดรูป" />
   <div id="photo-current-wrap"></div>
 </form>

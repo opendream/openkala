@@ -1,22 +1,41 @@
 {%if blog_full %} 
-<div class="blog-navi">
-  <a href="{% url quarter_blog_list project_id %}">บล็อกทั้งหมด</a>
-</div>
 <script>
 $('#blog-add').hide();
 </script>
+<div class="blog-navi head-2">
+  <a href="{% url quarter_blog_list project_id %}">บล็อกทั้งหมด</a>
+  <div id="blog-delete-wrap" class="form-add" style="display:{% if is_view_mode %}none{% else %}block{% endif %};"><a id="blog-delete" href="{% url quarter_blog_delete project_id blog.id %}">ลบ</a></div>
+</div>
 {% endif %}
 <div class="item{%if blog_full %} full{% else %} teaser{% endif %}">
-    <div class="grid_2">
+    <div class="grid_4">
         <div class="Blog-meta">
             <div id="Blog-{{ blog.id }}-created" class="ignore Blog-created">{{ blog.created|date:'d/m/Y' }}</div>
-            <div id="Blog-{{ blog.id }}-user" class="ignore Blog-user">โดย {{ blog.user.username }}</div>
-            {% if blog.plan %}
-            <div id="Blog-{{ blog.id }}-plan" class="ignore Blog-user">ใน {{ blog.plan }}</div>
-            {% endif %}
+            <div id="Blog-{{ blog.id }}-user" class="ignore Blog-user">โดย <a href="#">{{ blog.user.username }}</a></div>
+            <div id="Blog-{{ blog.id }}-plans" class="ignore Blog-plans-form">
+                {% if blog.plans.all %}
+                <div id="Blog-{{ blog.id }}-plans-view" class="ignore Blog-plans-view">
+                    <ul>
+                    {% for plan in blog.plans.all %}
+                    <li>ใน <a href="{% url quarter_plan project_id plan.week %}#plan-tab" class="plan-week-link">สัปดาห์ที่ {{ plan.week }}</a></li>
+                    {% endfor %}
+                    </ul>
+                    <div id="Blog-{{ blog.id }}-plans-edit" class="ignore Blog-plans-tags Blog-plans-edit">
+                        <a class="plan-tags-link" href="#">แก้ไขสัปดาห์</a>
+                    </div>
+                </div>
+                {% else %}
+                    <div id="Blog-{{ blog.id }}-plans-add" class="ignore Blog-plans-tags Blog-plans-add">
+                        <a class="plan-tags-link" href="#">เพิ่มสัปดาห์</a>
+                    </div>
+                {% endif %}
+                <div id="Blog-{{ blog.id }}-plans-form" class="ignore Blog-plans-form">
+                {{ plan_tags_form }}
+                </div>
+            </div>
         </div>
     </div>
-    <div class="grid_14">
+    <div class="grid_12">
         <h2 id="Blog-{{ blog.id }}-title" class="ignore Blog-title{% if blog_full %} editable{% endif %}">
           {% if blog_full %}
           {{ blog.title|safe }}
@@ -25,8 +44,11 @@ $('#blog-add').hide();
           {% endif %}
         </h2>
     </div>
-    <div class="grid_14">
+    <div class="grid_12">
         <div id="Blog-{{ blog.id }}-body" class="ignore Blog-title{% if blog_full %} editable{% endif %}">{%if blog_full %}{{ blog.body|safe }}{% else %}{{ blog.body|safe|truncatewords_html:400 }}{% endif %}</div>
+        {% if not blog_full %}
+        <a href="{% url quarter_blog_detail project_id blog.id %}" class="Blog-readmore readmore">อ่านต่อ</a>
+        {% endif %}
     </div>
     <div class="clearfix"></div>
 </div>

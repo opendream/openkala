@@ -115,7 +115,7 @@ def gallery_list(request, project_id):
 
     return object_list(
         request, 
-        Gallery.objects.filter(project__id=project_id), 
+        Gallery.objects.filter(project__id=project_id).order_by('-id'), 
         template_object_name='gallery', 
         template_name='stockphoto/gallery_list.html',
         paginate_by=15,

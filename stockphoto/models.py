@@ -90,6 +90,9 @@ class Gallery(models.Model):
 
     project = models.ForeignKey(Project)
 
+    plans    = models.ManyToManyField(Plan, null=True, blank=True)
+    tasks    = models.ManyToManyField(Task, null=True, blank=True)
+
     class Meta:
         get_latest_by = '-date'
         verbose_name_plural = _("galleries")

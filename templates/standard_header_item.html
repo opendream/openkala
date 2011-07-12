@@ -1,4 +1,4 @@
-<div class="item {{ rowtype }}">
+<div class="item {% if rowtype %}{{ rowtype }}{% else %}odd{% endif %}">
     <div class="grid_1" style="display: none;">
         <div id="StandardHeader-{{ standard_header.id }}-weight" class="ignore StandardHeader-weight">*</div>
     </div>

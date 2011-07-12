@@ -1,5 +1,5 @@
 {% if user.is_authenticated %}
-<form id="photo-upload-form" class="form-add" action='#' method='post' enctype='multipart/form-data' style="display:{% if is_view_mode %}none{% else %}block{% endif %};">
+<form id="photo-upload-form" class="form-add head-1" action='#' method='post' enctype='multipart/form-data' style="display:{% if is_view_mode %}none{% else %}block{% endif %};">
   <input id="photo-upload" name="uploads[]" type="file" multiple="multiple" value="อพโหลดรป" />
   <div id="photo-current-wrap"></div>
 </form>
@@ -38,10 +38,10 @@ $(document).ready(function () {
 {% if is_paginated %}
 
 {% if has_previous %}
-<a href="{% url stockphoto_gallery_list project_id %}?page={{ previous }}">&laquo; ย้อนกลับ</a> |
+<a class="prev" href="{% url stockphoto_gallery_list project_id %}?page={{ previous }}">&laquo; ย้อนกลับ</a> |
 {% endif %}
 {% if has_next %}
-<a href="{% url stockphoto_gallery_list project_id %}?page={{ next }}">ถัดไป &raquo;</a>
+<a class="next" href="{% url stockphoto_gallery_list project_id %}?page={{ next }}">ถัดไป &raquo;</a>
 {% endif %}
 {% endif %}
 

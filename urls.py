@@ -20,6 +20,8 @@ urlpatterns = patterns('',
     url(r'^projects/(?P<project_id>[^/]+)/plans/(?P<plan_week>[^/]+)$', 'quarter.views.plan_overview', name='quarter_plan'),
     url(r'^projects/(?P<project_id>[^/]+)/blogs$', 'quarter.views.blog_list', name='quarter_blog_list'),
     url(r'^projects/(?P<project_id>[^/]+)/blogs/(?P<blog_id>[^/]+)$', 'quarter.views.blog_detail', name='quarter_blog_detail'),
+    url(r'^projects/(?P<project_id>[^/]+)/blogs/(?P<blog_id>[^/]+)/delete$', 'quarter.views.blog_delete', name='quarter_blog_delete'),
+    url(r'^projects/(?P<project_id>[^/]+)/(?P<model>[^/]+)/(?P<obj_id>[^/]+)/weeks/(?P<weeks>[^/]+)/days/(?P<days>[^/]+)$', 'quarter.views.plan_tags', name='quarter_plan_tags'),
     
     # gallery
     url(r'^projects/(?P<project_id>[^/]+)/stockphoto$', 'stockphoto.views.gallery_list', name='stockphoto_gallery_list'),

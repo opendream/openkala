@@ -132,7 +132,9 @@ class Blog(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     changed = models.DateTimeField(auto_now=True)
     user    = models.ForeignKey(User)
-    project = models.ForeignKey(Project, null=True, blank=True)
+    project = models.ForeignKey(Project)
+    plans    = models.ManyToManyField(Plan, null=True, blank=True)
+    tasks    = models.ManyToManyField(Task, null=True, blank=True)
 
     class Meta:
         get_latest_by = '-created'

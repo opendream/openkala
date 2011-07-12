@@ -121,8 +121,8 @@ function saveEditableStandardHeader(arg1, arg2, jqobj, val, create_id) {
 
             var obj = $(data);
             $('.editable', obj).aloha(); 
-            $('#standard-items').prepend(obj);
-            $('#standard-add .editable').html('');
+            $('#standard_header-items').prepend(obj);
+            $('#standard_header-add .editable').html('');
             $('#messages-wrapper').append($('<div class="standardheader-message">เพิ่มวิชาบูรณาการแล้ว</div>'));
             setTimeout(function () {$('.standardheader-message').remove()}, 5000)
 
@@ -144,7 +144,7 @@ function saveEditableStandardHeader(arg1, arg2, jqobj, val, create_id) {
 <li>โครงงาน</li>
 {% endblock %}
 {% block content %}
-<ul id="menu" class="menu">
+<ul id="menu" class="menu" style="display: none;">
 <li class="active"><a href="#project">โครงงานทั้งหมด</a></li>
 {% if user.is_authenticated %}
 <li><a href="#project-add">สร้างโครงงานใหม่</a></li>

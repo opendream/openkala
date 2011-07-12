@@ -1,0 +1,26 @@
+{{ ca|safe }}
+<script>
+var html_id = '{{ html_id }}';
+
+$('#' + html_id + ' .plan-tags-day a, #' + html_id + ' .plan-tags-week a').click(function (e) {
+  e.preventDefault();
+  var a = $(this);
+  var div = a.parent('div');
+  var td = div.parent();
+  var tr = td.parent();
+
+  $.ajax({
+    url: a.attr('href'),
+    success: function (data) {
+      div.attr('class', data);
+      if (td.hasClass('plan-tags-week')) {
+        $('.plan-tags-day div', tr.get(0)).attr('class', data);
+      }
+    }
+  });
+});
+
+$('.plan-tags-link').click(function (e) {
+  // TODO: 
+});
+</script>

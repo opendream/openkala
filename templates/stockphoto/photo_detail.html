@@ -1,13 +1,33 @@
 {% if photo %}
 
-<h1>รุปจากอัลบัม - {{ photo.gallery.title }}</h1>
-<div class="gallery-navi">
-    <a href="{% url stockphoto_gallery_detail project_id photo.gallery.id %}">กลับไปที่อัลบัม</a>
-    .
-    <a href="{% url stockphoto_gallery_list project_id %}">อัลบัมทั้งหมด</a>
-</div>
+<div class="head-2">
+    <h1 class="title-album">รุปจากอัลบัม - {{ photo.gallery.title }}</h1>
+    <div class="gallery-navi">
+        <div id="photo-delete-wrap" class="form-add" style="display:{% if is_view_mode %}none{% else %}block{% endif %};"><a id="photo-delete" href="{% url stockphoto_photo_delete project_id photo.id %}">ลบ</a></div>
 
-<div id="photo-delete-wrap" class="form-add" style="display:{% if is_view_mode %}none{% else %}block{% endif %};"><a id="photo-delete" href="{% url stockphoto_photo_delete project_id photo.id %}">ลบ</a></div>
+        <a href="{% url stockphoto_gallery_detail project_id photo.gallery.id %}">กลับไปที่อัลบัม</a>
+        .
+        <a href="{% url stockphoto_gallery_list project_id %}" class="all-album">อัลบัมทั้งหมด</a>
+        
+    </div>
+</div>
+<div class="head-1">
+    {% if photo.next %}
+      <div class="image-next-link">
+        <a href="{% url stockphoto_photo_detail project_id photo.next.id %}">
+          ถัดไป &raquo;
+        </a>
+      </div>
+    {% endif %}
+
+    {% if photo.prev %}
+      <div class="image-prev-link">
+        <a href="{% url stockphoto_photo_detail project_id photo.prev.id %}">
+          &laquo; ย้อนกลับ
+        </a>
+      </div>
+    {% endif %}
+</div>
 
 {% if photo.prev %}
 <div class="small-image-box-np image-prev">
@@ -17,13 +37,7 @@
 </div>
 {% endif %}
 
-{% if photo.prev %}
-  <div class="image-prev-link">
-    <a href="{% url stockphoto_photo_detail project_id photo.prev.id %}">
-      &laquo; ย้อนกลับ
-    </a>
-  </div>
-{% endif %}
+
 
 <div id="large-image-box">
   <a href="{{ photo.fullurl }}">
@@ -38,13 +52,7 @@
   </div>
 </div>
 
-{% if photo.next %}
-  <div class="image-next-link">
-    <a href="{% url stockphoto_photo_detail project_id photo.next.id %}">
-      ถัดไป &raquo;
-    </a>
-  </div>
-{% endif %}
+
 
 {% if photo.next %}
 <div class="small-image-box-np image-next">

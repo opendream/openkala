@@ -1,0 +1,134 @@
+/* Styles used by the stockphoto default templates. */
+/* Don't feel compelled to use these in your installation */
+#breadcrumbs
+{
+  color: rgb(220,80,80);
+  background-color: transparent;
+  margin: 0;
+  padding: 0 1px 2px 1px;
+
+  }
+
+#large-image-box
+{
+  display: block;
+  background-color:white;
+  width:680px;
+  min-width: 680px;
+  max-height: 800px;
+  margin-bottom:10px;
+  margin-left:15px;
+  text-align:center;
+  padding-bottom:10px;
+  padding-top:5px;
+  overflow: hidden;
+  float: left;
+  border: 1px solid black;
+}
+
+#large-image-box img
+{
+  display:block;
+  margin-left:auto;
+  margin-right:auto;
+  margin-bottom:10px;
+  height: auto;
+  width: auto;
+  border: none;
+  background: black;
+}
+#large-image-box div
+{
+  display:block;
+  margin-left:auto;
+  margin-right:auto;
+  text-align:center;
+  width:640px;
+  background-color:white;
+  padding: 2px;
+}
+
+#large-image-box div p
+{
+  text-align: center;
+  }
+
+#thumbnail-box
+{
+  width:600px;
+  min-width: 600px;
+  float:left;
+}
+#thumbnails {
+    list-style-type: none;
+    margin:0;
+    padding:0;
+    float:left;
+}
+#thumbnails li {
+    margin:0;
+    padding:0;
+    float:left;
+}
+
+#imageboxes-break
+{
+  clear: left;
+  }
+div.small-image-box
+{
+  background-color:white;
+  width:170px;
+  max-height: 170px;
+  min-height: 170px;
+  margin-bottom: 10px;
+  margin-left:15px;
+  text-align:center;
+  padding-bottom:5px;
+  padding-top:5px;
+  overflow: hidden;
+  float: left;
+  border: 1px solid black;
+}
+div.small-image-box img
+{
+  margin-bottom:5px;
+  display:block;
+  margin-left:auto;
+  margin-right:auto;
+  margin-bottom: 4px;
+  max-height: 100px;
+  min-height: 100px;
+  max-width: 150px;
+  border: 0;
+  }
+
+
+div.small-image-box span
+{
+  height:20px;
+  max-height: 20px;
+  min-height: 20px;
+  width:160px;
+  min-width: 160px;
+  max-width: 160px;
+  background-color:white;
+  display:block;
+  font-size: 10px;
+  margin-left:auto;
+  margin-right:auto;
+  text-align:center;
+  overflow: visible;
+  margin-top: 0;
+  margin-bottom:0;
+  padding-top: 0;
+  padding-bottom:0;
+}
+
+
+/* #### Django calendar stuff #### */
+.calendarbox { background-color: white;  }
+.calendarnav-previous { position: absolute; left: 0;  }
+.calendarnav-next { position: absolute; right: 0; }
+.calendar-cancel { text-align: center; }
+span a img { border: none; }

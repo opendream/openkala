@@ -37,7 +37,7 @@ from django.utils.html import strip_tags
 from datetime import datetime
 
 import os, os.path
-import Image
+from PIL import Image
 
 from quarter.models import *
 

@@ -47,7 +47,7 @@ import shutil
 
 from datetime import datetime
 from tempfile import NamedTemporaryFile, mkdtemp
-import Image
+from PIL import Image
 from PIL.ExifTags import TAGS
 from datetime import datetime
 

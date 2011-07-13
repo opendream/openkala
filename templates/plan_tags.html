@@ -21,6 +21,12 @@ $('#' + html_id + ' .plan-tags-day a, #' + html_id + ' .plan-tags-week a').click
 });
 
 $('.plan-tags-link').click(function (e) {
-  // TODO: 
+  e.preventDefault();
+  $('#' + $(this).attr('href')).show();
+});
+$('#' + html_id +' .plan-tags-close').click(function (e) {
+  e.preventDefault();
+  $('#' + html_id).hide();
+  window.location.reload();
 });
 </script>

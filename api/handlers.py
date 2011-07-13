@@ -78,21 +78,21 @@ class ApiHandler(BaseHandler):
                 if k in dct:
                     typ = type(self.model._meta.get_field(k))
                     text = dct.get(k)
-                    text = text.strip()
+                    print typ
+                    if hasattr(text, 'strip'):
+                        text = text.strip()
 
 
-                    # Strip html tags, default is strip.
-                    # if you want to keep tags please return list of fields 
-                    # in the model class and method name is allowhtml() and striphtml()
-                    if hasattr(self.model, 'striphtml') and k in self.model.striphtml(self.model()):
-                        text = strip_tags(text)
-                    elif hasattr(self.model, 'allowhtml') and k not in self.model.allowhtml(self.model()):
-                        # TODO: strip some tags
-                        pass
-                    else:
-                        text = utility.filter_html(text)
-
-                    print text
+                        # Strip html tags, default is strip.
+                        # if you want to keep tags please return list of fields 
+                        # in the model class and method name is allowhtml() and striphtml()
+                        if hasattr(self.model, 'striphtml') and k in self.model.striphtml(self.model()):
+                            text = strip_tags(text)
+                        elif hasattr(self.model, 'allowhtml') and k not in self.model.allowhtml(self.model()):
+                            # TODO: strip some tags
+                            pass
+                        else:
+                            text = utility.filter_html(text)
 
                     if typ == models.IntegerField:
                         fd[k] = int(strip_tags(text))
@@ -122,6 +122,9 @@ class ApiHandler(BaseHandler):
                 pass
 
         return fd
+
+    def after_create(self, inst):
+        pass
     
     def create(self, request, *args, **kwargs):
         if not hasattr(request, 'data'): 
@@ -151,6 +154,9 @@ class ApiHandler(BaseHandler):
                 del(attrs['id'])
             inst = self.model(**attrs)
             inst.save()
+
+            self.after_create(inst)
+
             return inst
         except self.model.MultipleObjectsReturned:
             return rc.DUPLICATE_ENTRY
@@ -356,37 +362,20 @@ class ProjectHandler(ApiHandler):
     fields = [(field.name) for field in model._meta.fields]
     fields.append('cell')
 
-    def create(self, request, *args, **kwargs):
-        if not hasattr(request, 'data'): 
-            request.data = urlencoded(request.raw_post_data)
+    def after_create(self, inst):
+        # Create default plans
+        for i in range(10):
+            request = RequestBlank()
+            request.data = {'project': inst.id, 'week': str(i+1)}
+            plan_handler = PlanHandler()
+            plan_handler.create(request)
 
-        attrs = self.flatten_dict(request.POST)
-        
-        try:
-            inst = self.model.objects.get(**attrs)
-            self.update(request, args, kwargs)
-            return inst
-        except self.model.DoesNotExist:
-            inst = self.model(**attrs)
-            inst.save()
-
-            # Create default plans
-            for i in range(10):
-                request = RequestBlank()
-                request.data = {'project': inst.id, 'week': str(i+1)}
-                plan_handler = PlanHandler()
-                plan_handler.create(request)
-
-            # Create default topics
-            for i in range(10):
-                request = RequestBlank()
-                request.data = {'project': inst.id}
-                topic_handler = TopicHandler()
-                topic_handler.create(request)
-
-            return inst
-        except self.model.MultipleObjectsReturned:
-            return rc.DUPLICATE_ENTRY
+        # Create default topics
+        for i in range(10):
+            request = RequestBlank()
+            request.data = {'project': inst.id}
+            topic_handler = TopicHandler()
+            topic_handler.create(request)
 
 class ProjectHistoryHandler(ApiHandler):
     model = ProjectHistory

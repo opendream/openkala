@@ -848,8 +848,6 @@
               <div class="clearfix"></div>
             </div>
         </div>
-        <br/>
-        <hr/>
         <div class="thead plan-second">
             <div class="grid_5"><div class="ignore hrow">หัวเรื่อง<br />Sub-Topic</div></div>
             <div class="grid_3"><div class="ignore hrow">เครื่องมือการคิด<br />Key Thinking</div></div>
@@ -874,8 +872,7 @@
                 <div class="clearfix"></div>
             </div>
         </div>
-        <br/>
-        <hr/>
+
         <div class="thead task">
             <div class="grid_2 hcol"><div class="ignore">วัน<br />Day</div></div>
             <div class="grid_6 hcol"><div class="ignore">กิจกรรมการเรียนรู้<br />Activities</div></div>
@@ -971,43 +968,6 @@
   </div>
 </div>
 <div id="blog" class="content">
-    {% if user.is_authenticated %}
-    <div id="blog-add" class="thead blog blog-navi head-1">
-      <div id="blog-add-link" class="form-add" style="display:{% if is_view_mode %}none{% else %}block{% endif %};">
-        <a href="#">สร้างบล็อกใหม่</a>
-      </div>
-      <div id="blog-add-form">
-        <div class="grid_14 head-wrapper">
-            <h1>สร้างบล็อก</h1>
-        </div>
-        <div class="clearfix"></div>
-        <div class="grid_1">
-            <div id="Blog-0-title-label">ชื่อเรื่อง</div>
-        </div>
-        <div class="grid_13">
-            <div id="Blog-0-title" class="ignore Blog-title editable"></div>
-        </div>
-        <div class="clearfix"></div>
-        <div class="grid_1">
-            <div for="Blog-0-body-label">เนื้อหา</div>
-        </div>
-        <div class="grid_13">
-            <div id="Blog-0-body" class="ignore Blog-body editable"></div>
-        </div>
-        <div class="clearfix"></div>
-        <div class="grid_14" style="display: none;">
-            <div id="Blog-0-user" class="ignore Blog-user">{{ user.id }}</div>
-        </div>
-        <div class="clearfix"></div>
-        <div class="grid_14 submit-wrapper">
-            <button id="blog-add-submit">สรา้ง</button>
-            <button id="blog-add-cancel">ยกเลิก</button>
-        </div>
-        <div class="clearfix"></div>
-      </div>
-    </div>
-    {% endif %}
-
     <div id="blog-render">
     </div>
 </div>

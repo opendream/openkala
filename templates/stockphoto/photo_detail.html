@@ -1,67 +1,76 @@
 {% if photo %}
-
 <div class="head-2">
-    <h1 class="title-album">รุปจากอัลบัม - {{ photo.gallery.title }}</h1>
-    <div class="gallery-navi">
-        <div id="photo-delete-wrap" class="form-add" style="display:{% if is_view_mode %}none{% else %}block{% endif %};"><a id="photo-delete" href="{% url stockphoto_photo_delete project_id photo.id %}">ลบ</a></div>
+    <div class="{% if photo.prev or photo.next %}grid_12{% else %}grid_16{% endif %}">
+        <h2 class="title-album title">รุปจากอัลบัม - {{ photo.gallery.title }}</h2>
+        <div class="gallery-navi">
 
-        <a href="{% url stockphoto_gallery_detail project_id photo.gallery.id %}">กลับไปที่อัลบัม</a>
-        .
-        <a href="{% url stockphoto_gallery_list project_id %}" class="all-album">อัลบัมทั้งหมด</a>
-        
+            <a href="{% url stockphoto_gallery_detail project_id photo.gallery.id %}">กลับไปที่อัลบัม</a>
+            
+            <a href="{% url stockphoto_gallery_list project_id %}" class="all-album">อัลบัมทั้งหมด</a>
+            
+        </div>
     </div>
 </div>
+{% if photo.prev or photo.next %}
 <div class="head-1">
-    {% if photo.next %}
-      <div class="image-next-link">
-        <a href="{% url stockphoto_photo_detail project_id photo.next.id %}">
-          ถัดไป &raquo;
-        </a>
-      </div>
-    {% endif %}
+    <div class="grid_4">
+        {% if photo.prev %}
+          <div class="image-prev-link">
+            <a href="{% url stockphoto_photo_detail project_id photo.prev.id %}">
+              &laquo; ย้อนกลับ
+            </a>
+          </div>
+        {% endif %}
+        
+        {% if photo.next %}
+          <div class="image-next-link">
+            <a href="{% url stockphoto_photo_detail project_id photo.next.id %}">
+              ถัดไป &raquo;
+            </a>
+          </div>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
 
-    {% if photo.prev %}
-      <div class="image-prev-link">
+<div class="view">
+    <div class="grid_16">
+      {% if photo.prev %}
+      <div class="small-image-box-np image-prev">
         <a href="{% url stockphoto_photo_detail project_id photo.prev.id %}">
-          &laquo; ย้อนกลับ
+          <img src="{{ photo.prev.thumb2url}}" alt="{{ photo.prev.title }}"/>
         </a>
       </div>
-    {% endif %}
+      {% endif %}
+      
+      
+      
+      <div id="large-image-box">
+        <div id="photo-delete-wrap" class="form-add" style="display:{% if is_view_mode %}none{% else %}block{% endif %};"><a id="photo-delete" href="{% url stockphoto_photo_delete project_id photo.id %}">ลบ</a></div>
+        <a href="{{ photo.fullurl }}">
+          <img src="{{ photo.dispurl }}"
+               alt="{{ photo.title }}" />
+        </a>
+        <div>
+          <div id="Photo-{{ photo.id }}-desc" class="ignore editable photo-{{ photo.id }} photodesc">{{ photo.desc }}</div>
+          {% if datetime %}
+          <p class="photodate">ถ่ายเมื่อ {{ datetime|date:'d/m/Y H:i' }}</p>
+          {% endif %}
+        </div>
+      </div>
+      
+      
+      
+      {% if photo.next %}
+      <div class="small-image-box-np image-next">
+        <a href="{% url stockphoto_photo_detail project_id photo.next.id %}">
+          <img src="{{ photo.next.thumb2url}}" alt="{{ photo.next.title }}"/> 
+        </a>
+      </div>
+      
+      {% endif %}
+    </div>
 </div>
-
-{% if photo.prev %}
-<div class="small-image-box-np image-prev">
-  <a href="{% url stockphoto_photo_detail project_id photo.prev.id %}">
-    <img src="{{ photo.prev.thumb2url}}" alt="{{ photo.prev.title }}"/>
-  </a>
-</div>
-{% endif %}
-
-
-
-<div id="large-image-box">
-  <a href="{{ photo.fullurl }}">
-    <img src="{{ photo.dispurl }}"
-         alt="{{ photo.title }}" />
-  </a>
-  <div>
-    <div id="Photo-{{ photo.id }}-desc" class="ignore editable photo-{{ photo.id }} photodesc">{{ photo.desc }}</div>
-    {% if datetime %}
-    <p class="photodate">ถ่ายเมื่อ {{ datetime|date:'d/m/Y H:i' }}</p>
-    {% endif %}
-  </div>
-</div>
-
-
-
-{% if photo.next %}
-<div class="small-image-box-np image-next">
-  <a href="{% url stockphoto_photo_detail project_id photo.next.id %}">
-    <img src="{{ photo.next.thumb2url}}" alt="{{ photo.next.title }}"/> 
-  </a>
-</div>
-
-{% endif %}
 
 {% else %}
 <p>ไม่พบรูปภาพที่คุณหา</p>

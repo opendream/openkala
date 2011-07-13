@@ -1,3 +1,109 @@
+<div class="head-2">
+    <div class="{% if is_paginated %}grid_12{% else %}grid_16 {% endif %}">
+        <h2 class="blog-all-title title">บล็อกทั้งหมดของโครงงาน</h2>
+        
+        {% if user.is_authenticated %}
+        <div id="blog-add" class="thead blog">
+          <div id="blog-add-link" class="form-add add-button" style="display:{% if is_view_mode %}none{% else %}block{% endif %};">
+            <a href="#">สร้างบล็อกใหม่</a>
+          </div>
+          <div id="blog-add-form">
+            <div class="grid_14 head-wrapper">
+                <h1>สร้างบลอก</h1>
+            </div>
+            <div class="clearfix"></div>
+            <div class="grid_1">
+                <div id="Blog-0-title-label">ชื่อเรื่อง</div>
+            </div>
+            <div class="grid_13">
+                <div id="Blog-0-title" class="ignore Blog-title editable"></div>
+            </div>
+            <div class="clearfix"></div>
+            <div class="grid_1">
+                <div for="Blog-0-body-label">เนื้อหา</div>
+            </div>
+            <div class="grid_13">
+                <div id="Blog-0-body" class="ignore Blog-body editable"></div>
+            </div>
+            <div class="clearfix"></div>
+            <div class="grid_14" style="display: none;">
+                <div id="Blog-0-user" class="ignore Blog-user">{{ user.id }}</div>
+            </div>
+            <div class="clearfix"></div>
+            <div class="grid_14 submit-wrapper">
+                <button id="blog-add-submit">สร้าง</button>
+                <button id="blog-add-cancel">ยกเลิก</button>
+            </div>
+            <div class="clearfix"></div>
+          </div>
+        </div>
+
+        <script>
+            $('#blog-add-link').click(function (e) {
+              e.preventDefault();
+              $('#blog-add-form').show();
+              $('#add-frame').show();
+            });
+
+            $('#blog-add-cancel').click(function () {
+              $('#blog-add-form').hide();
+              $('#add-frame').hide();
+              $('#blog-add .editable').html('');
+            });
+
+            $('#blog-add-submit').click(function () {
+
+              var title = $('#Blog-0-title').html();
+              var body = $('#Blog-0-body').html();
+              var user = $('#Blog-0-user').html();
+
+              if (!title) {
+                alert('ชอเรองจำเปนตองกรอก');
+              }
+              else {
+                $.ajax({
+                    'url': '/api/blogs',
+                    'type': 'POST',
+                    'dataType': 'json',
+                    'data': {'title': title, 'body': body, 'user': user, 'project': project_id},
+                    'beforeSend' : function(xhr) {
+                        xhr.setRequestHeader('X-CSRFToken', getCookie('csrftoken'));
+                    },
+                    'success': function (data) {
+                      blog_init();
+                      $('#messages-wrapper').append($('<div class="blog-message">เพมบลอกแลว</div>'));
+                      setTimeout(function () {$('.blog-message').remove()}, 5000)
+                      $('#blog-add-form').hide();
+                      $('#add-frame').hide();
+                      $('#blog-add-form .editable').html('');
+
+                    }
+                });
+              }
+            
+            });
+        </script>
+
+        {% endif %}
+
+
+
+    </div>
+</div>
+
+{% if is_paginated %}
+<div class="head-1">
+    <div class="grid_4">
+        {% if has_previous %}
+        <a class="prev" href="{% url quarter_blog_list project_id %}?page={{ previous }}">&laquo; ย้อนกลับ</a> |
+        {% endif %}
+        {% if has_next %}
+        <a class="next" href="{% url quarter_blog_list project_id %}?page={{ next }}">ถัดไป &raquo;</a>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+
 {% if blog_list %}
     {% for blog in blog_list %}
     {% include "blog_detail.html" %}
@@ -6,14 +112,6 @@
 <p>ยังไม่มีบล็อก</p>
 {% endif %}
 
-{% if is_paginated %}
-{% if has_previous %}
-<a href="{% url quarter_blog_list project_id %}?page={{ previous }}">&laquo; ย้อนกลับ</a> |
-{% endif %}
-{% if has_next %}
-<a href="{% url quarter_blog_list project_id %}?page={{ next }}">ถัดไป &raquo;</a>
-{% endif %}
-{% endif %}
 <script>
 $('#blog-add').show();
 </script>

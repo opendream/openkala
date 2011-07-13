@@ -1,5 +1,5 @@
 ยืนยันการลงทะเบียน Openkala
 
-122.155.8.97/{% url registration_activate activation_key %}
+122.155.8.97{% url registration_activate activation_key %}
 
 กรุณายืนยันการลงทะเบียนภายใน {{ expiration_days }} วัน

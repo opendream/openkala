@@ -76,7 +76,7 @@ def plan_tags_form(project_id, obj, nweek):
         default[task.day][task.plan.week] = 'active'
 
 
-    ca = '<div id="%s"><table class="plan-tags"><thead>' % html_id
+    ca = '<div id="%s" class="plan-tags-wrap"><table class="plan-tags"><thead>' % html_id
     ca += '<tr class="plan-tags-day-head"><th class="plan-tags-conner">%s</th>' % u'สัปดาห์/วัน'
     for d, day in daymap.iteritems():
         ca += '<th>%s</th>' % day

@@ -57,7 +57,7 @@ class Project(models.Model):
         return self.name
 
     def striphtml(self):
-        return ['name']
+        return ['name', 'grade', 'year', 'quarter']
 
 class Topic(models.Model):
     title   = models.CharField(max_length=255, null=True, blank=True)
@@ -117,6 +117,8 @@ class Task(models.Model):
     def get_day_string(self):
         return self.DAY_CHOICES[self.day][1]
         
+    def striphtml(self):
+        return ['day', 'hour']
 
 class ProjectHistory(models.Model):
     project  = models.ForeignKey(Project)

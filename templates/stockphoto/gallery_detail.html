@@ -1,46 +1,74 @@
-{% if gallery %}
-<div class="head-2">
-    <div id="Gallery-{{ gallery.id }}-title" class="ignore editable gallery-{{ gallery.id }} gallerytitle">{{ gallery.title }}</div>
-    <div class="gallery-navi">
-        <a href="{% url stockphoto_gallery_list project_id %}">อัลบัมทั้งหมด</a>
-    </div>
-</div>
-{% if user.is_authenticated %}
-<form id="photo-upload-form" class="form-add head-1" action='#' method='post' enctype='multipart/form-data' style="display:{% if is_view_mode %}none{% else %}block{% endif %};">
-  <input id="photo-upload" name="uploads[]" type="file" multiple="multiple" value="อัพโหลดรูป" />
-  <div id="photo-current-wrap"></div>
-</form>
-<script>
-
-$(document).ready(function () {
-  photo_upload_build();
-});
-</script>
-{% endif %}
-
 {% if gallery.photo_set.count %}
 
-<div id="thumbnail-box">
-<ul id="thumbnails">
-{% for item in gallery.photo_set.all %}
-<li>
-  <div class="small-image-box">
-    <a href="{% url stockphoto_photo_detail project_id item.id %}">
-      <img src="{{ item.thumburl }}"
-           alt="{{ item.title }}" />
-    </a>
-    <a href="{% url stockphoto_photo_detail project_id item.id %}"><span>{{ item.desc }}</span></a>
-  </div>
-</li>                  
-{% endfor %}
-</ul>
+
+<div class="gallery-detail-container">
+    <div class="grid_12">
+
+        <div class="head-2">
+            <h2 id="Gallery-{{ gallery.id }}-title" class="ignore editable title gallery-{{ gallery.id }} gallerytitle">{{ gallery.title }}</h2>
+            <div class="gallery-navi navi">
+                <a href="{% url stockphoto_gallery_list project_id %}">อัลบัมทั้งหมด</a>
+            </div>
+        </div>
+
+        <div id="thumbnail-box">
+            <ul id="thumbnails">
+            {% for item in gallery.photo_set.all %}
+            <li>
+              <div class="small-image-box">
+                <a href="{% url stockphoto_photo_detail project_id item.id %}">
+                  <img src="{{ item.thumburl }}"
+                       alt="{{ item.title }}" />
+                </a>
+                <a href="{% url stockphoto_photo_detail project_id item.id %}"><span>{{ item.desc }}</span></a>
+              </div>
+            </li>                  
+            {% endfor %}
+            </ul>
+        </div>
+    </div>
 </div>
+
+<div class="gallery-detail-side-container">
+    <div class="grid_4">
+        {% if user.is_authenticated %}
+        <div id="Gallery-edit" class="form-add side">
+            <form id="photo-upload-form" class="form-add" action='#' method='post' enctype='multipart/form-data' style="display:{% if is_view_mode %}none{% else %}block{% endif %};">
+                <input id="photo-upload" name="uploads[]" type="file" multiple="multiple" value="อัพโหลดรูป" />
+                <div id="photo-current-wrap"></div>
+            </form>
+            <script>
+            $(document).ready(function () {
+              photo_upload_build();
+            });
+            </script>
+            <div id="gallery-delete-wrap" class="form-add" style="display:{% if is_view_mode %}none{% else %}block{% endif %};"><a id="gallery-delete" href="{% url quarter_blog_delete project_id gallery.id %}">ลบ</a></div>
+            <div id="Gallery-{{ gallery.id }}-plans-form" class="ignore Gallery-plans-form">
+            {{ plan_tags_form }}
+            </div>
+        </div>
+
+        {% endif %}
+        <div class="Gallery-meta">
+            <div id="Gallery-{{ gallery.id }}-date" class="ignore Gallery-date">{{ gallery.date|date:'d/m/Y' }}</div>
+            <div id="Gallery-{{ gallery.id }}-created" class="ignore Gallery-created">โดย <a href="#">{{ gallery.created.username }}</a></div>
+
+            <div id="Gallery-{{ gallery.id }}-plans" class="ignore Gallery-plans-form">
+                {% if gallery.plans.all %}
+                <div id="Gallery-{{ gallery.id }}-plans-view" class="ignore Gallery-plans-view">
+                    <ul>
+                    {% for plan in gallery.plans.all %}
+                    <li>ใน <a href="{% url quarter_plan project_id plan.week %}#plan-tab" class="plan-week-link">สัปดาห์ที่ {{ plan.week }}</a></li>
+                    {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
 {% else %}
 <p>ยังไม่มีภาพในอัลบัม</p>
 {% endif %}
-<br class="imageboxes-break"/>
 
-
-{% else %}
-<p>ไม่พบอัลบัมรูปที่คุณค้นหา</p>
-{% endif %}

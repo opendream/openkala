@@ -53,6 +53,7 @@ from datetime import datetime
 
 from quarter.views import project_overview, project_getmode_helper
 from quarter.models import Project
+import utility
 
 
 try:
@@ -140,13 +141,15 @@ def gallery_detail(request, project_id, gallery_id):
     mode = project_getmode_helper(request, project_id)
     is_view_mode = mode == 'view'
 
+    plan_tags_form = utility.plan_tags_form(project_id, Gallery.objects.get(id=gallery_id), 10)
+
     return object_detail(
         request, 
         Gallery.objects.all(), 
         object_id=gallery_id,
         template_object_name='gallery', 
         template_name='stockphoto/gallery_detail.html',
-        extra_context={'project_id': project_id, 'is_view_mode': is_view_mode}
+        extra_context={'project_id': project_id, 'is_view_mode': is_view_mode, 'plan_tags_form':plan_tags_form}
     )
 
 def photo_detail(request, project_id, photo_id):

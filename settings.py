@@ -64,7 +64,7 @@ MEDIA_URL = '/media/'
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/home/media/media.lawrence.com/static/"
-STATIC_ROOT = ''
+STATIC_ROOT = os.path.join(PROJECT_DIR, 'static')
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
@@ -145,11 +145,23 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.admin',
     'django.contrib.messages',
+    'compressor',
     'registration',
     'stockphoto',
     'quarter',
     'utility'
 )
+
+COMPILER_FORMATS = {
+    '.sass': {
+        'binary_path':'sass',
+        'arguments': '*.sass *.css'
+    },
+    '.scss': {
+        'binary_path':'/var/lib/gems/1.8/bin/sass',
+        'arguments': '*.scss *.css'
+    }
+}
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

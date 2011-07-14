@@ -31,6 +31,13 @@ function photo_upload_build(create) { var input = $('#photo-upload');
       xhr.onreadystatechange = function (e) {
         count_complete++;
         if (count_complete + count_error >= len) {
+
+          $('#messages-wrapper').append($('<div class="gallery-message">เพมอลบมแลว</div>'));
+          setTimeout(function () {$('.gallery-message').remove()}, 5000)
+          $('#gallery-add-form').hide();
+          $('#add-frame').hide();
+          $('#gallery-add-form .editable').html('');
+
           gallery_init();
         }
       };
@@ -46,6 +53,7 @@ function photo_upload_build(create) { var input = $('#photo-upload');
       xhr.setRequestHeader("X-File-Name", file.fileName);
       xhr.setRequestHeader("X-File-Size", file.fileSize);
       xhr.setRequestHeader("X-File-Type", file.type);
+      xhr.setRequestHeader("X-Gallery-Title", $('#Gallery-0-title').html());
       xhr.send(file); // Simple!
       if (!sync) {
         progress.css('width', '100%');

@@ -3,17 +3,64 @@
         <h2 class="gallery-all-title title">อัลบัมภาพทั้งหมดของโครงงาน</h2>
 
         {% if user.is_authenticated %}
-        <form id="photo-upload-form" class="form-add" action='#' method='post' enctype='multipart/form-data' style="display:{% if is_view_mode %}none{% else %}block{% endif %};">
-          <input id="photo-upload" name="uploads[]" type="file" multiple="multiple" value="อพโหลดรป" />
-          <div id="photo-current-wrap"></div>
-        </form>
-        <script>
+        <div id="gallery-add" class="thead gallery">
+          <div id="gallery-add-link" class="form-add add-button" style="display:{% if is_view_mode %}none{% else %}block{% endif %};">
+            <a href="#">สร้างอัลบัมภาพใหม่</a>
+          </div>
+          <div id="gallery-add-form">
+            <div class="grid_6 head-wrapper">
+                <h1>สร้างอัลบัมภาพ</h1>
+            </div>
+            <div class="clearfix"></div>
+            <div class="grid_1">
+                <div id="Gallery-0-title-label">ชื่ออัลบัม</div>
+            </div>
+            <div class="grid_5">
+                <div id="Gallery-0-title" class="ignore Gallery-title editable"></div>
+            </div>
+            <div class="clearfix"></div>
+            <div class="grid_6" style="display: none;">
+                <div id="Gallery-0-created" class="ignore Blog-created">{{ user.id }}</div>
+            </div>
+            <div class="clearfix"></div>
+            <div class="grid_14 submit-wrapper">
 
-        $(document).ready(function () {
-          photo_upload_build(true);
-        });
+                <form id="photo-upload-form" action='#' method='post' enctype='multipart/form-data' style="display:{% if is_view_mode %}none{% else %}block{% endif %};">
+                  <input id="photo-upload" name="uploads[]" type="file" multiple="multiple" value="อพโหลดรป" />
+                  <div id="photo-current-wrap"></div>
+                </form>
+                <script>
+
+                $(document).ready(function () {
+                  photo_upload_build(true);
+                });
+                </script>
+
+                <button id="gallery-add-cancel">ยกเลิก</button>
+            </div>
+            <div class="clearfix"></div>
+          </div>
+        </div>
+
+        <script>
+            $('#gallery-add-link').click(function (e) {
+              e.preventDefault();
+              $('#gallery-add-form').show();
+              $('#add-frame').show();
+            });
+
+            $('#gallery-add-cancel').click(function () {
+              $('#gallery-add-form').hide();
+              $('#add-frame').hide();
+              $('#gallery-add .editable').html('');
+            });
+
         </script>
+
         {% endif %}
+
+
+
     </div>
 </div>
 

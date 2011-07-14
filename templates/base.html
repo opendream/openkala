@@ -1,3 +1,4 @@
+{% load compress %}
 <!DOCTYPE HTML>
 <html>
 <head>
@@ -25,10 +26,12 @@
         href="{{ STATIC_URL }}css/960.css"/>
     <link rel="stylesheet" type="text/css"
         href="{{ STATIC_URL }}css/stockphoto.css"/>
-    <link rel="stylesheet" type="text/css"
-        href="{{ STATIC_URL }}css/style.css"/>
-    <link rel="stylesheet" type="text/css"
-        href="{{ STATIC_URL }}css/style2.css"/>
+
+    {% compress css %}
+    <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/style.scss"/>
+    {% endcompress %}
+
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/style2.css"/>
 
 
 

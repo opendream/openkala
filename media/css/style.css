@@ -482,9 +482,22 @@ div.GENTICS_editable_active {
 #Blog-0-body {
   min-height: 250px; }
 
-#add-frame {
+/* gallery */
+#gallery-add-form {
   display: none;
   position: absolute;
+  background-color: #FFFFFF;
+  border: 5px solid #DDDDDD;
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  border-radius: 3px;
+  top: -50px;
+  left: 100px;
+  z-index: 10000; }
+
+#add-frame {
+  display: none;
+  position: fixed;
   z-index: 100;
   top: 0px;
   left: 0px;
@@ -685,10 +698,6 @@ a.accounts-logout, .accounts-register {
   padding: 10px;
   margin: 0 0 10px;
   background-color: #efefef; }
-
-/* Gallery view */
-#gallery-add-form {
-  display: none; }
 
 /* hide button add */
 #gallery-render .view {

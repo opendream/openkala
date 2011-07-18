@@ -97,7 +97,10 @@ def project_overview(request, project_id):
     days = Task().DAY_CHOICES 
 
     # Standard
-    standards = CoreStandard.objects.all().order_by('group_code', 'code', 'id')
+    standards_level = 1
+    if project.grade >= 7:
+        standards_level = 2
+    standards = CoreStandard.objects.filter(level=standards_level).order_by('group_code', 'code', 'id')
 
     # Standard
     blogs = Blog.objects.all().order_by('-created')

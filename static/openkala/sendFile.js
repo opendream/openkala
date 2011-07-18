@@ -28,7 +28,7 @@ function photo_upload_build(create) { var input = $('#photo-upload');
           progress.css('width', percent + '%');
       };
 
-      xhr.onreadystatechange = function (e) {
+      xhr.onload = function (e) {
         count_complete++;
         if (count_complete + count_error >= len) {
 

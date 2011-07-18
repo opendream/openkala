@@ -8,54 +8,34 @@
             <a href="#">สร้างอัลบัมภาพใหม่</a>
           </div>
           <div id="gallery-add-form">
-            <div class="grid_6 head-wrapper">
+            <div class="grid_7 head-wrapper">
                 <h1>สร้างอัลบัมภาพ</h1>
             </div>
             <div class="clearfix"></div>
-            <div class="grid_1">
+            <div class="grid_2">
                 <div id="Gallery-0-title-label">ชื่ออัลบัม</div>
             </div>
             <div class="grid_5">
                 <div id="Gallery-0-title" class="ignore Gallery-title editable"></div>
             </div>
             <div class="clearfix"></div>
-            <div class="grid_6" style="display: none;">
+            <div class="grid_7" style="display: none;">
                 <div id="Gallery-0-created" class="ignore Blog-created">{{ user.id }}</div>
             </div>
             <div class="clearfix"></div>
-            <div class="grid_14 submit-wrapper">
+            <div class="grid_7 submit-wrapper">
 
                 <form id="photo-upload-form" action='#' method='post' enctype='multipart/form-data' style="display:{% if is_view_mode %}none{% else %}block{% endif %};">
                   <input id="photo-upload" name="uploads[]" type="file" multiple="multiple" value="อพโหลดรป" />
-                  <div id="photo-current-wrap"></div>
                 </form>
-                <script>
-
-                $(document).ready(function () {
-                  photo_upload_build(true);
-                });
-                </script>
 
                 <button id="gallery-add-cancel">ยกเลิก</button>
             </div>
             <div class="clearfix"></div>
+            <div id="photo-current-wrap" class="grid_7"></div>
+            <div class="clearfix"></div>
           </div>
         </div>
-
-        <script>
-            $('#gallery-add-link').click(function (e) {
-              e.preventDefault();
-              $('#gallery-add-form').show();
-              $('#add-frame').show();
-            });
-
-            $('#gallery-add-cancel').click(function () {
-              $('#gallery-add-form').hide();
-              $('#add-frame').hide();
-              $('#gallery-add .editable').html('');
-            });
-
-        </script>
 
         {% endif %}
 
@@ -84,6 +64,11 @@
       {% for item in gallery_list %}
       <div class="small-album-box">
         <div class="small-image-box">
+          {% if user.is_authenticated %}
+          <div class="gallery-delete-wrap form-add" style="display:{% if is_view_mode %}none{% else %}block{% endif %};">
+            <a class="gallery-delete-link delete-link" href="{% url stockphoto_gallery_delete project_id item.id %}">ลบ</a>
+          </div>
+          {% endif %}
           <a href="{% url stockphoto_gallery_detail project_id item.id %}">
             {% if item.first %}
             <img src="{{ item.first.thumburl }}" alt="{{ item.first.title }}" />
@@ -103,4 +88,26 @@
 {% endif %}
 <br id="imageboxes-break"/>
 
+{% if user.is_authenticated %}
+<script>
 
+    $(document).ready(function () {
+      photo_upload_build(true);
+    });
+
+    $('#gallery-add-link').click(function (e) {
+      e.preventDefault();
+      $('#gallery-add-form').show();
+      $('#add-frame').show();
+    });
+
+    $('#gallery-add-cancel').click(function () {
+      $('#gallery-add-form').hide();
+      $('#add-frame').hide();
+      $('#gallery-add .editable').html('');
+    });
+
+    window.history.pushState('', '', '/projects/{{ project_id }}/stockphoto#gallery-tab');
+
+</script>
+{% endif %}

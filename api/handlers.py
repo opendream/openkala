@@ -34,6 +34,14 @@ def insertProjectHistory(project, cell, new_value, model, id, field, user):
     elif type(current_value) == int:
         current_value = str(current_value)
 
+    if new_value == None:
+        new_value = ''
+    elif type(new_value) == int:
+        new_value = str(new_value)
+
+    print current_value
+    print new_value
+
     if new_value != current_value:
         dmp = diff_match_patch()
         patches = dmp.patch_make(new_value, current_value)
@@ -50,7 +58,7 @@ def insertProjectHistory(project, cell, new_value, model, id, field, user):
 class ProjectPlanHandler(BaseHandler):
     allowed_methods = ('GET')
     model = Plan
-    fields = ['id', 'week', 'main_point', 'goal', 'activity', 'key_thinking', 'sub_topic', 'performance', 'assessment']
+    fields = ['id', 'week', 'main_point', 'goal', 'activity', 'key_thinking', 'sub_topic', 'performance', 'assessment', 'presource']
     fields.append('cell')
     def read(self, request, project_id, week_id):
         obj = Plan.objects.get(project__id=project_id, week=week_id)
@@ -78,7 +86,6 @@ class ApiHandler(BaseHandler):
                 if k in dct:
                     typ = type(self.model._meta.get_field(k))
                     text = dct.get(k)
-                    print typ
                     if hasattr(text, 'strip'):
                         text = text.strip()
 
@@ -282,7 +289,7 @@ class TaskHandler(ApiHandler):
 
 class PlanHandler(ApiHandler):
     model = Plan
-    fields = ['week', 'topic', 'goal', 'activity', 'key_thingking', 'sub_topic', 'performance']
+    fields = ['week', 'topic', 'goal', 'activity', 'key_thingking', 'sub_topic', 'performance', 'presource']
     fields.append('cell')
 
     def create(self, request, *args, **kwargs):
@@ -347,6 +354,12 @@ class CoreStandardHandler(ApiHandler):
     def create(self, request, *args, **kwargs):
         inst = super(CoreStandardHandler, self).create(request, args, kwargs)
         return render_to_string('standard_item.html', {'standard': inst})
+    def update(self, request, *args, **kwargs):
+        attrs = self.flatten_dict(request.data)
+        if 'code' in attrs and not attrs.get('code'):
+            CoreStandard.objects.get(id=int(attrs.get('id'))).delete()
+        else:
+            return super(CoreStandardHandler, self).update(request, args, kwargs)
 
 class StandardHeaderHandler(ApiHandler):
     model = StandardHeader

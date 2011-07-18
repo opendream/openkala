@@ -9,6 +9,7 @@ class CoreStandard(models.Model):
     code        = models.CharField(max_length=6)
     group_code  = models.CharField(max_length=1)
     description = models.TextField()
+    level       = models.IntegerField(default=1)
 
     def save(self):
         if self.code:
@@ -34,7 +35,8 @@ class StandardHeader(models.Model):
         return ['title']
 
 class Project(models.Model):
-    GRADE_CHOICES = ((1, 1), (2, 2), (3, 3), (4, 4), (5, 5), (6, 6),)
+    GRADE_CHOICES = ((1, 'ป.1'), (2, 'ป.2'), (3, 'ป.3'), (4, 'ป.4'), (5, 'ป.5'), (6, 'ป.6'),)
+    GRADE_CHOICES += ((7, 'ม.1'), (8, 'ม.2'), (9, 'ม.3'), (10, 'ม.4'), (11, 'ม.5'), (12, 'ม.6'),)
     YEAR_CHOICES = [(year, year) for year in range(date.today().year-7, date.today().year + 3)]
     QUARTER_CHOICES = ((1, 1), (2, 2), (3, 3), (4, 4),)
 
@@ -83,6 +85,7 @@ class Plan(models.Model):
     main_point   = models.TextField(null=True, blank=True)
     goal         = models.TextField(null=True, blank=True)
     activity     = models.TextField(null=True, blank=True)
+    presource    = models.TextField(null=True, blank=True)
     # must be have
     sub_topic    = models.TextField(null=True, blank=True)
     key_thinking = models.TextField(null=True, blank=True)

@@ -72,3 +72,6 @@
 <p>ยังไม่มีภาพในอัลบัม</p>
 {% endif %}
 
+<script>
+  window.history.pushState('', '', '/projects/{{ project_id }}/stockphoto/{{ gallery.id }}#gallery-tab');
+</script>

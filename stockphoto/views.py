@@ -98,7 +98,7 @@ def photo_add(request, project_id, gallery_id):
             gallery = Gallery.objects.get(id=gallery_id)
         else:
             project = Project.objects.get(id=project_id)
-            gallery = Gallery(project=project, title='', created=request.user)
+            gallery = Gallery(project=project, title=request.META['HTTP_X_GALLERY_TITLE'], created=request.user)
             gallery.save()
 
         photo = Photo(image=File(im), desc=filename, gallery=gallery)
@@ -128,7 +128,7 @@ def gallery_add(request, project_id):
         return HttpResponse('')
 
     project = Project.objects.get(id=project_id)
-    gallery = Gallery(project=project, title='', created=request.user)
+    gallery = Gallery(project=project, title=request.META['HTTP_X_GALLERY_TITLE'], created=request.user)
     gallery.save()
     return HttpResponse('/projects/%s/stockphoto/%s' % (str(project_id), str(gallery.id)))
 
@@ -151,6 +151,20 @@ def gallery_detail(request, project_id, gallery_id):
         template_name='stockphoto/gallery_detail.html',
         extra_context={'project_id': project_id, 'is_view_mode': is_view_mode, 'plan_tags_form':plan_tags_form}
     )
+
+def gallery_delete(request, project_id, gallery_id):
+    if not request.GET.get('ajax'):
+        return project_overview(request, project_id)
+
+    try:
+        gallery = Gallery.objects.get(id=gallery_id)
+    except:
+        pass
+        #return HttpResponse('')
+        
+    gallery.delete()
+
+    return gallery_list(request, project_id)
 
 def photo_detail(request, project_id, photo_id):
     if not request.GET.get('ajax'):

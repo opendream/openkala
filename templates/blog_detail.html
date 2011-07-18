@@ -16,7 +16,7 @@
                 {% endif %}
             </div>
 
-            <div id="Blog-{{ blog.id }}-body" class="ignore Blog-title{% if blog_full %} editable{% endif %}">{%if blog_full %}{{ blog.body|safe }}{% else %}{{ blog.body|safe|truncatewords_html:400 }}{% endif %}</div>
+            <div id="Blog-{{ blog.id }}-body" class="ignore Blog-title{% if blog_full %} editable{% endif %}">{%if blog_full %}{{ blog.body|safe }}{% else %}{{ blog.body|safe|truncatewords_html:300 }}{% endif %}</div>
             {% if not blog_full %}
             <a href="{% url quarter_blog_detail project_id blog.id %}" class="Blog-readmore readmore">อ่านต่อ</a>
             {% endif %}
@@ -29,7 +29,7 @@
             {% if user.is_authenticated %}
             {%if blog_full %}
             <div id="Blog-edit" class="form-add side">
-                <div id="blog-delete-wrap" class="form-add" style="display:{% if is_view_mode %}none{% else %}block{% endif %};"><a id="blog-delete" href="{% url quarter_blog_delete project_id blog.id %}">ลบบล็อก</a></div>
+                <div id="blog-delete-wrap" class="form-add" style="display:{% if is_view_mode %}none{% else %}block{% endif %};"><a id="blog-delete" class="delete-link" href="{% url quarter_blog_delete project_id blog.id %}">ลบบล็อก</a></div>
                 <div id="Blog-{{ blog.id }}-plans-form" class="ignore Blog-plans-form">
                 {{ plan_tags_form }}
                 </div>
@@ -52,4 +52,6 @@
 
     <div class="clearfix"></div>
 </div>
-
+<script>
+  window.history.pushState('', '', '/projects/{{ project_id }}/blogs/{{ blog.id }}#blog-tab');
+</script>

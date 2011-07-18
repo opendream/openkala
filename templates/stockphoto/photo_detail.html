@@ -46,7 +46,7 @@
       
       
       <div id="large-image-box">
-        <div id="photo-delete-wrap" class="form-add" style="display:{% if is_view_mode %}none{% else %}block{% endif %};"><a id="photo-delete" href="{% url stockphoto_photo_delete project_id photo.id %}">ลบ</a></div>
+        <div id="photo-delete-wrap" class="form-add" style="display:{% if is_view_mode %}none{% else %}block{% endif %};"><a id="photo-delete" class="delete-link" href="{% url stockphoto_photo_delete project_id photo.id %}">ลบ</a></div>
         <a href="{{ photo.fullurl }}">
           <img src="{{ photo.dispurl }}"
                alt="{{ photo.title }}" />
@@ -75,3 +75,7 @@
 {% else %}
 <p>ไม่พบรูปภาพที่คุณหา</p>
 {% endif %}
+
+<script>
+  window.history.pushState('', '', '/projects/{{ project_id }}/stockphoto/detail/{{ photo.id }}#gallery-tab');
+</script>

@@ -69,24 +69,30 @@
         }
       });
 
+
+      Aloha.bind('aloha-editable-activated', function (jevent, aevent) {
+        aevent.editable.undoContent = aevent.editable.getContents();
+      });
+
       Aloha.bind('aloha-smart-content-changed', function (jevent, aevent) {
           // workaround because on redo the editable must be blured.
-          if (  aevent.triggerType != 'blur' && 
+          if (  aevent.triggerType == 'spec' && 
                 aevent.editable && 
-                aevent.editable.keyCode != 90 &&
-                aevent.editable.originalContent != aevent.editable.getContents()) {
-
-                  stack.execute( new EditCommand( aevent.editable, aevent.editable.originalContent) );
+                aevent.editable.undoContent != aevent.editable.getContents() && 
+                aevent.editable.keyCode != 90) {
+                  var undoContent = aevent.editable.undoContent;
+                  stack.execute( new EditCommand( aevent.editable, undoContent) );
+                  aevent.editable.undoContent = aevent.editable.getContents()
                   aevent.editable.setUnmodified();
           }
-          else if ( aevent.triggerType == 'blur') {
+          else if ( aevent.triggerType == 'blur' || aevent.triggerType == 'idle') {
             Aloha.trigger('aloha-smart-content-changed',{
               'editable' : aevent.editable,
               'keyIdentifier' : null,
               'keyCode' : null,
               'char' : null,
-              'triggerType' : 'idle',
-              'snapshotContent' : aevent.editable.getSnapshotContent()
+              'triggerType' : 'spec',
+              'snapshotContent' : aevent.snapshotContent
             });
           }
       });

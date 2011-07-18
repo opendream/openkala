@@ -9,6 +9,7 @@
     var history_last_id = {{ history_last_id }};
     var is_authenticated = {% if user.is_authenticated %}true{% else %}false{%endif %};
     var static_url = '{{ STATIC_URL }}';
+    var standards_level = {{ standards_level }};
 
     // Site
     var Site = function() {
@@ -366,11 +367,19 @@
       }
 
       if (pathname && pathname.indexOf('stockphoto') > 0 && pathname.indexOf('media') == -1) {
+        var is_delete = false;
         if (e) {
           e.preventDefault();
+          if ($(e.target).hasClass('delete-link')) {
+            if (!confirm('คณแใจทจะลบอลบมภาพน')) {
+              return false;
+            }
+            is_delete = true;
+          }
         }
 
         var spliter = pathname.indexOf('?') > -1? '&': '?';
+
         $('#gallery-render').load(pathname + spliter + 'ajax=1', function () {
           $('#gallery-render a').click(gallery_render);
           if (site.canEdit()) {
@@ -378,8 +387,8 @@
           }
         });
 
-        if (!state) {
-          window.history.pushState('', '', pathname + '#gallery-tab');
+        if (!state && !is_delete) {
+          //window.history.pushState('', '', pathname + '#gallery-tab');
         }
       }
     }
@@ -418,8 +427,15 @@
         return false;
       }
       if (pathname && pathname.indexOf('blogs') > 0 && pathname.indexOf('media') == -1) {
+        var is_delete = false;
         if (e) {
           e.preventDefault();
+          if ($(e.target).hasClass('delete-link')) {
+            if (!confirm('คณแนใจทจะลบบล็อกน')) {
+              return false;
+            }
+            is_delete = true;
+          }
         }
 
         var spliter = pathname.indexOf('?') > -1? '&': '?';
@@ -430,8 +446,8 @@
           }
         });
 
-        if (!state) {
-          window.history.pushState('', '', pathname + '#blog-tab');
+        if (!state && !is_delete) {
+          //window.history.pushState('', '', pathname + '#blog-tab');
         }
       }
     }
@@ -498,6 +514,12 @@
 
     // State Control =============================
     var state_control = function (e) {
+      stack = new Undo.Stack();
+    }
+
+    // Hash Control
+    var hash_control = function (e) {
+      stack = new Undo.Stack();
       var pathname = window.location.pathname;
       var hash = window.location.hash;
 
@@ -512,7 +534,6 @@
 
       if (hashmap[hash]) {
         window.history.pushState('', '', '/projects/' + project_id + hash);
-        console.log(hash);
       }
 
     }
@@ -536,6 +557,9 @@
         $ = window.jQuery,
         $body = $('body');
       
+      // Move to top for ux and performance
+      $('.menu').tabify();
+
       Aloha = Aloha;
       // Aloha
       $body.bind('aloha',function(){
@@ -581,7 +605,6 @@
           $('.editable').aloha();
         }
 
-        $('.menu').tabify();
 
 
         $('#compare-cancel').click(function () {
@@ -597,11 +620,11 @@
         $('#week_options').change(function() {
           $('#week-markup').attr('class', 'week-' + $(this).val());
           planHandler.load($(this).val(), function () {
+            stack = new Undo.Stack();
             if (pHistory.getMode() == 'compare') {
               pHistory.reload();
             }
           });
-          stack = new Undo.Stack();
         });
 
         $('.ProjectHistory-old-id, .ProjectHistory-diff-id').click(historyClick).click(function () {
@@ -638,6 +661,7 @@
 
         var code = $('#CoreStandard-0-code').html();
         var description = $('#CoreStandard-0-description').html();
+        var level = $('#CoreStandard-0-level').html();
 
         if (!code) {
           alert('ข้อมาตรฐานจำเป็นต้องกรอก');
@@ -647,7 +671,7 @@
               'url': '/api/corestandards',
               'type': 'POST',
               'dataType': 'json',
-              'data': {'code': code, 'description': description},
+              'data': {'code': code, 'description': description, 'level': level},
               'beforeSend' : function(xhr) {
                   xhr.setRequestHeader('X-CSRFToken', getCookie('csrftoken'));
               },
@@ -721,10 +745,6 @@
       });
 
 
-      $('#menu a').click(function () {
-        stack = new Undo.Stack();
-      });
-
 
       $(window).bind('popstate', gallery_init);
       $(window).bind('popstate', blog_init);
@@ -734,7 +754,9 @@
       $(window).bind('hashchange', blog_init);
       $(window).bind('hashchange', plan_init);
 
-      $(window).bind('hashchange', state_control);
+      $(window).bind('popstate', state_control);
+      $(window).bind('pushstate', state_control);
+      $(window).bind('hashchange', hash_control);
 
       $('a.plan-week-link').click(plan_init);
 
@@ -829,9 +851,10 @@
         <form><input id='current-plan-id' type="hidden" value=""/></form>
 
         <div class="thead plan-first head-2">
-            <div class="grid_4"><div class="ignore hrow">สาระสำคัญ<br />Main Point</div></div>
-            <div class="grid_8"><div class="ignore hrow">เป้าหมายหลัก<br />Goal</div></div>
-            <div class="grid_4"><div class="ignore hrow">เนื้อหา/กิจกรรม ชิ้นงาน<br />Content/Activity Work</div></div>
+            <div class="grid_4"><div class="ignore hrow">สาระสำคัญ<br />(เป้าหมายหลัก)</div></div>
+            <div class="grid_5"><div class="ignore hrow">เนื้อหา/กิจกรรม</div></div>
+            <div class="grid_4"><div class="ignore hrow">ชิ้นงาน</div></div>
+            <div class="grid_3"><div class="ignore hrow">สื่อ/แหล่งเรียนรู้</div></div>
             <div class="clearfix"></div>
         </div>
         <div class="tbody plan-first">
@@ -839,19 +862,22 @@
               <div class="grid_4">
                   <div id="Plan-main_point" class="editable ignore">-</div>
               </div>
-              <div class="grid_8">
-                  <div id="Plan-goal" class="editable ignore">-</div>
+              <div class="grid_5">
+                  <div id="Plan-activity" class="editable ignore">-</div>
               </div>
               <div class="grid_4">
-                  <div id="Plan-activity" class="editable ignore">-</div>
+                  <div id="Plan-goal" class="editable ignore">-</div>
+              </div>
+              <div class="grid_3">
+                  <div id="Plan-presource" class="editable ignore">-</div>
               </div>
               <div class="clearfix"></div>
             </div>
         </div>
         <div class="thead plan-second">
-            <div class="grid_5"><div class="ignore hrow">หัวเรื่อง<br />Sub-Topic</div></div>
-            <div class="grid_3"><div class="ignore hrow">เครื่องมือการคิด<br />Key Thinking</div></div>
-            <div class="grid_4"><div class="ignore hrow">พฤติกรรมที่แสดงว่าเข้าใจ<br />Understanding Performance</div></div>
+            <div class="grid_5"><div class="ignore hrow">หัวข้อย่อย/เนื้อหา<br />Sub-Topic/Content</div></div>
+            <div class="grid_3"><div class="ignore hrow">เครื่องมือคิด<br />Key Thinking</div></div>
+            <div class="grid_4"><div class="ignore hrow">เป้าหมายย่อย<br />Specific goals</div></div>
             <div class="grid_4"><div class="ignore hrow">การประเมิณ<br />Assessment</div></div>
             <div class="clearfix"></div>
         </div>
@@ -876,8 +902,8 @@
         <div class="thead task">
             <div class="grid_2 hcol"><div class="ignore">วัน<br />Day</div></div>
             <div class="grid_6 hcol"><div class="ignore">กิจกรรมการเรียนรู้<br />Activities</div></div>
-            <div class="grid_4 hcol"><div class="ignore">สื่อ/แหล่งเรียนรู้<br />Sources</div></div>
-            <div class="grid_4 hcol"><div class="ignore">ชิ้นงาน<br />Work</div></div>
+            <div class="grid_4 hcol"><div class="ignore">แหล่งเรียนรู้<br />Sources</div></div>
+            <div class="grid_4 hcol"><div class="ignore">ภาระงาน/ชิ้นงาน<br />Task</div></div>
             <div class="clearfix"></div>
         </div>
         <div class="tbody task">
@@ -916,6 +942,9 @@
     <div id="standard-add" class="tbody standard form-add head-1" style="display:{% if is_view_mode %}none{% else %}block{% endif %};">
         <div class="grid_3" style="display:none;">
             <div id="CoreStandard-0-group_code" class="ignore CoreStandard-group_code"></div>
+        </div>
+        <div class="grid_3" style="display:none;">
+            <div id="CoreStandard-0-level" class="ignore CoreStandard-level">{{ standards_level }}</div>
         </div>
         <div class="grid_3">
             <div id="CoreStandard-0-code" class="ignore CoreStandard-code editable"></div>

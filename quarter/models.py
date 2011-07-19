@@ -55,8 +55,53 @@ class Project(models.Model):
     standard_header7 = models.ForeignKey(StandardHeader, related_name='standard_header7', null=True, blank=True, verbose_name="วิชาบูรณาการที่ 7")
     standard_header8 = models.ForeignKey(StandardHeader, related_name='standard_header8', null=True, blank=True, verbose_name="วิชาบูรณาการที่ 8")
 
+    GRADE_MAP = {
+        1: {
+            'degree': 'ประถมศึกษา',
+            'short_degree': 'ป.'
+        },
+        2: {
+            'degree': 'มัธยมศึกษา',
+            'short_degree': 'ม.'
+        }
+    }
+
     def __unicode__(self):
         return self.name
+
+    def level(self):
+        if self.grade > 6:
+            return 2
+        return 1
+
+    def regrade(self):
+        if self.level() == 2:
+            return self.grade - 6
+        return self.grade
+
+    def degree(self):
+        return self.GRADE_MAP[self.level()]['degree']
+
+    def short_degree(self):
+        return self.GRADE_MAP[self.level()]['short_degree']
+
+    def save(self):
+        try:
+            project = Project.objects.get(id=self.id)
+            if project.level() == 1 and self.grade > 6:
+                self.grade = 6
+            elif project.level() == 1 and self.grade == 0:
+                self.grade = 1
+            elif project.level() == 2 and self.grade == 0:
+                self.grade = 7
+            elif project.level() == 2 and self.grade > 6:
+                self.grade = 12
+            elif project.level() == 2:
+                    self.grade += 6
+        except:
+            pass
+
+        super(Project, self).save()
 
     def striphtml(self):
         return ['name', 'grade', 'year', 'quarter']

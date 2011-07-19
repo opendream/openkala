@@ -155,7 +155,7 @@ function saveEditableStandardHeader(arg1, arg2, jqobj, val, create_id) {
 <div id="project" class="content">
   <div class="thead project">
     <div class="grid_4 hcol"><div class="ignore">ชื่อโครงการ</div></div>
-    <div class="grid_2 hcol"><div class="ignore">ชั้นมัธยมศึกษาปีที่</div></div>
+    <div class="grid_2 hcol"><div class="ignore">ระดับชั้น</div></div>
     <div class="grid_2 hcol"><div class="ignore">ปีการศึกษา</div></div>
     <div class="grid_2 hcol"><div class="ignore">ภาคเรียน</div></div>
     <div class="grid_2 hcol"><div class="ignore">รายละเอียด</div></div>
@@ -169,7 +169,7 @@ function saveEditableStandardHeader(arg1, arg2, jqobj, val, create_id) {
             <div id="Project-{{ project.id }}-name" class="ignore name">{{ project.name }}</div>
         </div>
         <div class="grid_2">
-            <div id="Project-{{ project.id }}-grade" class="ignore grade">{{ project.grade }}</div>
+            <div id="Project-{{ project.id }}-grade" class="ignore grade">{{ project.short_degree }}{{ project.regrade }}</div>
         </div>
         <div class="grid_2">
             <div id="Project-{{ project.id }}-year" class="ignore year">{{ project.year }}</div>

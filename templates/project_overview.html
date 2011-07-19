@@ -791,7 +791,7 @@
 
 {% block header %}
 <div class="grid_16"><div class="ignore"><h1>โครงงาน : <span id="Project-{{ project.id }}-name" class="editable">{{ project.name }}</span></h1></div></div>
-<div class="grid_3"><div class="ignore"><p>ชั้นประถมศึกษาปีที่ : <span id="Project-{{ project.id }}-grade" class="editable">{{ project.grade }}</span></p></div></div>
+<div class="grid_3"><div class="ignore"><p>{{ project.degree }}ปีที่ : <span id="Project-{{ project.id }}-grade" class="editable">{{ project.regrade }}</span></p></div></div>
 <div class="grid_3"><div class="ignore"><p>ปีการศึกษา : <span id="Project-{{ project.id }}-year" class="editable">{{ project.year }}</span></p></div></div>
 <div class="grid_3"><div class="ignore"><p>ภาคเรียน : <span id="Project-{{ project.id }}-quarter" class="editable">{{ project.quarter }}</span></p></div></div>
 <div class="clearfix"></div>

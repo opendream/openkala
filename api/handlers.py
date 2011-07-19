@@ -39,9 +39,6 @@ def insertProjectHistory(project, cell, new_value, model, id, field, user):
     elif type(new_value) == int:
         new_value = str(new_value)
 
-    print current_value
-    print new_value
-
     if new_value != current_value:
         dmp = diff_match_patch()
         patches = dmp.patch_make(new_value, current_value)

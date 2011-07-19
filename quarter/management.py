@@ -21,8 +21,6 @@ def import_model(model, filepath):
         handler.set_model(model)
         handler.create(request)
 
-    print 'Generate sample %s complete' % model.__name__
-    
 def after_syncdb(sender, **kwargs):
 
     """

@@ -190,12 +190,9 @@ def plan_tags(request, project_id, model, obj_id, weeks, days):
     plan = Plan.objects.get(project__id=project_id, week=weeks)
     obj_task = obj.tasks.filter(plan=plan, day__in=days)
 
-    print obj_task
-
     if len(days) == 1:
         task, create = Task.objects.get_or_create(plan=plan, day=days[0])
         if obj_task.count():
-            print task
             obj.tasks.remove(task)
             resp = ''
         else:
